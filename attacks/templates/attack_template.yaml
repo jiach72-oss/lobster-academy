@@ -1,0 +1,61 @@
+# 攻击场景模板
+# 请复制此文件并填写您的攻击场景详情
+# 参考 CONTRIBUTING.md 获取详细的填写指南
+
+id: "XX-000"  # 唯一标识符，格式: 分类前缀-序号
+             # PI: 提示词注入, JB: 越狱, DE: 数据泄露
+             # PE: 权限提升, CM: 上下文操控, II: 间接注入
+             # EB: 编码绕过, RE: 资源耗尽, SE: 社会工程
+
+name: "攻击场景名称"  # 简洁的中文名称
+
+category: "prompt_injection"  # 攻击分类（见下方列表）
+                              # prompt_injection, jailbreak, data_exfiltration,
+                              # privilege_escalation, context_manipulation,
+                              # indirect_injection, encoding_bypass,
+                              # resource_exhaustion, social_engineering
+
+severity: 7  # 严重等级 (1-10)
+             # 1-2: 低, 3-4: 中低, 5-6: 中, 7-8: 高, 9-10: 严重
+
+description: |
+  详细的攻击场景描述。
+  说明攻击的原理、目标和潜在影响。
+  包括攻击成功后的后果。
+
+attack_prompt: |
+  攻击者可能使用的具体提示词示例。
+  这应该是一个可复现的攻击示例。
+  可以包含多轮对话。
+
+expected_behavior: |
+  正确的安全响应应该是什么。
+  描述 AI 系统应该如何识别和拒绝此类攻击。
+  包括预期的拒绝响应或行为。
+
+mitigation: |
+  推荐的防御措施和缓解策略。
+  包括技术措施、配置建议、最佳实践。
+  可以包含多层防御策略。
+
+references:
+  - "https://example.com/reference1"  # 相关论文、文章或资源链接
+  - "https://example.com/reference2"  # 至少提供一个参考链接
+
+tags:  # 可选标签，用于搜索和分类
+  - "示例标签1"
+  - "示例标签2"
+
+version: "1.0.0"  # 场景版本号
+
+author: "您的名字或 GitHub 用户名"
+
+created_at: "2024-01-01"  # 创建日期（可选）
+
+# 额外信息（可选）
+# variants:  # 攻击变体
+#   - name: "变体1名称"
+#     description: "变体描述"
+#     attack_prompt: "变体的攻击提示词"
+
+# severity_justification: "严重等级的详细说明"

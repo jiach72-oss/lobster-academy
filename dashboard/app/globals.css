@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0f;
+  --foreground: #e2e8f0;
+  --card-bg: #12121a;
+  --card-border: #1e1e2e;
+  --accent: #3b82f6;
+  --accent-dim: #2563eb;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --critical: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #12121a;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a4f;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5a5a7a;
+}
+
+/* Card styles */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.card-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #8a8aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge-running { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.badge-idle { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+.badge-error { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.badge-testing { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.badge-passed { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.badge-failed { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.badge-critical { background: rgba(220, 38, 38, 0.15); color: #ef4444; }
+.badge-grade-a { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.badge-grade-b { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.badge-grade-c { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.badge-grade-d { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* Tooltip styles for recharts */
+.recharts-tooltip-wrapper {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+}

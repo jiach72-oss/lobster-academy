@@ -4,6 +4,10 @@ data/
 .env*
 *.tsbuildinfo
 .agent/
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
 
 # 审计报告（不上传到公开仓库）
 *-AUDIT-*.md

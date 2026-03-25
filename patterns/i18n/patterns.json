@@ -1,0 +1,576 @@
+{
+  "version": "1.0.0",
+  "description": "International PII/ID patterns for redaction",
+  "patterns": {
+    "JP": {
+      "name": "Japan",
+      "flag": "🇯🇵",
+      "items": {
+        "my_number": {
+          "label": "My Number (マイナンバー)",
+          "regex": "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_JP_MYNUMBER]",
+          "validate": "luhn12"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+81[\\s-]?|0)(?:[1-9]\\d{1,4}[\\s-]?\\d{1,4}[\\s-]?\\d{4}|[789]0[\\s-]?\\d{4}[\\s-]?\\d{4})",
+          "placeholder": "[REDACTED_JP_PHONE]"
+        },
+        "postal_code": {
+          "label": "Postal Code",
+          "regex": "\\b〒?\\d{3}[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_JP_POSTAL]"
+        },
+        "residence_card": {
+          "label": "Residence Card",
+          "regex": "\\b[A-Z]\\d{12}\\b",
+          "placeholder": "[REDACTED_JP_RESIDENCE]"
+        }
+      }
+    },
+    "KR": {
+      "name": "South Korea",
+      "flag": "🇰🇷",
+      "items": {
+        "rrn": {
+          "label": "Resident Registration Number",
+          "regex": "\\b\\d{6}[\\s-]?[1-4]\\d{6}\\b",
+          "placeholder": "[REDACTED_KR_RRN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+82[\\s-]?|0)1[016-9][\\s-]?\\d{3,4}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_KR_PHONE]"
+        },
+        "passport": {
+          "label": "Passport",
+          "regex": "\\b[MSTDRN]\\d{8}\\b",
+          "placeholder": "[REDACTED_KR_PASSPORT]"
+        }
+      }
+    },
+    "IN": {
+      "name": "India",
+      "flag": "🇮🇳",
+      "items": {
+        "aadhaar": {
+          "label": "Aadhaar Number",
+          "regex": "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_IN_AADHAAR]"
+        },
+        "pan": {
+          "label": "PAN (Permanent Account Number)",
+          "regex": "\\b[A-Z]{5}\\d{4}[A-Z]\\b",
+          "placeholder": "[REDACTED_IN_PAN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+91[\\s-]?|0)?[6-9]\\d{9}",
+          "placeholder": "[REDACTED_IN_PHONE]"
+        },
+        "vid": {
+          "label": "Voter ID",
+          "regex": "\\b[A-Z]{3}\\d{7}\\b",
+          "placeholder": "[REDACTED_IN_VOTER]"
+        },
+        "passport": {
+          "label": "Passport",
+          "regex": "\\b[A-Z]\\d{7}\\b",
+          "placeholder": "[REDACTED_IN_PASSPORT]"
+        }
+      }
+    },
+    "TH": {
+      "name": "Thailand",
+      "flag": "🇹🇭",
+      "items": {
+        "national_id": {
+          "label": "National ID",
+          "regex": "\\b\\d{1}[\\s-]?\\d{4}[\\s-]?\\d{5}[\\s-]?\\d{2}[\\s-]?\\d{1}\\b",
+          "placeholder": "[REDACTED_TH_ID]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+66[\\s-]?|0)[689]\\d[\\s-]?\\d{3}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_TH_PHONE]"
+        },
+        "tax_id": {
+          "label": "Tax ID",
+          "regex": "\\b\\d{13}\\b",
+          "placeholder": "[REDACTED_TH_TAX]"
+        }
+      }
+    },
+    "SG": {
+      "name": "Singapore",
+      "flag": "🇸🇬",
+      "items": {
+        "nric": {
+          "label": "NRIC/FIN",
+          "regex": "\\b[STFG]\\d{7}[A-Z]\\b",
+          "placeholder": "[REDACTED_SG_NRIC]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+65[\\s-]?|6|9|8)\\d{3}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_SG_PHONE]"
+        }
+      }
+    },
+    "ID": {
+      "name": "Indonesia",
+      "flag": "🇮🇩",
+      "items": {
+        "nik": {
+          "label": "NIK (National ID)",
+          "regex": "\\b\\d{16}\\b",
+          "placeholder": "[REDACTED_ID_NIK]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+62[\\s-]?|0)8\\d{2}[\\s-]?\\d{3,4}[\\s-]?\\d{3,4}",
+          "placeholder": "[REDACTED_ID_PHONE]"
+        },
+        "npwp": {
+          "label": "Tax ID (NPWP)",
+          "regex": "\\b\\d{2}\\.\\d{3}\\.\\d{3}\\.\\d[\\s-]?\\d{3}\\.\\d{3}\\b",
+          "placeholder": "[REDACTED_ID_NPWP]"
+        }
+      }
+    },
+    "VN": {
+      "name": "Vietnam",
+      "flag": "🇻🇳",
+      "items": {
+        "cccd": {
+          "label": "Citizen ID (CCCD)",
+          "regex": "\\b\\d{12}\\b",
+          "placeholder": "[REDACTED_VN_CCCD]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+84[\\s-]?|0)(?:[35789]\\d{8}|\\d{9})",
+          "placeholder": "[REDACTED_VN_PHONE]"
+        },
+        "cmnd": {
+          "label": "Old ID (CMND)",
+          "regex": "\\b\\d{9}\\b",
+          "placeholder": "[REDACTED_VN_CMND]"
+        }
+      }
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "flag": "🇬🇧",
+      "items": {
+        "nhs": {
+          "label": "NHS Number",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_GB_NHS]"
+        },
+        "ni_number": {
+          "label": "National Insurance Number",
+          "regex": "\\b[ABCEGHJKLMNOPRSTWXYZ][ABCEGHJKLMNPRSTWXYZ][\\s-]?\\d{2}[\\s-]?\\d{2}[\\s-]?\\d{2}[\\s-]?[A-D\\s]\\b",
+          "placeholder": "[REDACTED_GB_NI]"
+        },
+        "postcode": {
+          "label": "Postcode",
+          "regex": "\\b[A-Z]{1,2}\\d[A-Z\\d]?[\\s-]?\\d[A-Z]{2}\\b",
+          "placeholder": "[REDACTED_GB_POSTCODE]"
+        },
+        "utr": {
+          "label": "Unique Taxpayer Reference",
+          "regex": "\\b\\d{10}\\b",
+          "placeholder": "[REDACTED_GB_UTR]"
+        }
+      }
+    },
+    "DE": {
+      "name": "Germany",
+      "flag": "🇩🇪",
+      "items": {
+        "id_number": {
+          "label": "Personalausweis (ID Card)",
+          "regex": "\\b\\d{9}\\b",
+          "placeholder": "[REDACTED_DE_ID]"
+        },
+        "tax_id": {
+          "label": "Steuerliche Identifikationsnummer",
+          "regex": "\\b\\d{11}\\b",
+          "placeholder": "[REDACTED_DE_TAX]"
+        },
+        "social_security": {
+          "label": "Sozialversicherungsnummer",
+          "regex": "\\b\\d{2}\\s?\\d{6}\\s?[A-Z]\\s?\\d{3}\\b",
+          "placeholder": "[REDACTED_DE_SSN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+49[\\s-]?|0)(?:1[5-7]\\d|[3-9]\\d{1,4})[\\s-]?\\d{3,}",
+          "placeholder": "[REDACTED_DE_PHONE]"
+        },
+        "vat": {
+          "label": "VAT ID",
+          "regex": "\\bDE\\d{9}\\b",
+          "placeholder": "[REDACTED_DE_VAT]"
+        }
+      }
+    },
+    "FR": {
+      "name": "France",
+      "flag": "🇫🇷",
+      "items": {
+        "insee": {
+          "label": "INSEE (NIR)",
+          "regex": "\\b[12][\\s-]?\\d{2}[\\s-]?(?:0[1-9]|1[0-2]|[2-9]\\d)[\\s-]?(?:0[1-9]|[1-9]\\d|2[0-8AB]|9[0-57-9]|97[1-4]|98[0-9]|99[0-89])[\\s-]?\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{2}\\b",
+          "placeholder": "[REDACTED_FR_INSEE]"
+        },
+        "siret": {
+          "label": "SIRET",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{5}\\b",
+          "placeholder": "[REDACTED_FR_SIRET]"
+        },
+        "siren": {
+          "label": "SIREN",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}\\b",
+          "placeholder": "[REDACTED_FR_SIREN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+33[\\s-]?|0)[1-9][\\s-]?(?:\\d{2}[\\s-]?){4}",
+          "placeholder": "[REDACTED_FR_PHONE]"
+        }
+      }
+    },
+    "IT": {
+      "name": "Italy",
+      "flag": "🇮🇹",
+      "items": {
+        "codice_fiscale": {
+          "label": "Codice Fiscale",
+          "regex": "\\b[A-Z]{6}\\d{2}[ABCDEHLMPRST]\\d{2}[A-Z]\\d{3}[A-Z]\\b",
+          "placeholder": "[REDACTED_IT_CF]"
+        },
+        "iva": {
+          "label": "Partita IVA",
+          "regex": "\\bIT\\d{11}\\b",
+          "placeholder": "[REDACTED_IT_IVA]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+39[\\s-]?|0)\\d[\\s-]?\\d{6,8}",
+          "placeholder": "[REDACTED_IT_PHONE]"
+        }
+      }
+    },
+    "ES": {
+      "name": "Spain",
+      "flag": "🇪🇸",
+      "items": {
+        "dni": {
+          "label": "DNI",
+          "regex": "\\b\\d{8}[A-Z]\\b",
+          "placeholder": "[REDACTED_ES_DNI]"
+        },
+        "nie": {
+          "label": "NIE",
+          "regex": "\\b[XYZ]\\d{7}[A-Z]\\b",
+          "placeholder": "[REDACTED_ES_NIE]"
+        },
+        "nif": {
+          "label": "NIF (CIF)",
+          "regex": "\\b[A-Z]\\d{8}\\b",
+          "placeholder": "[REDACTED_ES_NIF]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+34[\\s-]?|[679])\\d{8}",
+          "placeholder": "[REDACTED_ES_PHONE]"
+        },
+        "ssn": {
+          "label": "Social Security Number",
+          "regex": "\\b\\d{2}[\\s-]?\\d{10}[\\s-]?\\d{2}\\b",
+          "placeholder": "[REDACTED_ES_SSN]"
+        }
+      }
+    },
+    "NL": {
+      "name": "Netherlands",
+      "flag": "🇳🇱",
+      "items": {
+        "bsn": {
+          "label": "BSN (Burgerservicenummer)",
+          "regex": "\\b\\d{9}\\b",
+          "placeholder": "[REDACTED_NL_BSN]"
+        },
+        "rsin": {
+          "label": "RSIN",
+          "regex": "\\b\\d{9}\\b",
+          "placeholder": "[REDACTED_NL_RSIN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+31[\\s-]?|0)6[\\s-]?\\d{8}",
+          "placeholder": "[REDACTED_NL_PHONE]"
+        }
+      }
+    },
+    "PL": {
+      "name": "Poland",
+      "flag": "🇵🇱",
+      "items": {
+        "pesel": {
+          "label": "PESEL",
+          "regex": "\\b\\d{11}\\b",
+          "placeholder": "[REDACTED_PL_PESEL]"
+        },
+        "nip": {
+          "label": "NIP (Tax ID)",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{2}[\\s-]?\\d{2}\\b",
+          "placeholder": "[REDACTED_PL_NIP]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+48[\\s-]?|[4-8])\\d{8}",
+          "placeholder": "[REDACTED_PL_PHONE]"
+        }
+      }
+    },
+    "US": {
+      "name": "United States",
+      "flag": "🇺🇸",
+      "items": {
+        "itin": {
+          "label": "Individual Taxpayer ID (ITIN)",
+          "regex": "\\b9\\d{2}[\\s-]?[78]\\d[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_US_ITIN]"
+        },
+        "ssn": {
+          "label": "Social Security Number",
+          "regex": "\\b\\d{3}[\\s-]?\\d{2}[\\s-]?\\d{4}\\b",
+          "placeholder": "[REDACTED_US_SSN]"
+        },
+        "ein": {
+          "label": "Employer ID Number (EIN)",
+          "regex": "\\b\\d{2}[\\s-]?\\d{7}\\b",
+          "placeholder": "[REDACTED_US_EIN]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+1[\\s-]?|\\()\\d{3}\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_US_PHONE]"
+        },
+        "dl": {
+          "label": "Driver License",
+          "regex": "\\b[A-Z]\\d{7,12}\\b",
+          "placeholder": "[REDACTED_US_DL]"
+        }
+      }
+    },
+    "CA": {
+      "name": "Canada",
+      "flag": "🇨🇦",
+      "items": {
+        "sin": {
+          "label": "Social Insurance Number",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}\\b",
+          "placeholder": "[REDACTED_CA_SIN]"
+        },
+        "health_card": {
+          "label": "Health Card (Ontario)",
+          "regex": "\\b\\d{4}[\\s-]?\\d{3}[\\s-]?\\d{3}[\\s-]?[A-Z]{2}\\b",
+          "placeholder": "[REDACTED_CA_HEALTH]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+1[\\s-]?|\\()\\d{3}\\)?[\\s-]?\\d{3}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_CA_PHONE]"
+        }
+      }
+    },
+    "BR": {
+      "name": "Brazil",
+      "flag": "🇧🇷",
+      "items": {
+        "cpf": {
+          "label": "CPF",
+          "regex": "\\b\\d{3}[\\s.]?\\d{3}[\\s.]?\\d{3}[\\s-]?\\d{2}\\b",
+          "placeholder": "[REDACTED_BR_CPF]"
+        },
+        "cnpj": {
+          "label": "CNPJ",
+          "regex": "\\b\\d{2}[\\s.]?\\d{3}[\\s.]?\\d{3}[\\s/]?\\d{4}[\\s-]?\\d{2}\\b",
+          "placeholder": "[REDACTED_BR_CNPJ]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+55[\\s-]?|0)?\\(?\\d{2}\\)?[\\s-]?(?:9)?\\d{4}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_BR_PHONE]"
+        },
+        "rg": {
+          "label": "RG (Identity Card)",
+          "regex": "\\b\\d{1,2}[\\s.]?\\d{3}[\\s.]?\\d{3}[\\s-]?\\d{1}\\b",
+          "placeholder": "[REDACTED_BR_RG]"
+        }
+      }
+    },
+    "MX": {
+      "name": "Mexico",
+      "flag": "🇲🇽",
+      "items": {
+        "curp": {
+          "label": "CURP",
+          "regex": "\\b[A-Z]{4}\\d{6}[HM][A-Z]{5}[A-Z0-9]\\d\\b",
+          "placeholder": "[REDACTED_MX_CURP]"
+        },
+        "rfc": {
+          "label": "RFC",
+          "regex": "\\b[A-Z]{3,4}\\d{6}[A-Z0-9]{3}\\b",
+          "placeholder": "[REDACTED_MX_RFC]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+52[\\s-]?|0)?\\d{2}[\\s-]?\\d{4}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_MX_PHONE]"
+        },
+        "clabe": {
+          "label": "CLABE (Bank Account)",
+          "regex": "\\b\\d{18}\\b",
+          "placeholder": "[REDACTED_MX_CLABE]"
+        }
+      }
+    },
+    "AR": {
+      "name": "Argentina",
+      "flag": "🇦🇷",
+      "items": {
+        "cuit": {
+          "label": "CUIT",
+          "regex": "\\b\\d{2}[\\s-]?\\d{8}[\\s-]?\\d\\b",
+          "placeholder": "[REDACTED_AR_CUIT]"
+        },
+        "dni": {
+          "label": "DNI",
+          "regex": "\\b\\d{2}[\\s.]?\\d{3}[\\s.]?\\d{3}\\b",
+          "placeholder": "[REDACTED_AR_DNI]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+54[\\s-]?|0)\\d{2,4}[\\s-]?\\d{4}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_AR_PHONE]"
+        }
+      }
+    },
+    "ZA": {
+      "name": "South Africa",
+      "flag": "🇿🇦",
+      "items": {
+        "id_number": {
+          "label": "ID Number",
+          "regex": "\\b\\d{13}\\b",
+          "placeholder": "[REDACTED_ZA_ID]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+27[\\s-]?|0)\\d{9}",
+          "placeholder": "[REDACTED_ZA_PHONE]"
+        },
+        "passport": {
+          "label": "Passport",
+          "regex": "\\b[A-Z]\\d{7,8}\\b",
+          "placeholder": "[REDACTED_ZA_PASSPORT]"
+        }
+      }
+    },
+    "AE": {
+      "name": "United Arab Emirates",
+      "flag": "🇦🇪",
+      "items": {
+        "emirates_id": {
+          "label": "Emirates ID",
+          "regex": "\\b\\d{3}[\\s-]?\\d{4}[\\s-]?\\d{7}[\\s-]?\\d\\b",
+          "placeholder": "[REDACTED_AE_EID]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+971[\\s-]?|0)5\\d[\\s-]?\\d{3}[\\s-]?\\d{4}",
+          "placeholder": "[REDACTED_AE_PHONE]"
+        },
+        "trade_license": {
+          "label": "Trade License",
+          "regex": "\\bCN-[0-9]{6,10}\\b",
+          "placeholder": "[REDACTED_AE_LICENSE]"
+        }
+      }
+    },
+    "SA": {
+      "name": "Saudi Arabia",
+      "flag": "🇸🇦",
+      "items": {
+        "iqama": {
+          "label": "Iqama / National ID",
+          "regex": "\\b[12]\\d{9}\\b",
+          "placeholder": "[REDACTED_SA_IQAMA]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+966[\\s-]?|0)5\\d{8}",
+          "placeholder": "[REDACTED_SA_PHONE]"
+        },
+        "cr_number": {
+          "label": "Commercial Registration",
+          "regex": "\\b\\d{10}\\b",
+          "placeholder": "[REDACTED_SA_CR]"
+        }
+      }
+    },
+    "AU": {
+      "name": "Australia",
+      "flag": "🇦🇺",
+      "items": {
+        "abn": {
+          "label": "ABN",
+          "regex": "\\b\\d{2}[\\s-]?\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}\\b",
+          "placeholder": "[REDACTED_AU_ABN]"
+        },
+        "tfn": {
+          "label": "Tax File Number",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}\\b",
+          "placeholder": "[REDACTED_AU_TFN]"
+        },
+        "medicare": {
+          "label": "Medicare Number",
+          "regex": "\\b\\d{4}[\\s-]?\\d{5}[\\s-]?\\d[\\s-]?\\d\\b",
+          "placeholder": "[REDACTED_AU_MEDICARE]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+61[\\s-]?|0)[2-9]\\d{8}",
+          "placeholder": "[REDACTED_AU_PHONE]"
+        }
+      }
+    },
+    "NZ": {
+      "name": "New Zealand",
+      "flag": "🇳🇿",
+      "items": {
+        "ird": {
+          "label": "IRD Number",
+          "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}\\b",
+          "placeholder": "[REDACTED_NZ_IRD]"
+        },
+        "nhi": {
+          "label": "NHI Number",
+          "regex": "\\b[A-Z]{3}\\d{4}\\b",
+          "placeholder": "[REDACTED_NZ_NHI]"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "regex": "(?:\\+64[\\s-]?|0)[2-9]\\d{7,9}",
+          "placeholder": "[REDACTED_NZ_PHONE]"
+        }
+      }
+    }
+  }
+}
