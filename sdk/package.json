@@ -1,0 +1,99 @@
+{
+  "name": "@lobster-academy/blackbox",
+  "version": "0.1.0",
+  "description": "AI Agent 行为证据平台 — 每只龙虾都该有一个黑匣子 | Black box recorder for AI Agents",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./plugins": {
+      "types": "./dist/plugins/index.d.ts",
+      "default": "./dist/plugins/index.js"
+    },
+    "./plugins/openai": {
+      "types": "./dist/plugins/openai.d.ts",
+      "default": "./dist/plugins/openai.js"
+    },
+    "./plugins/langchain": {
+      "types": "./dist/plugins/langchain.d.ts",
+      "default": "./dist/plugins/langchain.js"
+    },
+    "./plugins/crewai": {
+      "types": "./dist/plugins/crewai.d.ts",
+      "default": "./dist/plugins/crewai.js"
+    },
+    "./plugins/custom": {
+      "types": "./dist/plugins/custom.d.ts",
+      "default": "./dist/plugins/custom.js"
+    }
+  },
+  "bin": {
+    "lobster-check": "dist/cli/check.js",
+    "lobster-report": "dist/cli/report.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node tests/suite.ts",
+    "demo": "ts-node tests/demo.ts",
+    "demo:plugins": "ts-node tests/plugins-demo.ts",
+    "check": "ts-node cli/check.ts",
+    "db:init": "ts-node migrations/run.ts init",
+    "db:seed": "ts-node migrations/run.ts seed",
+    "db:migrate": "ts-node migrations/run.ts all",
+    "db:reset": "ts-node migrations/run.ts reset",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "audit",
+    "logging",
+    "compliance",
+    "blackbox",
+    "recorder",
+    "ed25519",
+    "pii",
+    "redact"
+  ],
+  "author": "Lobster Academy <dev@lobster-academy.ai>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lobster-academy/blackbox"
+  },
+  "homepage": "https://lobster-academy.ai",
+  "bugs": {
+    "url": "https://github.com/lobster-academy/blackbox/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@types/pg": "^8.20.0",
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.20.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.37",
+    "drizzle-kit": "^0.30.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "openai": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "openai": {
+      "optional": true
+    }
+  }
+}

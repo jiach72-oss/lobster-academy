@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>龙虾学院 — 文档中心</title>
+  <meta name="description" content="龙虾学院全部文档：技术白皮书、评测标准、提升指南、SDK 文档。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --card: #14141f; --border: #252538;
+      --text: #e8e8f0; --dim: #7878a0; --orange: #ff6b35;
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { opacity: 0.85; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; }
+    .nav-links a:hover { color: var(--text); }
+
+    .page { max-width: 850px; margin: 0 auto; padding: 5rem 2rem 4rem; }
+    .page h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; }
+    .page .sub { color: var(--dim); margin-bottom: 3rem; font-size: 1.05rem; }
+
+    h2 {
+      font-size: 1.3rem; font-weight: 800; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+
+    .doc-card {
+      display: block; background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 2rem; margin: 0.8rem 0;
+      transition: 0.2s;
+    }
+    .doc-card:hover { border-color: var(--orange); }
+    .doc-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+    .doc-card p { color: var(--dim); font-size: 0.88rem; margin: 0; }
+    .doc-card .meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.78rem; color: var(--dim); }
+    .doc-card .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 5px; font-size: 0.72rem; font-weight: 700; }
+    .tag-core { background: rgba(255,107,53,0.15); color: var(--orange); }
+    .tag-sdk { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .tag-guide { background: rgba(52,211,153,0.15); color: var(--green); }
+
+    .cmd-box {
+      background: #0c0c14; border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem 1.5rem; font-family: var(--mono); font-size: 0.88rem;
+      margin: 1rem 0;
+    }
+    .cmd-box .prompt { color: var(--green); }
+
+    .footer {
+      border-top: 1px solid var(--border); padding: 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+    @media (max-width: 640px) { .nav-links a:not(:last-child) { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="about.html">关于</a>
+    <a href="#docs">文档</a>
+  </div>
+</nav>
+
+<div class="page">
+  <h1>📚 文档中心</h1>
+  <p class="sub">所有你需要的资料都在这里</p>
+
+  <!-- 快速开始 -->
+  <h2>🚀 快速开始</h2>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$</span> npx lobster-check</div>
+    <div style="color: var(--dim); margin-top: 0.3rem;">→ 免费评测你的 Agent，5分钟获得 S/A/B/C/D 评级</div>
+  </div>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$</span> npm install @lobster-academy/blackbox</div>
+    <div style="color: var(--dim); margin-top: 0.3rem;">→ 安装 Blackbox SDK，开始录制 Agent 行为</div>
+  </div>
+
+  <!-- 核心文档 -->
+  <h2>📄 核心文档</h2>
+
+  <a class="doc-card" href="../docs/whitepaper-v1.md">
+    <h3>技术白皮书 v1.0</h3>
+    <p>龙虾学院的技术方案全景。三层架构（评测层+证据层+监控层）、Blackbox 引擎设计、性能基准、竞品对比。</p>
+    <div class="meta">
+      <span class="tag tag-core">核心</span>
+      <span>面向 CTO/架构师</span>
+      <span>~4200字</span>
+    </div>
+  </a>
+
+  <a class="doc-card" href="../docs/eval-standard-v1.md">
+    <h3>评测标准 v1.0</h3>
+    <p>5 维度 25 项指标的完整方法论。每项的检查方法、评分标准（0-满分分档）、改进建议。附 50 个动态评测用例。</p>
+    <div class="meta">
+      <span class="tag tag-core">核心</span>
+      <span>评测方法论</span>
+      <span>25项指标</span>
+    </div>
+  </a>
+
+  <a class="doc-card" href="../docs/upgrade-guide.md">
+    <h3>Agent 评级提升指南</h3>
+    <p>从 D 级到 S 级的完整路径。每个等级需要补什么，怎么补，代码示例。含可打印的检查清单。</p>
+    <div class="meta">
+      <span class="tag tag-guide">指南</span>
+      <span>面向开发者</span>
+      <span>含代码示例</span>
+    </div>
+  </a>
+
+  <!-- SDK 文档 -->
+  <h2>🦞 SDK 文档</h2>
+
+  <a class="doc-card" href="../lobster-blackbox/README.md">
+    <h3>Blackbox SDK README</h3>
+    <p>npm 包使用文档。30秒上手、API 参考、4个框架插件（OpenAI/LangChain/CrewAI/自定义）集成指南。</p>
+    <div class="meta">
+      <span class="tag tag-sdk">SDK</span>
+      <span>API 参考</span>
+      <span>117项测试通过</span>
+    </div>
+  </a>
+
+  <a class="doc-card" href="../lobster-blackbox/docs/whitepaper-v0.1.md">
+    <h3>Blackbox 技术白皮书 v0.1</h3>
+    <p>录制引擎、脱敏算法（PII 识别）、Ed25519 签名体系、报告生成器的技术实现细节。</p>
+    <div class="meta">
+      <span class="tag tag-sdk">SDK</span>
+      <span>技术细节</span>
+    </div>
+  </a>
+
+  <!-- 项目管理 -->
+  <h2>📋 项目文档</h2>
+
+  <a class="doc-card" href="../README.md">
+    <h3>项目总览 README</h3>
+    <p>龙虾学院项目结构、快速开始、评测体系、定价、联系方式。</p>
+    <div class="meta">
+      <span class="tag tag-core">核心</span>
+      <span>项目首页</span>
+    </div>
+  </a>
+
+  <a class="doc-card" href="../CONTRIBUTING.md">
+    <h3>贡献指南</h3>
+    <p>如何报告 Bug、提交代码、改进文档、修改评测标准。</p>
+    <div class="meta">
+      <span class="tag tag-guide">指南</span>
+      <span>开发者参与</span>
+    </div>
+  </a>
+
+  <a class="doc-card" href="../CHANGELOG.md">
+    <h3>Changelog</h3>
+    <p>版本变更记录。</p>
+    <div class="meta">
+      <span>版本历史</span>
+    </div>
+  </a>
+
+</div>
+
+<footer class="footer">
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子</p>
+</footer>
+
+</body>
+</html>

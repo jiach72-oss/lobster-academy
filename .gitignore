@@ -1,0 +1,17 @@
+node_modules/
+.next/
+data/
+.env*
+*.tsbuildinfo
+.agent/
+
+# 审计报告（不上传到公开仓库）
+*-AUDIT-*.md
+*-REVIEW-*.md
+*-SCORE.md
+*-VERDICT.md
+*-FINAL*.md
+GRAND-FINAL.md
+THE-FINAL-SCORE.md
+ULTIMATE-SCORE.md
+LOOP-SCORE.md

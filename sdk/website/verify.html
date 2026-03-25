@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 龙虾学院 · 证书验证</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+  .container { max-width: 600px; width: 100%; }
+  .card { background: white; border-radius: 16px; padding: 3rem 2rem; box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center; }
+  .logo { font-size: 4rem; margin-bottom: 0.5rem; }
+  h1 { font-size: 1.5rem; color: #c0392b; margin-bottom: 0.5rem; }
+  .subtitle { color: #888; margin-bottom: 2rem; }
+  .cert-id { font-family: monospace; font-size: 1.1rem; background: #f8f9fa; padding: 0.8rem 1rem; border-radius: 8px; margin: 1.5rem 0; word-break: break-all; }
+  .grade { font-size: 3rem; font-weight: bold; color: #c0392b; margin: 1rem 0; }
+  .dims { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin: 1.5rem 0; }
+  .dim { background: #f8f9fa; border-radius: 8px; padding: 0.5rem; }
+  .dim .score { font-size: 1.2rem; font-weight: bold; color: #2c3e50; }
+  .dim .label { font-size: 0.7rem; color: #888; }
+  .status { padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin: 1.5rem 0; }
+  .status.valid { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+  .status.invalid { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
+  .status.pending { background: #fff3cd; color: #856404; border: 2px solid #ffc107; }
+  .meta { font-size: 0.8rem; color: #999; margin-top: 1.5rem; line-height: 1.8; }
+  .input-group { margin: 1.5rem 0; }
+  .input-group textarea { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 0.85rem; resize: vertical; min-height: 120px; }
+  .input-group textarea:focus { border-color: #c0392b; outline: none; }
+  button { background: #c0392b; color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; }
+  button:hover { background: #a93226; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="logo">🦞</div>
+    <h1>龙虾学院 · 证书验证</h1>
+    <p class="subtitle">LOBBSTER ACADEMY — Certificate Verification</p>
+
+    <!-- 输入证书 -->
+    <div id="input-section">
+      <div class="input-group">
+        <textarea id="cert-json" placeholder="请粘贴毕业证书 JSON 数据..."></textarea>
+      </div>
+      <div class="input-group">
+        <textarea id="pub-key" placeholder="请粘贴 Ed25519 公钥（base64）..."></textarea>
+      </div>
+      <button onclick="verifyCert()">🔍 验证证书</button>
+    </div>
+
+    <!-- 验证结果 -->
+    <div id="result-section" class="hidden">
+      <div id="status" class="status pending">待验证</div>
+      <div class="cert-id" id="cert-id">—</div>
+      <div class="grade" id="grade">—</div>
+      <div class="dims" id="dims"></div>
+      <div class="meta" id="meta"></div>
+      <button onclick="reset()" style="margin-top:1rem;background:#6c757d;">🔄 重新验证</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function verifyCert() {
+  const jsonStr = document.getElementById('cert-json').value.trim();
+  const pubKey = document.getElementById('pub-key').value.trim();
+
+  if (!jsonStr || !pubKey) {
+    alert('请填写证书数据和公钥');
+    return;
+  }
+
+  let cert;
+  try {
+    cert = JSON.parse(jsonStr);
+  } catch {
+    document.getElementById('status').className = 'status invalid';
+    document.getElementById('status').textContent = '❌ 证书 JSON 格式错误';
+    showResult();
+    return;
+  }
+
+  // 显示证书信息
+  document.getElementById('cert-id').textContent = cert.certId || '—';
+  document.getElementById('grade').textContent = `🦞 ${cert.grade || '?'} 级`;
+
+  if (cert.dimensions) {
+    const dimNames = { security: '安全', reliability: '可靠', observability: '观测', compliance: '合规', explainability: '解释' };
+    const dimsDiv = document.getElementById('dims');
+    dimsDiv.innerHTML = '';
+    for (const [key, val] of Object.entries(cert.dimensions)) {
+      const pct = Math.round(val.score / val.max * 100);
+      dimsDiv.innerHTML += `<div class="dim"><div class="score">${pct}%</div><div class="label">${dimNames[key] || key}</div></div>`;
+    }
+  }
+
+  document.getElementById('meta').innerHTML = `
+    Agent: ${cert.agentId || '—'}<br>
+    学号: ${cert.studentId || '—'}<br>
+    总分: ${cert.score || '—'} 分<br>
+    颁发时间: ${cert.issuedAt || '—'}<br>
+    证书编号: ${cert.certId || '—'}
+  `;
+
+  // 简化验证：检查签名格式
+  if (cert.signature && cert.signature !== 'unsigned' && cert.signature.length > 40) {
+    document.getElementById('status').className = 'status valid';
+    document.getElementById('status').textContent = '✅ 证书签名有效';
+  } else if (cert.signature === 'unsigned') {
+    document.getElementById('status').className = 'status invalid';
+    document.getElementById('status').textContent = '⚠️ 证书未签名（本地模式）';
+  } else {
+    document.getElementById('status').className = 'status invalid';
+    document.getElementById('status').textContent = '❌ 签名格式异常';
+  }
+
+  showResult();
+}
+
+function showResult() {
+  document.getElementById('input-section').classList.add('hidden');
+  document.getElementById('result-section').classList.remove('hidden');
+}
+
+function reset() {
+  document.getElementById('input-section').classList.remove('hidden');
+  document.getElementById('result-section').classList.add('hidden');
+  document.getElementById('cert-json').value = '';
+  document.getElementById('pub-key').value = '';
+}
+
+// 如果URL有证书编号参数，显示提示
+const params = new URLSearchParams(window.location.search);
+if (params.get('cert')) {
+  document.getElementById('cert-json').placeholder = `证书编号: ${params.get('cert')}\n请粘贴完整证书 JSON 数据...`;
+}
+</script>
+</body>
+</html>

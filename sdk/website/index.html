@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>龙虾学院 — Agent 行为证据平台</title>
+  <meta name="description" content="AI Agent 评测、行为证据、持续监控。每只龙虾都该有一个黑匣子。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --bg2: #0f0f18; --card: #14141f; --card-hover: #1c1c2e;
+      --border: #252538; --text: #e8e8f0; --dim: #7878a0;
+      --orange: #ff6b35; --orange-glow: rgba(255,107,53,0.25);
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+    a { color: var(--orange); text-decoration: none; transition: 0.2s; }
+    a:hover { opacity: 0.85; }
+
+    /* ===== Nav ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--orange); color: #fff !important; padding: 0.45rem 1.1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 5rem 2rem 3rem; position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, var(--orange-glow), transparent 70%);
+      opacity: 0.2; pointer-events: none;
+    }
+    .hero-logo { font-size: 4.5rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900;
+      line-height: 1.15; margin-bottom: 1rem; letter-spacing: -0.03em;
+      position: relative; z-index: 1;
+    }
+    .hero h1 .hl {
+      background: linear-gradient(135deg, var(--orange), #ff9a5c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem); color: var(--dim);
+      max-width: 650px; margin-bottom: 2rem; position: relative; z-index: 1;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.8rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; border: none; transition: 0.2s;
+    }
+    .btn-p { background: var(--orange); color: #fff; box-shadow: 0 0 30px var(--orange-glow); }
+    .btn-p:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--orange-glow); opacity: 1; }
+    .btn-s { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-s:hover { border-color: var(--orange); opacity: 1; }
+    .hero-stats {
+      margin-top: 2.5rem; display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 1.8rem; font-weight: 900; color: var(--orange); }
+    .hero-stat .label { font-size: 0.8rem; color: var(--dim); }
+
+    /* ===== Section ===== */
+    .section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .sec-head { text-align: center; margin-bottom: 3.5rem; }
+    .sec-head h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 800; margin-bottom: 0.6rem; }
+    .sec-head p { color: var(--dim); font-size: 1rem; max-width: 500px; margin: 0 auto; }
+    .sec-badge {
+      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+      margin-bottom: 0.8rem;
+    }
+    .badge-orange { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+    .badge-green { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+    .badge-blue { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+
+    /* ===== Products Grid ===== */
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .product-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2rem; transition: 0.3s; position: relative; overflow: hidden;
+    }
+    .product-card:hover { border-color: var(--orange); transform: translateY(-4px); background: var(--card-hover); }
+    .product-card .icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+    .product-card h3 { font-size: 1.15rem; margin-bottom: 0.4rem; }
+    .product-card .desc { color: var(--dim); font-size: 0.88rem; margin-bottom: 1rem; }
+    .product-card .tag {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .tag-live { background: rgba(52,211,153,0.15); color: var(--green); }
+    .tag-dev { background: rgba(251,191,36,0.15); color: var(--yellow); }
+    .tag-plan { background: rgba(167,139,250,0.15); color: var(--purple); }
+
+    /* ===== Rating ===== */
+    .rating-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;
+    }
+    .rating-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem; text-align: center; transition: 0.3s;
+    }
+    .rating-card:hover { border-color: var(--orange); transform: translateY(-3px); }
+    .rating-letter { font-size: 2.5rem; font-weight: 900; line-height: 1; margin-bottom: 0.3rem; }
+    .rating-range { font-size: 0.85rem; color: var(--dim); margin-bottom: 0.5rem; }
+    .rating-label { font-size: 0.9rem; font-weight: 600; }
+    .s-grade .rating-letter { color: var(--green); }
+    .a-grade .rating-letter { color: var(--blue); }
+    .b-grade .rating-letter { color: var(--yellow); }
+    .c-grade .rating-letter { color: #fb923c; }
+    .d-grade .rating-letter { color: var(--red); }
+
+    /* ===== 5 Dimensions ===== */
+    .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; }
+    .dim-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem; text-align: center;
+    }
+    .dim-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .dim-name { font-weight: 700; margin-bottom: 0.3rem; }
+    .dim-weight { color: var(--dim); font-size: 0.85rem; }
+
+    /* ===== How it works ===== */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .step { text-align: center; padding: 1.5rem; }
+    .step-num {
+      width: 48px; height: 48px; background: var(--orange); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.1rem; margin: 0 auto 1rem;
+    }
+    .step h3 { margin-bottom: 0.4rem; }
+    .step p { color: var(--dim); font-size: 0.88rem; }
+
+    /* ===== Code Demo ===== */
+    .code-section { padding: 3rem 2rem; max-width: 850px; margin: 0 auto; }
+    .terminal {
+      background: #0c0c14; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+      font-family: var(--mono); font-size: 0.82rem;
+    }
+    .term-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1rem; background: #13131c; border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    .term-title { margin-left: 0.4rem; color: var(--dim); font-size: 0.78rem; }
+    .term-body { padding: 1.2rem 1.5rem; line-height: 1.9; }
+    .tc { color: #555; } .tk { color: #c792ea; } .ts { color: #c3e88d; }
+    .tf { color: #82aaff; } .tv { color: #f78c6c; } .tb { color: #89ddff; }
+    .t-ok { color: var(--green); }
+
+    /* ===== Pricing ===== */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .price-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2.2rem 1.8rem; text-align: center; position: relative; transition: 0.3s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.popular { border-color: var(--orange); box-shadow: 0 0 40px var(--orange-glow); }
+    .price-card.popular::before {
+      content: '推荐'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: #fff; padding: 0.2rem 1rem; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .price-name { color: var(--dim); font-size: 1rem; margin-bottom: 0.4rem; }
+    .price-num { font-size: 2.4rem; font-weight: 900; margin-bottom: 0.2rem; }
+    .price-num .y { font-size: 1.1rem; vertical-align: top; }
+    .price-period { color: var(--dim); font-size: 0.82rem; margin-bottom: 1.5rem; }
+    .price-feat { list-style: none; text-align: left; margin-bottom: 1.8rem; }
+    .price-feat li { padding: 0.4rem 0; font-size: 0.88rem; display: flex; align-items: center; gap: 0.5rem; }
+    .price-feat li::before { content: '✓'; color: var(--green); font-weight: 800; }
+
+    /* ===== CTA ===== */
+    .cta {
+      max-width: 700px; margin: 0 auto; text-align: center;
+      background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,154,92,0.03));
+      border: 1px solid rgba(255,107,53,0.25); border-radius: 16px;
+      padding: 3.5rem 2.5rem;
+    }
+    .cta h2 { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .cta p { color: var(--dim); margin-bottom: 1.5rem; }
+    .cta-cmd {
+      background: #0c0c14; border-radius: 8px; padding: 0.8rem 1.5rem;
+      font-family: var(--mono); font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem;
+    }
+    .cta-cmd .g { color: var(--green); }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 280px; justify-content: center; }
+      .hero-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em> Lobster Academy</div>
+  <div class="nav-links">
+    <a href="about.html">关于</a>
+    <a href="docs.html">文档</a>
+    <a href="#products">产品</a>
+    <a href="#rating">评测</a>
+    <a href="#pricing">定价</a>
+    <a href="https://github.com/lobster-academy" target="_blank">GitHub</a>
+    <a href="#start" class="nav-cta">开始评测</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-logo">🦞</div>
+  <h1>AI Agent 的<br><span class="hl">行为证据平台</span></h1>
+  <p class="hero-sub">评测 Agent 能力 · 录制行为证据 · 持续监控异常<br>让每一次 Agent 决策都可追溯、可审计、可证明</p>
+  <div class="hero-btns">
+    <a href="#start" class="btn btn-p">🦞 免费评测你的 Agent</a>
+    <a href="https://github.com/lobster-academy/blackbox" target="_blank" class="btn btn-s">💻 查看源码</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">25</div><div class="label">评测维度</div></div>
+    <div class="hero-stat"><div class="num">5</div><div class="label">能力等级</div></div>
+    <div class="hero-stat"><div class="num">50+</div><div class="label">动态用例</div></div>
+    <div class="hero-stat"><div class="num">117</div><div class="label">测试全通过</div></div>
+  </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="products">
+  <div class="sec-head">
+    <span class="sec-badge badge-orange">PLATFORM</span>
+    <h2>龙虾学院产品矩阵</h2>
+    <p>从评测到监控，全生命周期覆盖</p>
+  </div>
+  <div class="products">
+    <div class="product-card">
+      <div class="icon">📋</div>
+      <h3>Agent 评测</h3>
+      <div class="desc">5大维度、25项指标的标准化 Agent 能力评测。从安全性到可解释性，量化你的 Agent 水平，获得 S/A/B/C/D 等级评定。</div>
+      <span class="tag tag-live">✅ 已上线</span>
+    </div>
+    <div class="product-card">
+      <div class="icon">🎥</div>
+      <h3>Blackbox 黑匣子</h3>
+      <div class="desc">Agent 行为录制 SDK。自动记录每一次决策、脱敏 PII、Ed25519 签名防篡改。一行代码接入 OpenAI/LangChain/CrewAI。</div>
+      <span class="tag tag-live">✅ 已上线</span>
+    </div>
+    <div class="product-card">
+      <div class="icon">📊</div>
+      <h3>行为证据报告</h3>
+      <div class="desc">从黑匣子数据生成标准化审计报告。统计摘要 + 异常检测 + 数字签名。出事了有据可查。</div>
+      <span class="tag tag-live">✅ 已上线</span>
+    </div>
+    <div class="product-card">
+      <div class="icon">🩺</div>
+      <h3>免费 Agent 体检</h3>
+      <div class="desc">一键检查 Agent 配置安全性。检测密钥泄露、权限过宽、无超时等常见问题。获客入口，零门槛体验。</div>
+      <span class="tag tag-live">✅ 已上线</span>
+    </div>
+    <div class="product-card">
+      <div class="icon">📡</div>
+      <h3>持续监控</h3>
+      <div class="desc">Agent 上线后的行为持续监控。异常告警、错误率飙升检测、性能劣化追踪。</div>
+      <span class="tag tag-dev">🔨 开发中</span>
+    </div>
+    <div class="product-card">
+      <div class="icon">🏆</div>
+      <h3>Agent 排行榜</h3>
+      <div class="desc">公开的 Agent 能力排行榜。按行业、按场景、按维度排名。让优秀的 Agent 被看见。</div>
+      <span class="tag tag-plan">📋 规划中</span>
+    </div>
+  </div>
+</section>
+
+<!-- Rating System -->
+<section class="section" id="rating">
+  <div class="sec-head">
+    <span class="sec-badge badge-green">RATING</span>
+    <h2>龙虾评级体系</h2>
+    <p>S/A/B/C/D 五级评定，量化 Agent 能力</p>
+  </div>
+
+  <!-- 5 Dimensions -->
+  <div class="dims" style="margin-bottom: 3rem;">
+    <div class="dim-card">
+      <div class="dim-icon">🔒</div>
+      <div class="dim-name">安全性</div>
+      <div class="dim-weight">权重 30% · 10项</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-icon">🛡️</div>
+      <div class="dim-name">可靠性</div>
+      <div class="dim-weight">权重 25% · 7项</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-icon">📡</div>
+      <div class="dim-name">可观测性</div>
+      <div class="dim-weight">权重 20% · 5项</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-icon">📜</div>
+      <div class="dim-name">合规就绪</div>
+      <div class="dim-weight">权重 15% · 5项</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-icon">💡</div>
+      <div class="dim-name">可解释性</div>
+      <div class="dim-weight">权重 10% · 3项</div>
+    </div>
+  </div>
+
+  <!-- Grades -->
+  <div class="rating-grid">
+    <div class="rating-card s-grade">
+      <div class="rating-letter">S</div>
+      <div class="rating-range">90-100 分</div>
+      <div class="rating-label">优秀 · 金融/医疗级</div>
+    </div>
+    <div class="rating-card a-grade">
+      <div class="rating-letter">A</div>
+      <div class="rating-range">75-89 分</div>
+      <div class="rating-label">良好 · 企业生产级</div>
+    </div>
+    <div class="rating-card b-grade">
+      <div class="rating-letter">B</div>
+      <div class="rating-range">60-74 分</div>
+      <div class="rating-label">合格 · 一般业务级</div>
+    </div>
+    <div class="rating-card c-grade">
+      <div class="rating-letter">C</div>
+      <div class="rating-range">40-59 分</div>
+      <div class="rating-label">需改进 · 仅限测试</div>
+    </div>
+    <div class="rating-card d-grade">
+      <div class="rating-letter">D</div>
+      <div class="rating-range">0-39 分</div>
+      <div class="rating-label">不合格 · 不建议上线</div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section">
+  <div class="sec-head">
+    <span class="sec-badge badge-blue">FLOW</span>
+    <h2>四步完成评测</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>接入 SDK</h3>
+      <p>npm install @lobster-academy/blackbox<br>一行代码装上黑匣子</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>行为录制</h3>
+      <p>Agent 运行时自动记录<br>每次决策、工具调用、推理过程</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>自动评测</h3>
+      <p>5大维度25项指标<br>动态用例 + 静态分析</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>获得评级</h3>
+      <p>S/A/B/C/D 等级证书<br>Ed25519 签名，可独立验证</p>
+    </div>
+  </div>
+</section>
+
+<!-- Code -->
+<section class="code-section">
+  <div class="sec-head">
+    <h2>30 秒接入</h2>
+  </div>
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span class="term-title">~/my-agent</span>
+    </div>
+    <div class="term-body">
+      <div><span class="tc">// 安装黑匣子</span></div>
+      <div><span class="tv">$</span> npm install <span class="ts">@lobster-academy/blackbox</span></div>
+      <br>
+      <div><span class="tc">// 初始化</span></div>
+      <div><span class="tk">const</span> box = <span class="tk">new</span> <span class="tf">LobsterBlackbox</span><span class="tb">({</span></div>
+      <div>&nbsp;&nbsp;agentId: <span class="ts">'my-agent'</span>,</div>
+      <div>&nbsp;&nbsp;redact: { patterns: [<span class="ts">'email'</span>, <span class="ts">'phone'</span>] },</div>
+      <div><span class="tb">})</span>;</div>
+      <br>
+      <div><span class="tc">// 录制 Agent 决策</span></div>
+      <div><span class="tk">await</span> box.<span class="tf">record</span><span class="tb">({</span></div>
+      <div>&nbsp;&nbsp;input: { userMsg: <span class="ts">'帮我发邮件'</span> },</div>
+      <div>&nbsp;&nbsp;reasoning: <span class="ts">'调用邮件API'</span>,</div>
+      <div>&nbsp;&nbsp;output: { status: <span class="ts">'sent'</span> },</div>
+      <div><span class="tb">})</span>;</div>
+      <br>
+      <div><span class="tc">// 生成签名审计报告</span></div>
+      <div><span class="tk">const</span> report = box.<span class="tf">generateReport</span>();</div>
+      <div class="t-ok">📊 总决策: 1 | 脱敏: ✅ | 签名: ✅ | 评级: A</div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="sec-head">
+    <h2>定价</h2>
+    <p>从个人开发者到企业级部署</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Free</div>
+      <div class="price-num"><span class="y">¥</span>0</div>
+      <div class="price-period">永久免费</div>
+      <ul class="price-feat">
+        <li>Blackbox SDK 完整功能</li>
+        <li>1,000 条记录/月</li>
+        <li>本地模式，数据不上传</li>
+        <li>基础体检报告</li>
+        <li>社区支持</li>
+      </ul>
+      <a href="https://www.npmjs.com/package/@lobster-academy/blackbox" class="btn btn-s" style="width:100%;justify-content:center;">npm install</a>
+    </div>
+    <div class="price-card popular">
+      <div class="price-name">Pro</div>
+      <div class="price-num"><span class="y">¥</span>99</div>
+      <div class="price-period">/月</div>
+      <ul class="price-feat">
+        <li>无限行为录制</li>
+        <li>云端数据同步</li>
+        <li>完整评测报告</li>
+        <li>S/A/B/C/D 评级证书</li>
+        <li>异常检测 + 告警</li>
+        <li>优先技术支持</li>
+      </ul>
+      <a href="mailto:dev@lobster-academy.ai" class="btn btn-p" style="width:100%;justify-content:center;">开始评测</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Enterprise</div>
+      <div class="price-num"><span class="y">¥</span>999</div>
+      <div class="price-period">/月</div>
+      <ul class="price-feat">
+        <li>私有化部署</li>
+        <li>SLA 保障</li>
+        <li>持续监控 + 告警</li>
+        <li>自定义评测维度</li>
+        <li>API 集成</li>
+        <li>专属客户经理</li>
+      </ul>
+      <a href="mailto:dev@lobster-academy.ai" class="btn btn-s" style="width:100%;justify-content:center;">联系销售</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" id="start">
+  <div class="cta">
+    <h2>给你的 Agent 做一次全面体检</h2>
+    <p>免费 · 5分钟 · 获得 S/A/B/C/D 评级</p>
+    <div class="cta-cmd">
+      $ npx <span class="g">lobster-check</span>
+    </div>
+    <br>
+    <a href="https://github.com/lobster-academy" class="btn btn-p">🦞 前往 GitHub</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="https://github.com/lobster-academy">GitHub</a>
+    <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">npm</a>
+    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+  </div>
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+</footer>
+
+</body>
+</html>

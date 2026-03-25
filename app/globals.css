@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lobster-red: #c0392b;
+  --lobster-dark: #2c3e50;
+  --lobster-light: #ecf0f1;
+}
+
+body {
+  background-color: #0d0b0f;
+  color: #e8dcc8;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c3e50;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c0392b;
+}

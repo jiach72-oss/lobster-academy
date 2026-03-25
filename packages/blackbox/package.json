@@ -1,0 +1,22 @@
+{
+  "name": "@lobster-academy/blackbox",
+  "version": "0.1.0",
+  "description": "Lobster Academy Blackbox SDK — Agent 行为录制与签名引擎",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+  },
+  "keywords": [
+    "ai-agent",
+    "audit",
+    "recording",
+    "ed25519",
+    "compliance"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

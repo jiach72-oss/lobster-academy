@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>龙虾学院 — 关于我们</title>
+  <meta name="description" content="龙虾学院核心理念：教、考、证。AI Agent 评测方法论和5维度25项指标体系。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --card: #14141f; --border: #252538;
+      --text: #e8e8f0; --dim: #7878a0; --orange: #ff6b35;
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.8; }
+    a { color: var(--orange); text-decoration: none; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; }
+    .nav-links a:hover { color: var(--text); }
+
+    .page { max-width: 780px; margin: 0 auto; padding: 5rem 2rem 4rem; }
+    .page h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; }
+    .page .subtitle { color: var(--dim); font-size: 1.1rem; margin-bottom: 3rem; }
+
+    h2 {
+      font-size: 1.4rem; font-weight: 800; margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+    h3 { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+
+    blockquote {
+      border-left: 3px solid var(--orange);
+      padding: 1rem 1.5rem; margin: 1.5rem 0;
+      background: rgba(255,107,53,0.05); border-radius: 0 8px 8px 0;
+      color: var(--dim); font-style: italic;
+    }
+
+    .highlight-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 2rem; margin: 1.5rem 0;
+    }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .grid-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.2rem; text-align: center;
+    }
+    .grid-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .grid-card h4 { margin-bottom: 0.3rem; }
+    .grid-card p { color: var(--dim); font-size: 0.85rem; margin: 0; }
+
+    .doc-link {
+      display: block; background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem 1.5rem; margin: 0.5rem 0;
+      transition: 0.2s;
+    }
+    .doc-link:hover { border-color: var(--orange); }
+    .doc-link .title { font-weight: 700; margin-bottom: 0.2rem; }
+    .doc-link .desc { color: var(--dim); font-size: 0.85rem; margin: 0; }
+
+    .footer {
+      border-top: 1px solid var(--border); padding: 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+
+    @media (max-width: 640px) {
+      .nav-links a:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="#philosophy">理念</a>
+    <a href="#methodology">方法论</a>
+    <a href="#docs">文档</a>
+  </div>
+</nav>
+
+<div class="page">
+  <h1>关于龙虾学院</h1>
+  <p class="subtitle">为什么存在 · 信什么 · 怎么做</p>
+
+  <!-- 理念 -->
+  <h2 id="philosophy">🦞 核心理念</h2>
+
+  <blockquote>
+    每只龙虾都该有一个黑匣子。
+  </blockquote>
+
+  <p>龙虾学院不是一家软件公司。<strong>龙虾学院是一个评测机构。</strong></p>
+
+  <p>就像大学不卖教室，医院不卖病床一样，龙虾学院的核心价值不是工具，而是<strong>公信力</strong>。</p>
+
+  <h3>我们信什么</h3>
+
+  <div class="grid-3">
+    <div class="grid-card">
+      <div class="icon">📋</div>
+      <h4>证据 > 功能</h4>
+      <p>一个 Agent 能做什么不重要，重要的是出了事能不能找到原因</p>
+    </div>
+    <div class="grid-card">
+      <div class="icon">🔓</div>
+      <h4>透明 > 黑箱</h4>
+      <p>评测方法论全部公开，任何人都可以验证我们的结论</p>
+    </div>
+    <div class="grid-card">
+      <div class="icon">📊</div>
+      <h4>量化 > 感觉</h4>
+      <p>"我的 Agent 很安全"是感觉，"我的 Agent 87分 A级"是数据</p>
+    </div>
+  </div>
+
+  <h3>学院的三件事</h3>
+
+  <p>学院做且只做三件事：</p>
+
+  <ol>
+    <li><strong>教</strong> — 告诉你 Agent 应该怎么构建才安全、可靠、可审计</li>
+    <li><strong>考</strong> — 用标准化的 5 维度 25 项指标评测你的 Agent</li>
+    <li><strong>证</strong> — 给你的 Agent 一个 S/A/B/C/D 等级评定，可验证、防篡改</li>
+  </ol>
+
+  <p>我们<strong>不</strong>做：</p>
+  <ul>
+    <li>❌ 发认证证书（"认证"是法律概念，我们只做"评测"）</li>
+    <li>❌ 替你修复 Agent（我们指出问题，你来修）</li>
+    <li>❌ 卖 Agent（我们不卖龙虾，只教养龙虾）</li>
+  </ul>
+
+  <!-- 方法论 -->
+  <h2 id="methodology">📐 评测方法论</h2>
+
+  <h3>为什么选这 5 个维度</h3>
+
+  <p>我们的评测维度来自三个来源的交叉验证：</p>
+  <ol>
+    <li><strong>学术研究</strong> — IEEE、ACM 关于 AI 系统质量的文献</li>
+    <li><strong>行业实践</strong> — EU AI Act、ISO/IEC 42001、NIST AI RMF</li>
+    <li><strong>客户痛点</strong> — 20+ 家企业的真实需求访谈</li>
+  </ol>
+
+  <div class="highlight-box">
+    <h3>5 大维度 · 25 项指标</h3>
+    <p>
+      🔒 <strong>安全性 (30%)</strong> — 你的 Agent 会不会被攻击、泄露数据<br>
+      🛡️ <strong>可靠性 (25%)</strong> — 你的 Agent 会不会挂、会不会死循环<br>
+      📡 <strong>可观测性 (20%)</strong> — 出了事你能不能找到原因<br>
+      📜 <strong>合规就绪 (15%)</strong> — 能不能通过 GDPR/PIPL 审计<br>
+      💡 <strong>可解释性 (10%)</strong> — Agent 做的决定你能不能理解
+    </p>
+  </div>
+
+  <h3>评分模型</h3>
+
+  <p>每项检查按 0-满分 评分，加权汇总：</p>
+
+  <div class="highlight-box" style="font-family: var(--mono); font-size: 0.85rem;">
+    总分 = (安全得分/44 × 30) + (可靠得分/29 × 25)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + (可观测得分/20 × 20) + (合规得分/15 × 15)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + (可解释得分/10 × 10)<br><br>
+    等级: S(90+) A(75-89) B(60-74) C(40-59) D(0-39)
+  </div>
+
+  <h3>透明原则</h3>
+
+  <ul>
+    <li>✅ 评测标准全文公开 — 任何人可以阅读和验证</li>
+    <li>✅ 评分过程可复现 — 相同输入得到相同结果</li>
+    <li>✅ 评测报告可验证 — Ed25519 签名防篡改</li>
+    <li>✅ 方法论接受挑战 — GitHub Issues 开放讨论</li>
+  </ul>
+
+  <!-- 文档 -->
+  <h2 id="docs">📚 学院文档</h2>
+
+  <h3>核心文档</h3>
+
+  <a class="doc-link" href="../docs/whitepaper-v1.md">
+    <div class="title">📄 技术白皮书 v1.0</div>
+    <p class="desc">龙虾学院的技术方案全景，面向 CTO/架构师</p>
+  </a>
+
+  <a class="doc-link" href="../docs/eval-standard-v1.md">
+    <div class="title">📋 评测标准 v1.0</div>
+    <p class="desc">5 维度 25 项指标的完整方法论，每项的评分标准和改进建议</p>
+  </a>
+
+  <a class="doc-link" href="../docs/upgrade-guide.md">
+    <div class="title">🚀 Agent 评级提升指南</div>
+    <p class="desc">从 D 级到 S 级的完整路径，包含代码示例和最佳实践</p>
+  </a>
+
+  <h3>SDK 文档</h3>
+
+  <a class="doc-link" href="../lobster-blackbox/README.md">
+    <div class="title">🦞 Blackbox SDK README</div>
+    <p class="desc">npm 包使用文档，API 参考，框架集成指南</p>
+  </a>
+
+  <a class="doc-link" href="../lobster-blackbox/docs/whitepaper-v0.1.md">
+    <div class="title">📄 Blackbox 技术白皮书 v0.1</div>
+    <p class="desc">录制引擎、脱敏算法、签名体系的技术细节</p>
+  </a>
+
+  <!-- 联系 -->
+  <h2>📬 联系我们</h2>
+  <ul>
+    <li>GitHub: <a href="https://github.com/lobster-academy">github.com/lobster-academy</a></li>
+    <li>npm: <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">@lobster-academy/blackbox</a></li>
+    <li>邮箱: dev@lobster-academy.ai</li>
+  </ul>
+</div>
+
+<footer class="footer">
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+</footer>
+
+</body>
+</html>
