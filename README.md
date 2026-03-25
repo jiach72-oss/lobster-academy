@@ -2,9 +2,9 @@
 
 # 🦞 Lobster Academy
 
-**AI Agent 行为证据平台 / AI Agent Behavior Evidence Platform**
+**AI Agent 培训与评测平台 / AI Agent Training & Evaluation Platform**
 
-*每只龙虾都该有一个黑匣子 / Every agent deserves a black box*
+*入学 → 学习 → 考核 → 毕业 / Enroll → Learn → Test → Graduate*
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
@@ -20,39 +20,49 @@
 
 ## 🇨🇳 龙虾学院是什么
 
-Lobster Academy 是一个 **开源的 AI Agent 评测 SDK**，提供 TypeScript 和 Python 双语言支持，帮助开发者：
+Lobster Academy 是一个 **开源的 AI Agent 培训与评测平台**。
 
-- 📹 **录制** — 记录 Agent 的每一次决策、工具调用、推理过程
-- 🔒 **脱敏** — 自动识别并保护 200+ 种敏感数据（PII、密钥、凭证）
-- 🎯 **评测** — 5 维度 25 项标准化指标评估 Agent 能力
-- 🛡️ **对抗** — 53 种攻击场景测试 Agent 安全性
-- 📜 **签名** — Ed25519 数字签名，保证记录不可篡改
-- 🌍 **国际化** — 内置 24 国家/地区敏感数据模式支持
-- 📊 **Dashboard** — Web 管理界面，可视化 Agent 行为数据
+就像一所学校——让你的 Agent 入学、学习安全技能、通过考核、获得认证。
 
-### 为什么需要黑匣子？
+### 🎓 入学 → 学习 → 考核 → 毕业
 
-> 飞机有黑匣子，汽车有行车记录仪。
-> AI Agent 也需要一个证据系统——记录它做了什么、为什么这么做、以及是否安全。
+```
+pip install lobster-academy    # 🎓 入学：一行代码，Agent 正式入学
+recorder.record(...)           # 📚 学习：记录每一次行为，积累经验
+redactor.redact(...)           # 🔒 学习：掌握脱敏技能，保护敏感数据
+academy.evaluate(...)          # 📝 考核：5 维度 25 项指标综合评测
+adversarial.run_attacks(...)   # 💀 期末考：53 种攻击场景实战测试
+signer.sign(...)               # 📜 毕业证：Ed25519 签名，防篡改认证
+```
+
+**每只龙虾都该经过系统的培训。**
+
+> 你会让一个没经过培训的员工直接上岗吗？
+> Agent 也一样——入学、学习、考核，才能安全地服务真实用户。
 
 ---
 
 ## 🇺🇸 What is Lobster Academy
 
-Lobster Academy is an **open-source AI Agent evaluation SDK** with dual-language support (TypeScript & Python), helping developers:
+Lobster Academy is an **open-source AI Agent training and evaluation platform**.
 
-- 📹 **Record** — Log every decision, tool call, and reasoning process
-- 🔒 **Redact** — Auto-detect and protect 200+ types of sensitive data (PII, keys, credentials)
-- 🎯 **Evaluate** — 5-dimension, 25-metric standardized Agent assessment
-- 🛡️ **Attack** — 53 attack scenarios to test Agent security
-- 📜 **Sign** — Ed25519 digital signatures for tamper-proof records
-- 🌍 **Internationalization** — Built-in 24 country/region sensitive data pattern support
-- 📊 **Dashboard** — Web management interface for visualizing Agent behavior data
+Think of it as a school — enroll your Agent, teach it security skills, test its abilities, and certify it.
 
-### Why a Black Box?
+### 🎓 Enroll → Learn → Test → Graduate
 
-> Airplanes have black boxes, cars have dashcams.
-> AI Agents need an evidence system — recording what they did, why they did it, and whether it was safe.
+```
+pip install lobster-academy    # 🎓 Enroll: one line of code, your Agent is in
+recorder.record(...)           # 📚 Learn: record every behavior, build experience
+redactor.redact(...)           # 🔒 Learn: master redaction, protect sensitive data
+academy.evaluate(...)          # 📝 Test: 5 dimensions, 25 metrics evaluation
+adversarial.run_attacks(...)   # 💀 Final Exam: 53 attack scenarios stress test
+signer.sign(...)               # 📜 Diploma: Ed25519 signed, tamper-proof certificate
+```
+
+**Every lobster deserves proper training.**
+
+> Would you hire an employee with no training?
+> Same with Agents — enroll, learn, test, then serve real users safely.
 
 ---
 
