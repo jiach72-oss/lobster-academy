@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.0] - 2026-03-26
+
+### Added
+- **CLI 工具** `lobster` — 7个命令（enroll/check/record/report/status/certificate/verify）
+- **P0 算法** — Aho-Corasick 多模式匹配、分层响应分析、Merkle 哈希链、贝叶斯评分、报告生成、密钥管理、分层存储
+- **P1 算法** — Bloom Filter、Fuzzing 变异引擎、异步批量写入、百分位基准对标、智能摘要、Merkle 批量签名、统一查询路由
+- **P2 算法** — i18n 缓存、对抗性迭代循环、分页查询、入学/毕业流程、密钥撤销、一致性哈希分区
+- **框架集成插件** — OpenClaw、CrewAI、LangChain（增强）、通用中间件接口
+- **Agent 护照系统** — 指纹算法、变更检测、复测建议
+- **持续监控** — 6种检测算法 + 自动复测触发
+- **合规报告** — EU AI Act + SOC2 双标准
+- **npm/pip 发布配置** — package.json + .npmignore + pyproject.toml + publish.sh
+- 352 项单元测试全部通过
+
+### Fixed
+- 正则 flags='g' 全局状态污染
+- 评分逻辑二极管（0或100）
+- MemoryAdapter offset/limit 逻辑错误
+- 主密钥明文驻留内存
+- TrendTracker 排序 bug
+- bySeverity 索引错位
+- priorityTemplates 语义错配
+- Hot 层查询被跳过
+- 深度超限返回值类型不安全
+- 配置文件权限过宽
+- CLI 堆栈信息泄露
+
+---
+
 ## [0.2.0] - 2026-03-25
 
 ### 🎉 双语言 SDK + Dashboard + 国际化 / Dual-Language SDK + Dashboard + i18n
@@ -70,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - TypeScript 测试：68 个 / TypeScript tests: 68
 - Python SDK 测试：125 个 / Python SDK tests: 125
 - YAML 配置测试：53 个 / YAML config tests: 53
-- 总计：246 个测试用例（全部通过）/ Total: 246 test cases (all passing)
+- 总计：352 个测试用例（全部通过）/ Total: 352 test cases (all passing)
 
 #### 🔧 改进 / Improvements
 

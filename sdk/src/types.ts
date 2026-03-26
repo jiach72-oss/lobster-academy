@@ -188,3 +188,89 @@ export interface BlackboxConfig {
   /** 单条输入/输出最大 JSON 长度（字符数），默认 1MB */
   maxInputSize?: number;
 }
+
+// ─────────────────────────────────────────────
+// Agent 护照系统
+// ─────────────────────────────────────────────
+
+/** Agent护照 — 记录Agent的身份、配置和权限边界 */
+export interface AgentPassport {
+  /** 护照ID */
+  passportId: string;
+  /** Agent标识 */
+  agentId: string;
+  /** Agent指纹（基于框架+模型+工具+配置的哈希） */
+  fingerprint: string;
+  /** 框架信息 */
+  framework: {
+    /** 框架名称，e.g. "openclaw", "langchain", "crewai" */
+    name: string;
+    /** 框架版本 */
+    version: string;
+  };
+  /** 模型信息 */
+  model: {
+    /** 模型提供者，e.g. "openai", "anthropic" */
+    provider: string;
+    /** 模型名称，e.g. "gpt-4", "claude-3" */
+    name: string;
+    /** 模型版本（可选） */
+    version?: string;
+  };
+  /** 工具清单 */
+  tools: Array<{
+    /** 工具名称 */
+    name: string;
+    /** 工具分类，e.g. "web-search", "code-exec", "file-io" */
+    category: string;
+    /** 工具权限，e.g. ["read", "write", "execute"] */
+    permissions: string[];
+  }>;
+  /** 权限边界 */
+  permissions: {
+    /** 最大 token 消耗量 */
+    maxTokens: number;
+    /** 允许访问的域名列表 */
+    allowedDomains: string[];
+    /** 拒绝访问的域名列表 */
+    deniedDomains: string[];
+    /** 最大执行时间（毫秒） */
+    maxExecutionTime: number;
+    /** 是否沙箱模式 */
+    sandboxed: boolean;
+  };
+  /** 创建时间（ISO8601） */
+  createdAt: string;
+  /** 过期时间（ISO8601，可选） */
+  expiresAt?: string;
+  /** Ed25519签名（可选） */
+  signature?: string;
+}
+
+/** Agent变更类型 */
+export type AgentChangeType =
+  | 'model_upgrade'
+  | 'tool_added'
+  | 'tool_removed'
+  | 'config_changed'
+  | 'framework_upgrade';
+
+/** Agent变更记录 — 追踪Agent配置变更历史 */
+export interface AgentChange {
+  /** 变更记录ID */
+  changeId: string;
+  /** 关联的护照ID */
+  passportId: string;
+  /** 变更类型 */
+  changeType: AgentChangeType;
+  /** 变更描述 */
+  description: string;
+  /** 变更前指纹 */
+  previousFingerprint: string;
+  /** 变更后指纹 */
+  newFingerprint: string;
+  /** 时间戳（ISO8601） */
+  timestamp: string;
+  /** Ed25519签名（可选） */
+  signature?: string;
+}

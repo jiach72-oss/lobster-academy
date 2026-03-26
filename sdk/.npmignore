@@ -1,0 +1,25 @@
+# Source & configs
+src/
+tests/
+cli/
+plugins/
+tsconfig.json
+.eslintrc*
+.prettierrc*
+jest.config.*
+
+# Dev artifacts
+node_modules/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# CI / docs
+.github/
+docs/
+promo/
+examples/
+
+# Misc
+.env*
+*.log

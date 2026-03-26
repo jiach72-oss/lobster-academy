@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![Node](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Tests](https://img.shields.io/badge/Tests-246_passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-352_passing-brightgreen.svg)]()
 
 [中文文档](#-龙虾学院是什么) • [English](#what-is-lobster-academy) • [快速开始](#-快速开始--quick-start) • [API](docs/api-reference.md)
 
@@ -172,6 +172,88 @@ import { AdversarialEngine } from 'lobster-academy';
 const engine = new AdversarialEngine();
 const report = await engine.runAllAttacks(agentHandler);
 console.log(`防御成功率/Defense Rate: ${report.defenseRate}%`);
+```
+
+### 🖥️ CLI 工具 / CLI Tool
+
+```bash
+npm install -g lobster-academy
+
+# 入学
+lobster enroll --agent my-agent --department general
+
+# 体检
+lobster check --agent my-agent
+
+# 录制决策
+lobster record --agent my-agent --input input.json --output output.json
+
+# 生成报告
+lobster report --agent my-agent --format markdown
+
+# 查看状态
+lobster status --agent my-agent
+
+# 查看证书
+lobster certificate --agent my-agent
+
+# 验证签名
+lobster verify --signature <sig> --public-key <key> --data <data>
+```
+
+### 🔌 框架集成 / Framework Integrations
+
+- **OpenClaw** — 自动拦截 LLM 调用和工具调用
+- **LangChain** — Callback handler 自动录制
+- **CrewAI** — Crew 包装器自动录制
+- **通用中间件** — `createMiddleware()` 适配任何框架
+
+### 🛂 Agent 护照 / Agent Passport
+
+```typescript
+import { PassportManager, Signer } from 'lobster-academy';
+
+const signer = new Signer(key);
+const pm = new PassportManager(signer);
+
+const passport = pm.createPassport({
+  agentId: 'my-agent',
+  framework: { name: 'openclaw', version: '2026.3.22' },
+  model: { provider: 'openai', name: 'gpt-4' },
+  tools: [{ name: 'web-search', category: 'search', permissions: ['read'] }],
+  permissions: { maxTokens: 100000, allowedDomains: ['*'], deniedDomains: [], maxExecutionTime: 30000, sandboxed: true }
+});
+```
+
+### 📡 持续监控 / Continuous Monitoring
+
+```typescript
+import { AgentMonitor } from 'lobster-academy';
+
+const monitor = new AgentMonitor({
+  agentId: 'my-agent',
+  performanceThreshold: 20, // 性能退化20%触发预警
+  errorRateThreshold: 10,   // 错误率10%触发预警
+  anomalyWindow: 100,       // 检测窗口100条记录
+  onAlert: (alert) => console.log(`⚠️ ${alert.level}: ${alert.message}`)
+});
+
+const alerts = monitor.analyze(records);
+```
+
+### 📋 合规报告 / Compliance Reports
+
+```typescript
+import { generateEUAIActReport, generateSOC2Report, ComplianceExporter } from 'lobster-academy';
+
+// EU AI Act 合规报告
+const euReport = generateEUAIActReport(passport, evalHistory, alerts, signer);
+
+// SOC2 审计报告
+const soc2Report = generateSOC2Report(passport, evalHistory, records, alerts, signer);
+
+// 导出为 HTML/JSON/Markdown
+const html = new ComplianceExporter().toHTML(euReport);
 ```
 
 ### 📜 数字签名 / Digital Signature
@@ -521,7 +603,7 @@ lobster-academy/
 | 脱敏模式/Redaction Patterns | 200+ |
 | 攻击场景/Attack Scenarios | 53 |
 | 评测指标/Evaluation Metrics | 25 |
-| 测试用例/Test Cases | 246 (TypeScript 68 + Python 125 + YAML 53) |
+| 测试用例/Test Cases | 352 (TypeScript + Python + YAML) |
 | 国际化国家/Countries Supported | 24 |
 | 存储适配器/Storage Adapters | 3 (In-Memory, PostgreSQL, Supabase) |
 | 框架集成/Integrations | LangChain, LlamaIndex |

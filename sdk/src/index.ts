@@ -30,6 +30,116 @@ export {
 } from './storage';
 export type { PgStorageConfig, StorageFactoryConfig, StorageResult, SkillRecord, SignatureRecord } from './storage';
 
+// P0 算法模块导出
+export { RedactorV2, AhoCorasick } from './redactor-v2';
+export type { TieredMatch, PatternDefinition, RedactorV2Config } from './redactor-v2';
+
+export { ResponseAnalyzer, containsSensitiveInfo } from './response-analyzer';
+export type { Severity, DetectionTier, DetectionResult, SemanticDetector, ResponseAnalyzerConfig } from './response-analyzer';
+
+export { MerkleChain, computeEventHash } from './merkle-chain';
+export type { ChainedEvent, ChainVerificationResult, ChainIssue, MerkleChainConfig } from './merkle-chain';
+
+export { BayesianScorer, HallucinationDetector, bayesianMean } from './bayesian-scorer';
+export type { MetricScore, DimensionScore, HallucinationResult, BayesianScorerConfig, HallucinationConfig, RadarData } from './bayesian-scorer';
+
+export { ReporterV2 } from './reporter-v2';
+export type { ReportFormat, SummaryLength, ReportDimension, AttackSummary, ReportData, DiffReportData, ReporterV2Config } from './reporter-v2';
+
+export { KeyManager, hkdf } from './key-manager';
+export type { KeyPair, RotatedKey, PublicKeyChainEntry, KeyManagerConfig, HKDFConfig } from './key-manager';
+
+export { TieredStorage, MemoryAdapter, createDefaultStorage } from './storage/tiered-storage';
+export type { StorageTier, StorageEntry, StorageQuery, IStorageAdapter, TieredStorageConfig, TieredStorageStats, QueryRouteResult, MigrationStats, MigrationPolicy } from './storage/tiered-storage';
+
+// ─────────────────────────────────────────────
+// P1 算法模块导出
+// ─────────────────────────────────────────────
+
+// 脱敏优化器
+export { RedactorOptimizer, BloomFilter, StreamingRedactor, PatternFrequencySorter } from './redactor-optimizer';
+export type { BloomFilterConfig, StreamingRedactorConfig, StreamingState, FrequencyStats } from './redactor-optimizer';
+
+// Fuzzing 变异引擎
+export { FuzzingEngine, runFuzzing } from './fuzzing-engine';
+export type { AttackTemplate, MutatedAttack, ParallelConfig, FuzzingEngineConfig, FuzzingResult, MutationType } from './fuzzing-engine';
+
+// 异步写入器
+export { AsyncWriter, createAsyncWriter } from './async-writer';
+export type { WriteEvent, FlushPolicy, AsyncWriterConfig, WriterStats } from './async-writer';
+
+// 百分位基准对标 + 趋势追踪（增强 bayesian-scorer）
+export { PercentileBenchmarking, TrendTracker } from './bayesian-scorer';
+export type { PercentileBenchmark, TrendPoint, DimensionTrend, TrendTrackerConfig } from './bayesian-scorer';
+
+// 智能摘要（增强 reporter-v2）
+export { SmartSummaryGenerator } from './reporter-v2';
+export type { SuggestionItem, SmartSummary } from './reporter-v2';
+
+// Merkle 批量签名 + 可信时间戳（增强 key-manager — 方法已添加到 KeyManager 类）
+export type { MerkleBatchSignature, TimestampedSignature, MerklePathNode } from './key-manager';
+
+// ─────────────────────────────────────────────
+// P2 算法模块导出
+// ─────────────────────────────────────────────
+
+// i18n 模式缓存（增强 redactor-optimizer）
+export { I18nPatternCache } from './redactor-optimizer';
+export type { I18nCacheEntry, I18nCacheStats } from './redactor-optimizer';
+
+// 对抗性迭代循环（增强 fuzzing-engine — 方法已添加到 FuzzingEngine 类）
+export type { AdversarialLoopConfig, IterationRound, AdversarialLoopResult } from './fuzzing-engine';
+
+// 分页查询（增强 async-writer — 方法已添加到 AsyncWriter 类）
+export type { QueryFilter, QueryParams, PaginationMeta, PaginatedResult } from './async-writer';
+
+// 入学/毕业流程管理
+export { AcademyFlow } from './academy-flow';
+export type {
+  Semester,
+  CourseRecommendation,
+  LearningPath,
+  EnrollmentStage,
+  EnrollmentFlow,
+  GraduationCheck,
+} from './academy-flow';
+
+// 密钥撤销机制（增强 key-manager — 方法已添加到 KeyManager 类）
+export type { RevocationEntry, RevocationAuditLog } from './key-manager';
+
+// 一致性哈希分区（增强 tiered-storage）
+export { ConsistentHashingRouter, ShardedTieredStorage } from './storage/tiered-storage';
+export type { ShardInfo, ShardRouteResult, ConsistentHashingConfig } from './storage/tiered-storage';
+
+// ─────────────────────────────────────────────
+// Agent 护照系统
+// ─────────────────────────────────────────────
+export { PassportManager } from './passport';
+export type { PassportCreateConfig } from './passport';
+export type { AgentPassport, AgentChange, AgentChangeType } from './types';
+
+// ─────────────────────────────────────────────
+// 持续监控 + 预警系统
+// ─────────────────────────────────────────────
+export { AgentMonitor, RetestTrigger } from './monitor';
+export type {
+  AlertLevel,
+  AlertType,
+  Alert,
+  MonitorConfig,
+  RetestRecommendation,
+} from './monitor';
+
+// ─────────────────────────────────────────────
+// 合规报告生成器
+// ─────────────────────────────────────────────
+export { generateEUAIActReport } from './compliance/eu-ai-act';
+export type { RiskCategory, EUAIActReport } from './compliance/eu-ai-act';
+export { generateSOC2Report } from './compliance/soc2';
+export type { CriteriaStatus, CriteriaEntry, SOC2Report } from './compliance/soc2';
+export { ComplianceExporter } from './compliance/exporter';
+export type { ComplianceReport } from './compliance/exporter';
+
 /**
  * 验证 BlackboxConfig
  * @throws {BlackboxError} 配置无效时

@@ -1,7 +1,7 @@
 {
-  "name": "@lobster-academy/blackbox",
-  "version": "0.1.0",
-  "description": "AI Agent 行为证据平台 — 每只龙虾都该有一个黑匣子 | Black box recorder for AI Agents",
+  "name": "lobster-academy",
+  "version": "0.2.0",
+  "description": "AI Agent Blackbox SDK — Recording, Redaction, Evaluation, Certification",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
@@ -31,6 +31,7 @@
     }
   },
   "bin": {
+    "lobster": "./dist/cli/index.js",
     "lobster-check": "dist/cli/check.js",
     "lobster-report": "dist/cli/report.js"
   },
@@ -52,19 +53,14 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "ai",
-    "agent",
-    "audit",
-    "logging",
-    "compliance",
+    "ai-agent",
+    "security",
+    "evaluation",
     "blackbox",
-    "recorder",
-    "ed25519",
-    "pii",
-    "redact"
+    "recording"
   ],
   "author": "Lobster Academy",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jiach72-oss/lobster-academy"
@@ -74,10 +70,12 @@
     "url": "https://github.com/jiach72-oss/lobster-academy/issues"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   },
   "dependencies": {
     "@types/pg": "^8.20.0",
+    "chalk": "^4.1.2",
+    "commander": "^14.0.3",
     "drizzle-orm": "^0.45.1",
     "pg": "^8.20.0",
     "tweetnacl": "^1.0.3"
