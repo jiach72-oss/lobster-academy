@@ -256,7 +256,7 @@ console.log('User logged in:', user); // ❌ 可能包含敏感信息 / May cont
 If you discover a security vulnerability, please report it via:
 
 1. **不要**在公开 Issue 中披露 / **Do not** disclose in public Issues
-2. 发送邮件至 / Send email to：security@lobster-academy.com
+2. 通过 GitHub Issues 报告 / Report via GitHub Issues：https://github.com/jiach72-oss/lobster-academy/issues
 3. 包含详细的漏洞描述和复现步骤 / Include detailed vulnerability description and reproduction steps
 
 我们会尽快响应并修复。

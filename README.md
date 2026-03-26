@@ -549,7 +549,7 @@ We welcome all forms of contributions! Please read [CONTRIBUTING.md](CONTRIBUTIN
 
 ```bash
 # 克隆仓库 / Clone repository
-git clone https://github.com/lobster-academy/sdk.git
+git clone https://github.com/jiach72-oss/lobster-academy.git
 cd sdk
 
 # TypeScript 开发 / TypeScript Development
@@ -587,10 +587,8 @@ This project is licensed under the [Apache License 2.0](LICENSE).
 
 <div align="center">
 
-**[官网 / Website](https://lobster-academy.com)** •
 **[文档 / Docs](docs/)** •
-**[GitHub](https://github.com/lobster-academy)** •
-**[Discord](https://discord.gg/lobster-academy)**
+**[GitHub](https://github.com/jiach72-oss/lobster-academy)**
 
 Made with 🦞 by Lobster Academy Team
 

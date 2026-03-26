@@ -126,9 +126,9 @@ export class Academy {
   private signer: Signer;
   private verifyBaseUrl: string;
 
-  constructor(signer: Signer, verifyBaseUrl = 'https://lobster.academy/v') {
+  constructor(signer: Signer, verifyBaseUrl?: string) {
     this.signer = signer;
-    this.verifyBaseUrl = verifyBaseUrl;
+    this.verifyBaseUrl = verifyBaseUrl || '';
   }
 
   // ─────────────────────────────────────────────

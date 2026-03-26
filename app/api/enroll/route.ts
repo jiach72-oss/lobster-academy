@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       user: { 
         id: studentId, 
         name: student.agentName, 
-        email: `${student.studentId}@lobster.academy` 
+        email: `${student.studentId}@example.com` 
       },
       enrollment: {
         student_id: studentId,

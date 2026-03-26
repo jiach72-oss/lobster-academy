@@ -175,6 +175,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## 🔗 链接 / Links
 
-- [GitHub Releases](https://github.com/lobster-academy/sdk/releases)
+- [GitHub Releases](https://github.com/jiach72-oss/lobster-academy/releases)
 - [npm](https://www.npmjs.com/package/lobster-academy)
-- [文档 / Documentation](https://lobster-academy.com/docs)
+- [文档 / Documentation](docs/)

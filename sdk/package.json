@@ -63,15 +63,15 @@
     "pii",
     "redact"
   ],
-  "author": "Lobster Academy <dev@lobster-academy.ai>",
+  "author": "Lobster Academy",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lobster-academy/blackbox"
+    "url": "https://github.com/jiach72-oss/lobster-academy"
   },
-  "homepage": "https://lobster-academy.ai",
+  "homepage": "https://github.com/jiach72-oss/lobster-academy",
   "bugs": {
-    "url": "https://github.com/lobster-academy/blackbox/issues"
+    "url": "https://github.com/jiach72-oss/lobster-academy/issues"
   },
   "engines": {
     "node": ">=18.0.0"

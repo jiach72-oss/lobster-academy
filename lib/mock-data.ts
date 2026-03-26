@@ -5,7 +5,7 @@
 
 // 模拟用户
 export const mockUsers = [
-  { id: 1, email: 'demo@lobster.academy', password_hash: '', name: 'Demo User' },
+  { id: 1, email: 'demo@example.com', password_hash: '', name: 'Demo User' },
 ];
 
 // 模拟入学记录

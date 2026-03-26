@@ -70,7 +70,7 @@ Agent名称: my-customer-service-bot
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 由龙虾学院 (Lobster Academy) 生成
-获取完整评测: lobster.academy
+获取完整评测: https://github.com/jiach72-oss/lobster-academy
 ```
 
 ## 技术实现

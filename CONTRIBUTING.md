@@ -10,7 +10,7 @@ Thank you for your interest in Lobster Academy! We welcome all forms of contribu
 
 ### 报告问题 / Report Issues
 
-1. 在 [Issues](https://github.com/lobster-academy/sdk/issues) 中搜索是否已有相同问题
+1. 在 [Issues](https://github.com/jiach72-oss/lobster-academy/issues) 中搜索是否已有相同问题
 2. 如果没有，创建新的 Issue，包含：
    - 清晰的问题描述
    - 复现步骤
@@ -18,7 +18,7 @@ Thank you for your interest in Lobster Academy! We welcome all forms of contribu
    - 环境信息（Node.js 版本、操作系统等）
 
 <!-- English -->
-1. Search [Issues](https://github.com/lobster-academy/sdk/issues) to see if the problem already exists
+1. Search [Issues](https://github.com/jiach72-oss/lobster-academy/issues) to see if the problem already exists
 2. If not, create a new Issue with:
    - Clear problem description
    - Steps to reproduce
