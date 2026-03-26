@@ -3,143 +3,92 @@
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
 
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  return (
-    <button onClick={copy}
-      className="px-2 py-1 text-xs rounded transition"
-      style={{
-        background: copied ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.05)',
-        color: copied ? '#22c55e' : '#737373',
-      }}>
-      {copied ? '✓ Copied' : 'Copy'}
-    </button>
-  );
-}
-
 export default function CheckPage() {
   const { locale } = useI18n();
   const isZh = locale === 'zh';
-  const [agentId, setAgentId] = useState('');
-  const [result, setResult] = useState<null | {
-    score: number;
-    grade: string;
-    dimensions: { name: string; name_zh: string; score: number; status: string }[];
-  }>(null);
-  const [loading, setLoading] = useState(false);
-
-  const runCheck = () => {
-    if (!agentId.trim()) return;
-    setLoading(true);
-    // Simulated evaluation result
-    setTimeout(() => {
-      setResult({
-        score: 82,
-        grade: 'A',
-        dimensions: [
-          { name: 'Security', name_zh: '安全防御', score: 78, status: 'warning' },
-          { name: 'Reasoning', name_zh: '推理能力', score: 91, status: 'good' },
-          { name: 'Tool Use', name_zh: '工具使用', score: 85, status: 'good' },
-          { name: 'Compliance', name_zh: '合规性', score: 72, status: 'warning' },
-          { name: 'Reliability', name_zh: '可靠性', score: 84, status: 'good' },
-        ],
-      });
-      setLoading(false);
-    }, 1500);
-  };
+  const [showDemo, setShowDemo] = useState(false);
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0a' }}>
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <div className="text-5xl mb-4">🏥</div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            {isZh ? 'Agent 体检' : 'Agent Health Check'}
-          </h1>
-          <p className="text-neutral-500">
+    <main className="min-h-screen pt-24 pb-16 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-2">
+          {isZh ? '🦞 Agent 体检' : '🦞 Agent Health Check'}
+        </h1>
+        <p className="text-neutral-400 mb-8">
+          {isZh
+            ? '使用 Blackbox SDK 对你的 Agent 进行全面安全评测'
+            : 'Run a comprehensive security evaluation on your Agent with Blackbox SDK'}
+        </p>
+
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {isZh ? '🚀 快速开始' : '🚀 Quick Start'}
+          </h2>
+          <pre className="bg-black rounded-lg p-4 overflow-x-auto text-sm text-green-400 mb-4">
+{`npm install -g lobster-academy
+
+# 入学
+lobster enroll --agent my-agent
+
+# 体检
+lobster check --agent my-agent
+
+# 查看报告
+lobster report --agent my-agent --format html`}
+          </pre>
+          <p className="text-neutral-500 text-sm">
             {isZh
-              ? '输入Agent ID，运行快速健康评测'
-              : 'Enter your Agent ID to run a quick health evaluation'}
+              ? '安装 SDK 后在本地运行，数据不出本机，零 Token 消耗'
+              : 'Run locally after installing SDK. Data stays on your machine. Zero token cost.'}
           </p>
         </div>
 
-        {/* Input */}
-        <div className="flex gap-3 mb-8">
-          <input
-            type="text"
-            value={agentId}
-            onChange={(e) => setAgentId(e.target.value)}
-            placeholder={isZh ? '输入 Agent ID...' : 'Enter Agent ID...'}
-            className="flex-1 px-4 py-3 rounded-lg text-sm text-white placeholder-neutral-600 outline-none focus:ring-1 focus:ring-[#dc2626]"
-            style={{ background: '#111', border: '1px solid #222' }}
-          />
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {isZh ? '📊 体检示例（演示）' : '📊 Sample Report (Demo)'}
+          </h2>
           <button
-            onClick={runCheck}
-            disabled={loading || !agentId.trim()}
-            className="px-6 py-3 rounded-lg bg-[#dc2626] text-white text-sm font-medium hover:bg-[#b91c1c] transition disabled:opacity-50 disabled:cursor-not-allowed">
-            {loading ? (isZh ? '评测中...' : 'Evaluating...') : (isZh ? '开始体检' : 'Run Check')}
+            onClick={() => setShowDemo(!showDemo)}
+            className="px-4 py-2 rounded-lg text-sm font-medium transition"
+            style={{ background: '#dc2626', color: 'white' }}
+          >
+            {showDemo ? (isZh ? '收起' : 'Hide') : (isZh ? '查看演示报告' : 'View Demo Report')}
           </button>
-        </div>
 
-        {/* CLI alternative */}
-        <div className="rounded-lg overflow-hidden mb-10" style={{ background: '#111', border: '1px solid #222' }}>
-          <div className="flex items-center justify-between px-4 py-2" style={{ background: '#161616', borderBottom: '1px solid #222' }}>
-            <span className="text-xs text-neutral-500">terminal</span>
-            <CopyButton text={`lobster check --agent ${agentId || 'my-agent'}`} />
-          </div>
-          <pre className="p-4 text-sm">
-            <span className="text-neutral-600">$ </span>
-            <span className="text-neutral-300">lobster check --agent </span>
-            <span className="text-[#dc2626]">{agentId || 'my-agent'}</span>
-          </pre>
-        </div>
-
-        {/* Results */}
-        {result && (
-          <div className="animate-fade-in-up">
-            <div className="text-center mb-8">
-              <div className="text-6xl font-bold gradient-text mb-2">{result.score}</div>
-              <div className="text-sm text-neutral-500">
-                {isZh ? '综合评分' : 'Overall Score'} ·{' '}
-                <span className="text-lg font-bold" style={{
-                  color: result.grade === 'S' ? '#eab308' : result.grade === 'A' ? '#22c55e' : '#d4a853'
-                }}>{result.grade}</span>
+          {showDemo && (
+            <div className="mt-6 space-y-4">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="text-4xl font-bold text-green-400">82</div>
+                <div>
+                  <div className="text-lg font-semibold text-yellow-400">A</div>
+                  <div className="text-neutral-500 text-sm">{isZh ? '综合评级' : 'Overall Grade'}</div>
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-3">
-              {result.dimensions.map((d, i) => (
-                <div key={i} className="p-4 rounded-lg" style={{ background: '#111', border: '1px solid #222' }}>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-white">{isZh ? d.name_zh : d.name}</span>
-                    <span className="text-sm font-bold" style={{
-                      color: d.score >= 85 ? '#22c55e' : d.score >= 70 ? '#f59e0b' : '#ef4444'
-                    }}>{d.score}/100</span>
+              {[
+                { name: isZh ? '安全防御' : 'Security', score: 78, color: 'text-yellow-400' },
+                { name: isZh ? '推理能力' : 'Reasoning', score: 91, color: 'text-green-400' },
+                { name: isZh ? '工具使用' : 'Tool Use', score: 85, color: 'text-green-400' },
+                { name: isZh ? '合规性' : 'Compliance', score: 72, color: 'text-yellow-400' },
+                { name: isZh ? '可靠性' : 'Reliability', score: 84, color: 'text-green-400' },
+              ].map((dim) => (
+                <div key={dim.name} className="flex items-center gap-4">
+                  <div className="w-28 text-sm text-neutral-400">{dim.name}</div>
+                  <div className="flex-1 h-2 bg-neutral-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${dim.score}%`, background: dim.color === 'text-green-400' ? '#22c55e' : '#eab308' }}
+                    />
                   </div>
-                  <div className="w-full h-2 rounded-full" style={{ background: '#1a1a1a' }}>
-                    <div className="h-full rounded-full transition-all duration-1000"
-                      style={{
-                        width: `${d.score}%`,
-                        background: d.score >= 85 ? '#22c55e' : d.score >= 70 ? '#f59e0b' : '#ef4444',
-                      }} />
-                  </div>
+                  <div className={`w-10 text-sm font-mono ${dim.color}`}>{dim.score}</div>
                 </div>
               ))}
+              <p className="text-neutral-600 text-xs mt-4">
+                {isZh ? '* 以上为模拟数据，实际体检结果取决于你的 Agent 配置' : '* Demo data only. Actual results depend on your Agent configuration.'}
+              </p>
             </div>
-
-            <div className="mt-8 text-center">
-              <a href="/passport" className="text-sm text-[#dc2626] hover:underline">
-                {isZh ? '查看完整护照 →' : 'View Full Passport →'}
-              </a>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
