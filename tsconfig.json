@@ -17,5 +17,5 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "sdk", "data"]
+  "exclude": ["node_modules", "sdk", "data", "dashboard", "examples", "python-sdk"]
 }
