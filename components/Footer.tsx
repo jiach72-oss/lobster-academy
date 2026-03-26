@@ -36,7 +36,7 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-white mb-3">{isZh ? '资源' : 'Resources'}</h4>
             <div className="space-y-2">
-              <a href="https://github.com/lobster-academy/blackbox" target="_blank" rel="noopener noreferrer" className="block text-sm text-neutral-500 hover:text-white transition">GitHub</a>
+              <a href="https://github.com/jiach72-oss/lobster-academy" target="_blank" rel="noopener noreferrer" className="block text-sm text-neutral-500 hover:text-white transition">GitHub</a>
               <a href="https://www.npmjs.com/package/@lobster-academy/blackbox" target="_blank" rel="noopener noreferrer" className="block text-sm text-neutral-500 hover:text-white transition">npm</a>
               <Link href="/docs" className="block text-sm text-neutral-500 hover:text-white transition">{isZh ? 'API参考' : 'API Reference'}</Link>
             </div>
