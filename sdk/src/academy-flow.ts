@@ -13,6 +13,7 @@
 
 import { randomBytes } from 'crypto';
 import type { Grade, EvalRecord, Enrollment } from './types';
+import { LobsterReporter, type LobsterReporterConfig } from './reporter';
 
 // ─────────────────────────────────────────────
 // 类型定义
@@ -186,9 +187,30 @@ export class AcademyFlow {
   private semesters: Semester[] = [];
   private allEvals: EvalRecord[] = [];
   private learningPathId: string;
+  private reporter: LobsterReporter | null = null;
+  private sessionId: string;
 
-  constructor() {
+  constructor(reporterConfig?: LobsterReporterConfig) {
     this.learningPathId = `LP-${Date.now().toString(36)}`;
+    this.sessionId = `session-${Date.now().toString(36)}`;
+    if (reporterConfig) {
+      this.reporter = new LobsterReporter(reporterConfig);
+    }
+  }
+
+  /**
+   * 配置 Reporter（评测完成后自动上报数据）
+   * @param config Reporter 配置
+   */
+  setReporter(config: LobsterReporterConfig): void {
+    this.reporter = new LobsterReporter(config);
+  }
+
+  /**
+   * 获取 Reporter 实例
+   */
+  getReporter(): LobsterReporter | null {
+    return this.reporter;
   }
 
   // ─────────────────────────────────────────────
@@ -276,6 +298,9 @@ export class AcademyFlow {
 
     // 创建第一个学期
     this._createSemester('第一学期', [evalRec]);
+
+    // 自动上报评测结果
+    this._autoReport(evalRec);
 
     return evalRec;
   }
@@ -513,6 +538,9 @@ export class AcademyFlow {
     // S 级自动毕业检查
     this.autoGraduateCheck();
 
+    // 自动上报评测结果
+    this._autoReport(evalRec);
+
     return evalRec;
   }
 
@@ -569,6 +597,19 @@ export class AcademyFlow {
   // ─────────────────────────────────────────────
   // 私有方法
   // ─────────────────────────────────────────────
+
+  /**
+   * 自动上报评测结果到网站（异步，不阻塞主流程）
+   * 失败时静默处理，不影响评测流程
+   */
+  private _autoReport(evalRec: EvalRecord): void {
+    if (!this.reporter?.isReady()) return;
+
+    // 异步上报，不阻塞
+    this.reporter.report(evalRec, this.sessionId).catch((err) => {
+      console.warn('[AcademyFlow] Auto-report failed:', err instanceof Error ? err.message : String(err));
+    });
+  }
 
   /** 生成学号 */
   private _generateStudentId(): string {

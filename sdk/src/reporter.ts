@@ -1,377 +1,334 @@
 /**
- * 龙虾学院 Blackbox SDK — 报告生成器
- * 生成可验证的审计报告
+ * 龙虾学院 Blackbox SDK — Lobster Reporter
+ * SDK ↔ 网站数据上报模块
+ *
+ * 负责将 SDK 的评测结果和行为数据上报到 Lobster Academy 网站。
+ * 支持注册、评测上报、批量行为同步、重试逻辑。
  */
 
-import { randomUUID } from 'crypto';
-import { DecisionRecord, AuditReport, ReportSummary, Anomaly } from './types';
-import { Signer } from './signer';
-import { Redactor } from './redactor';
+import type { EvalRecord } from './types';
 
-/** 签名截断显示长度 */
-const SIGNATURE_DISPLAY_LEN = 40;
+// ─────────────────────────────────────────────
+// 类型定义
+// ─────────────────────────────────────────────
 
-export class Reporter {
-  private agentId: string;
-  private signer: Signer;
-  private redactor: Redactor;
+/** SDK 注册请求 */
+export interface RegisterRequest {
+  agentName: string;
+  framework: string;
+  model: string;
+  sdkVersion: string;
+  userId: string;
+}
 
-  constructor(agentId: string, signer: Signer) {
-    if (!agentId || typeof agentId !== 'string') {
-      throw new TypeError('agentId is required');
+/** SDK 注册响应 */
+export interface RegisterResponse {
+  success: boolean;
+  agentId: string;
+  apiKey: string;
+  reportUrl: string;
+  syncUrl: string;
+  expiresAt: string;
+  warning?: string;
+}
+
+/** 评测上报数据 */
+export interface ReportPayload {
+  agentId: string;
+  scores: {
+    total: number;
+    grade: string;
+  };
+  dimensions: Record<string, { score: number; max: number }>;
+  sessionId: string;
+  timestamp: string;
+  evalType?: 'full' | 'partial' | 'incremental';
+}
+
+/** 行为记录 */
+export interface BehaviorRecord {
+  type: string;
+  agentId: string;
+  sessionId: string;
+  timestamp: string;
+  data?: Record<string, unknown>;
+}
+
+/** 批量同步请求 */
+export interface SyncPayload {
+  agentId: string;
+  records: BehaviorRecord[];
+}
+
+/** API 响应基类 */
+export interface ApiResult<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+/** Reporter 配置 */
+export interface LobsterReporterConfig {
+  /** API 基础 URL，如 https://lobster.example.com */
+  apiUrl: string;
+  /** API Key（首次注册后获得） */
+  apiKey?: string;
+  /** 用户 ID（注册时使用） */
+  userId?: string;
+  /** 最大重试次数，默认 3 */
+  maxRetries?: number;
+  /** 重试间隔基数（ms），默认 1000 */
+  retryBaseDelayMs?: number;
+}
+
+// ─────────────────────────────────────────────
+// Reporter 类
+// ─────────────────────────────────────────────
+
+/**
+ * Lobster Reporter
+ *
+ * 将 SDK 数据上报到 Lobster Academy 网站。
+ *
+ * @example
+ * ```typescript
+ * // 1. 注册
+ * const reporter = new LobsterReporter({
+ *   apiUrl: 'https://lobster.example.com',
+ *   userId: 'user_123',
+ * });
+ * const regResult = await reporter.register({
+ *   agentName: 'my-bot',
+ *   framework: 'openclaw',
+ *   model: 'gpt-4',
+ *   sdkVersion: '1.0.0',
+ * });
+ *
+ * // 2. 上报评测结果
+ * await reporter.report(evalRecord);
+ *
+ * // 3. 批量同步行为数据
+ * await reporter.sync([behaviorRecord1, behaviorRecord2]);
+ * ```
+ */
+export class LobsterReporter {
+  private apiUrl: string;
+  private apiKey: string | undefined;
+  private userId: string | undefined;
+  private agentId: string | undefined;
+  private maxRetries: number;
+  private retryBaseDelayMs: number;
+
+  constructor(config: LobsterReporterConfig) {
+    if (!config.apiUrl) {
+      throw new Error('apiUrl is required');
     }
-    if (!signer) {
-      throw new TypeError('signer is required');
-    }
-    this.agentId = agentId;
-    this.signer = signer;
-    this.redactor = new Redactor();
+    // 去掉末尾斜杠
+    this.apiUrl = config.apiUrl.replace(/\/+$/, '');
+    this.apiKey = config.apiKey;
+    this.userId = config.userId;
+    this.maxRetries = config.maxRetries ?? 3;
+    this.retryBaseDelayMs = config.retryBaseDelayMs ?? 1000;
   }
 
-  /** 生成审计报告 */
-  generateReport(records: DecisionRecord[], options?: {
-    from?: string;
-    to?: string;
-  }): AuditReport {
-    if (!Array.isArray(records)) {
-      throw new TypeError('records must be an array');
+  // ─────────────────────────────────────────────
+  // 公开方法
+  // ─────────────────────────────────────────────
+
+  /**
+   * 注册 SDK，获取 agentId 和 apiKey
+   */
+  async register(request: Omit<RegisterRequest, 'userId'>): Promise<RegisterResponse> {
+    if (!this.userId) {
+      throw new Error('userId is required for registration');
     }
 
-    const filtered = this.filterByPeriod(records, options?.from, options?.to);
-    const summary = this.computeSummary(filtered);
-    const anomalies = this.detectAnomalies(filtered);
-
-    const report: AuditReport = {
-      id: randomUUID(),
-      agentId: this.agentId,
-      period: {
-        from: options?.from ?? (filtered[0]?.timestamp ?? new Date().toISOString()),
-        to: options?.to ?? new Date().toISOString(),
-      },
-      summary,
-      records: filtered,
-      anomalies,
-      generatedAt: new Date().toISOString(),
+    const payload: RegisterRequest = {
+      ...request,
+      userId: this.userId,
     };
 
-    // 签名报告（覆盖 records 哈希，防篡改）
-    if (this.signer.hasKey()) {
-      // 对每条记录的 hash 做汇总哈希，纳入签名
-      const recordsHash = Signer.hash(
-        report.records.map(r => r.hash ?? '').join('|')
-      );
-      const anomaliesHash = Signer.hash(
-        JSON.stringify(report.anomalies.map(a => ({ type: a.type, message: a.message, timestamp: a.timestamp })))
-      );
-      const signInput = JSON.stringify({
-        id: report.id,
-        agentId: report.agentId,
-        summary: report.summary,
-        generatedAt: report.generatedAt,
-        recordsHash,
-        anomaliesHash,
-      });
-      report.signature = this.signer.sign(Signer.hash(signInput));
+    const result = await this.post<RegisterResponse>(
+      `${this.apiUrl}/api/sdk/register`,
+      payload,
+      undefined // 注册时不需要 API Key
+    );
+
+    if (result.success && result.data) {
+      this.agentId = result.data.agentId;
+      this.apiKey = result.data.apiKey;
+      return result.data;
     }
 
-    return report;
+    throw new Error(result.error ?? 'Registration failed');
   }
 
-  /** 生成JSON格式报告 */
-  toJSON(report: AuditReport): string {
-    if (!report || typeof report !== 'object') {
-      throw new TypeError('report must be an object');
+  /**
+   * 上报评测结果到网站
+   */
+  async report(evalRecord: EvalRecord, sessionId?: string): Promise<ApiResult> {
+    if (!this.apiKey) {
+      throw new Error('apiKey is required. Call register() first or provide apiKey in config.');
     }
-    return JSON.stringify(report, null, 2);
+    if (!this.agentId) {
+      throw new Error('agentId is required. Call register() first.');
+    }
+
+    const payload: ReportPayload = {
+      agentId: this.agentId,
+      scores: {
+        total: evalRecord.totalScore,
+        grade: evalRecord.grade,
+      },
+      dimensions: evalRecord.dimensions,
+      sessionId: sessionId ?? `sdk-${Date.now()}`,
+      timestamp: evalRecord.timestamp,
+      evalType: 'full',
+    };
+
+    const result = await this.postWithRetry(
+      `${this.apiUrl}/api/sdk/report`,
+      payload
+    );
+
+    return result;
   }
 
-  /** 生成Markdown格式报告 */
-  toMarkdown(report: AuditReport): string {
-    if (!report || typeof report !== 'object') {
-      throw new TypeError('report must be an object');
+  /**
+   * 批量同步行为数据到网站
+   */
+  async sync(records: BehaviorRecord[]): Promise<ApiResult> {
+    if (!this.apiKey) {
+      throw new Error('apiKey is required. Call register() first or provide apiKey in config.');
+    }
+    if (!this.agentId) {
+      throw new Error('agentId is required. Call register() first.');
     }
 
-    const lines = [
-      `# 🦞 龙虾学院 Blackbox 审计报告`,
-      '',
-      '| 项目 | 详情 |',
-      '|------|------|',
-      `| Agent | ${this.redactor.redactString(report.agentId)} |`,
-      `| 期间 | ${this.redactor.redactString(report.period.from)} → ${this.redactor.redactString(report.period.to)} |`,
-      `| 生成时间 | ${report.generatedAt} |`,
-      '',
-      '## 📊 统计摘要',
-      '',
-      `| 指标 | 数值 |`,
-      `|------|------|`,
-      `| 总决策数 | ${report.summary.totalDecisions} |`,
-      `| 工具调用 | ${report.summary.totalToolCalls} |`,
-      `| 错误次数 | ${report.summary.totalErrors} |`,
-      `| 平均耗时 | ${report.summary.avgDuration}ms |`,
-      `| 使用工具 | ${report.summary.uniqueTools}种 |`,
-      '',
-    ];
+    if (!Array.isArray(records) || records.length === 0) {
+      return { success: true, data: { syncedCount: 0 } };
+    }
 
-    if (report.anomalies.length > 0) {
-      lines.push('## ⚠️ 异常检测', '');
-      lines.push('| 类型 | 严重度 | 描述 | 时间 |');
-      lines.push('|------|--------|------|------|');
-      for (const a of report.anomalies) {
-        const sevIcon = a.severity === 'critical' ? '🔴' : a.severity === 'high' ? '🟠' : a.severity === 'medium' ? '🟡' : '🟢';
-        lines.push(`| ${a.type} | ${sevIcon} ${a.severity} | ${this.redactor.redactString(a.message)} | ${a.timestamp} |`);
+    const payload: SyncPayload = {
+      agentId: this.agentId,
+      records,
+    };
+
+    const result = await this.postWithRetry(
+      `${this.apiUrl}/api/sdk/sync`,
+      payload
+    );
+
+    return result;
+  }
+
+  // ─────────────────────────────────────────────
+  // Getters
+  // ─────────────────────────────────────────────
+
+  /** 获取当前 API Key */
+  getApiKey(): string | undefined {
+    return this.apiKey;
+  }
+
+  /** 获取当前 Agent ID */
+  getAgentId(): string | undefined {
+    return this.agentId;
+  }
+
+  /** 是否已配置认证信息 */
+  isReady(): boolean {
+    return !!(this.apiKey && this.agentId);
+  }
+
+  // ─────────────────────────────────────────────
+  // 私有方法
+  // ─────────────────────────────────────────────
+
+  /**
+   * 带重试的 POST 请求
+   */
+  private async postWithRetry<T = unknown>(
+    url: string,
+    body: unknown
+  ): Promise<ApiResult<T>> {
+    let lastError: string | undefined;
+
+    for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+      const result = await this.post<T>(url, body, this.apiKey);
+
+      if (result.success) {
+        return result;
       }
-      lines.push('');
-    }
 
-    if (report.signature) {
-      lines.push('## 🔐 数字签名', '');
-      lines.push('```');
-      lines.push(report.signature);
-      lines.push('```', '');
-      lines.push('> 此签名基于 Ed25519，可使用公钥独立验证报告完整性。', '');
-    }
+      lastError = result.error;
 
-    lines.push('---', '*由龙虾学院工部技术组生成*', '');
-    return lines.join('\n');
-  }
-
-  /** 生成简易文本报告 */
-  toText(report: AuditReport): string {
-    if (!report || typeof report !== 'object') {
-      throw new TypeError('report must be an object');
-    }
-
-    const lines = [
-      '='.repeat(60),
-      `🦞 龙虾学院 Blackbox 审计报告`,
-      `   Agent: ${this.redactor.redactString(report.agentId)}`,
-      `   期间: ${this.redactor.redactString(report.period.from)} → ${this.redactor.redactString(report.period.to)}`,
-      '='.repeat(60),
-      '',
-      '📊 统计摘要',
-      `   总决策数: ${report.summary.totalDecisions}`,
-      `   工具调用: ${report.summary.totalToolCalls}`,
-      `   错误次数: ${report.summary.totalErrors}`,
-      `   平均耗时: ${report.summary.avgDuration}ms`,
-      `   使用工具: ${report.summary.uniqueTools}种`,
-      '',
-    ];
-
-    if (report.anomalies.length > 0) {
-      lines.push('⚠️ 异常检测');
-      for (const a of report.anomalies) {
-        lines.push(`   [${a.severity.toUpperCase()}] ${this.redactor.redactString(a.message)}`);
+      // 4xx 客户端错误不重试（401/403/400 等）
+      if (lastError?.includes('400') || lastError?.includes('401') || lastError?.includes('403')) {
+        break;
       }
-      lines.push('');
-    }
 
-    if (report.signature) {
-      lines.push('🔐 数字签名');
-      lines.push(`   ${report.signature.substring(0, SIGNATURE_DISPLAY_LEN)}...`);
-      lines.push('');
-    }
-
-    lines.push('='.repeat(60));
-    return lines.join('\n');
-  }
-
-  /** 生成HTML报告 */
-  toHTML(report: AuditReport): string {
-    if (!report || typeof report !== 'object') {
-      throw new TypeError('report must be an object');
-    }
-    const esc = (s: string) => this.redactor.redactString(s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const anomalyRows = report.anomalies.map(a =>
-      `<tr><td>${esc(a.type)}</td><td>${esc(a.severity)}</td><td>${esc(a.message)}</td><td>${esc(a.timestamp)}</td></tr>`
-    ).join('\n');
-
-    return `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<title>🦞 龙虾学院 Blackbox 审计报告</title>
-<style>
-  body { font-family: -apple-system, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
-  h1 { color: #c0392b; }
-  .meta { color: #666; margin-bottom: 1.5rem; }
-  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-  .card { background: #f8f9fa; border-radius: 8px; padding: 1rem; text-align: center; }
-  .card .num { font-size: 2rem; font-weight: bold; color: #2c3e50; }
-  .card .label { color: #666; font-size: 0.9rem; }
-  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; font-size: 0.85rem; }
-  th { background: #f0f0f0; }
-  .severity-critical { color: #c0392b; font-weight: bold; }
-  .severity-high { color: #e67e22; font-weight: bold; }
-  .sig { font-family: monospace; font-size: 0.8rem; color: #888; word-break: break-all; }
-</style>
-</head>
-<body>
-<h1>🦞 龙虾学院 Blackbox 审计报告</h1>
-<div class="meta">
-  <strong>Agent:</strong> ${esc(report.agentId)}<br>
-  <strong>期间:</strong> ${esc(report.period.from)} → ${esc(report.period.to)}<br>
-  <strong>生成时间:</strong> ${esc(report.generatedAt)}
-</div>
-
-<h2>📊 统计摘要</h2>
-<div class="summary">
-  <div class="card"><div class="num">${report.summary.totalDecisions}</div><div class="label">总决策数</div></div>
-  <div class="card"><div class="num">${report.summary.totalToolCalls}</div><div class="label">工具调用</div></div>
-  <div class="card"><div class="num">${report.summary.totalErrors}</div><div class="label">错误次数</div></div>
-  <div class="card"><div class="num">${report.summary.avgDuration}ms</div><div class="label">平均耗时</div></div>
-  <div class="card"><div class="num">${report.summary.uniqueTools}</div><div class="label">工具种类</div></div>
-</div>
-${report.anomalies.length > 0 ? `
-<h2>⚠️ 异常检测</h2>
-<table>
-  <tr><th>类型</th><th>严重度</th><th>描述</th><th>时间</th></tr>
-  ${anomalyRows}
-</table>` : ''}
-${report.signature ? `
-<h2>🔐 数字签名</h2>
-<p class="sig">${esc(report.signature)}</p>
-<p style="font-size:0.8rem;color:#888;">此签名基于 Ed25519，可使用公钥独立验证报告完整性。</p>` : ''}
-</body>
-</html>`;
-  }
-
-  /** 验证报告完整性 */
-  static verifyReport(report: AuditReport, publicKeyBase64: string): boolean {
-    try {
-      if (!report || typeof report !== 'object' || !report.signature) return false;
-      if (typeof publicKeyBase64 !== 'string' || publicKeyBase64.length === 0) return false;
-
-      const signInput = JSON.stringify({
-        id: report.id,
-        agentId: report.agentId,
-        summary: report.summary,
-        generatedAt: report.generatedAt,
-        recordsHash: Signer.hash(
-          report.records.map(r => r.hash ?? '').join('|')
-        ),
-        anomaliesHash: Signer.hash(
-          JSON.stringify(report.anomalies.map(a => ({ type: a.type, message: a.message, timestamp: a.timestamp })))
-        ),
-      });
-      return Signer.verify(Signer.hash(signInput), report.signature, publicKeyBase64);
-    } catch {
-      return false;
-    }
-  }
-
-  // --- 内部方法 ---
-
-  private filterByPeriod(records: DecisionRecord[], from?: string, to?: string): DecisionRecord[] {
-    return records.filter(r => {
-      if (from && r.timestamp < from) return false;
-      if (to && r.timestamp > to) return false;
-      return true;
-    });
-  }
-
-  private computeSummary(records: DecisionRecord[]): ReportSummary {
-    const tools = new Set<string>();
-    let totalToolCalls = 0;
-    let totalErrors = 0;
-    let totalDuration = 0;
-    let durationCount = 0;
-
-    for (const r of records) {
-      if (r.type === 'error') totalErrors++;
-      // duration !== undefined 且 >= 0（包括 0ms 的有效记录）
-      if (r.duration !== undefined && r.duration >= 0) {
-        totalDuration += r.duration;
-        durationCount++;
-      }
-      if (r.toolCalls) {
-        for (const tc of r.toolCalls) {
-          tools.add(tc.tool);
-          totalToolCalls++;
-        }
+      // 等待后重试（指数退避）
+      if (attempt < this.maxRetries) {
+        const delay = this.retryBaseDelayMs * Math.pow(2, attempt - 1);
+        await this.sleep(delay);
       }
     }
 
     return {
-      totalDecisions: records.length,
-      totalToolCalls,
-      totalErrors,
-      avgDuration: durationCount > 0 ? Math.round(totalDuration / durationCount) : 0,
-      uniqueTools: tools.size,
+      success: false,
+      error: lastError ?? `Failed after ${this.maxRetries} retries`,
     };
   }
 
-  private detectAnomalies(records: DecisionRecord[]): Anomaly[] {
-    const anomalies: Anomaly[] = [];
+  /**
+   * HTTP POST 请求
+   */
+  private async post<T = unknown>(
+    url: string,
+    body: unknown,
+    apiKey?: string
+  ): Promise<ApiResult<T>> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
 
-    // 检测高延迟
-    for (const r of records) {
-      if (r.duration !== undefined && r.duration > 10000) {
-        anomalies.push({
-          type: 'high_latency',
-          severity: r.duration > 30000 ? 'critical' : 'high',
-          message: `决策 ${r.id} 耗时 ${r.duration}ms，超过阈值`,
-          recordId: r.id,
-          timestamp: r.timestamp,
-        });
-      }
+    if (apiKey) {
+      headers['X-API-Key'] = apiKey;
     }
 
-    // 检测错误激增（至少有10条记录才触发）
-    if (records.length >= 10) {
-      const errorCount = records.filter(r => r.type === 'error').length;
-      if (errorCount / records.length > 0.1) {
-        anomalies.push({
-          type: 'error_spike',
-          severity: 'high',
-          message: `错误率 ${(errorCount / records.length * 100).toFixed(1)}%，超过10%阈值`,
-          timestamp: new Date().toISOString(),
-        });
-      }
-    }
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      });
 
-    // 检测异常工具调用（单一工具占比过高 > 70%）
-    if (records.length >= 5) {
-      const toolCounts = new Map<string, number>();
-      for (const r of records) {
-        if (r.toolCalls) {
-          for (const tc of r.toolCalls) {
-            toolCounts.set(tc.tool, (toolCounts.get(tc.tool) ?? 0) + 1);
-          }
-        }
-      }
-      const totalCalls = [...toolCounts.values()].reduce((a, b) => a + b, 0);
-      if (totalCalls > 0) {
-        for (const [tool, count] of toolCounts) {
-          const ratio = count / totalCalls;
-          if (ratio > 0.7) {
-            anomalies.push({
-              type: 'unusual_tool',
-              severity: 'medium',
-              message: `工具 "${tool}" 占比 ${(ratio * 100).toFixed(1)}%（${count}/${totalCalls}），可能存在过度依赖`,
-              timestamp: new Date().toISOString(),
-            });
-          }
-        }
-      }
-    }
+      const data = await response.json().catch(() => null);
 
-    // 检测PII泄露风险（输出中包含疑似PII关键词）
-    const piiPatterns = /\b(密码|password|secret|token|api[_-]?key|credit.?card|身份证|ssn)\b/i;
-    for (const r of records) {
-      const outputStr = JSON.stringify(r.output);
-      if (piiPatterns.test(outputStr)) {
-        anomalies.push({
-          type: 'pii_leak',
-          severity: 'critical',
-          message: `记录 ${r.id} 输出疑似包含敏感信息（密码/token/密钥等）`,
-          recordId: r.id,
-          timestamp: r.timestamp,
-        });
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `HTTP ${response.status}: ${data?.error ?? response.statusText}`,
+        };
       }
-    }
 
-    return anomalies;
+      return {
+        success: true,
+        data: data as T,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
+  }
+
+  /**
+   * 延迟工具函数
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
