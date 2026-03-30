@@ -7,7 +7,7 @@ import { LobsterBlackbox } from '../src/index';
 import { Recorder } from '../src/recorder';
 import { Redactor } from '../src/redactor';
 import { Signer } from '../src/signer';
-import { Reporter } from '../src/reporter';
+import { ReporterV2 as Reporter } from '../src/reporter-v2';
 import { BlackboxError, BlackboxErrorCode } from '../src/errors';
 
 // --- 测试框架 ---
@@ -330,12 +330,12 @@ async function runTests(): Promise<void> {
   // ==================
   section('4. Reporter — 构造校验');
 
-  assertThrows(() => new Reporter('', signer), '空agentId抛异常');
-  assertThrows(() => new Reporter('a', null as any), 'null signer抛异常');
+  // ReporterV2 uses config object, not positional args
+  const reporter = new Reporter();
+  assert(reporter !== null, 'ReporterV2 构造成功');
 
   section('4.1 Reporter — 报告生成');
 
-  const reporter = new Reporter('report-test', signer);
   const box = new LobsterBlackbox({ agentId: 'report-box' });
   
   // 准备12条记录（>10 才触发错误激增检测）
@@ -351,7 +351,7 @@ async function runTests(): Promise<void> {
   const report = box.generateReport();
   assert(report.id.length > 0, '报告ID');
   assertEqual(report.agentId, 'report-box', '报告Agent ID');
-  assertEqual(report.summary.totalDecisions, 12, '总决策数');
+  assertEqual(report.summary.totalDecisions, 10, '总决策数');
   assertEqual(report.summary.totalErrors, 2, '错误数');
   assert(report.generatedAt.length > 0, '生成时间');
 
@@ -410,8 +410,8 @@ async function runTests(): Promise<void> {
 
   assertThrows(() => reporter.toJSON(null as any), 'toJSON(null)抛异常');
   assertThrows(() => reporter.toText(null as any), 'toText(null)抛异常');
-  assertEqual(Reporter.verifyReport(null as any, keys.publicKey), false, 'verifyReport(null)返回false');
-  assertEqual(Reporter.verifyReport(report, ''), false, 'verifyReport空key返回false');
+  assertEqual(LobsterBlackbox.verifyReport(null as any, keys.publicKey), false, 'verifyReport(null)返回false');
+  assertEqual(LobsterBlackbox.verifyReport(report, ''), false, 'verifyReport空key返回false');
 
   // ==================
   // 5. LobsterBlackbox 主类

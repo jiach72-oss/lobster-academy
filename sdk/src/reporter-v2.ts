@@ -181,6 +181,7 @@ export class ReporterV2 {
    * 生成 JSON 格式报告
    */
   toJSON(data: ReportData): string {
+    if (!data) throw new Error('data is required');
     return JSON.stringify(data, null, 2);
   }
 
@@ -349,6 +350,7 @@ export class ReporterV2 {
    * 生成纯文本报告
    */
   toText(data: ReportData, summaryLength?: SummaryLength): string {
+    if (!data) throw new Error('data is required');
     const sl = summaryLength ?? this.defaultSummaryLength;
     const lines: string[] = [];
     const sep = '═'.repeat(60);

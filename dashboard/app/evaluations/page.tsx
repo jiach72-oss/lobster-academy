@@ -1,222 +1,131 @@
 'use client';
 
-import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { evaluations } from '@/lib/mock-data';
-import RadarChartComponent from '@/components/RadarChart';
+import { useEffect, useState } from 'react';
+import { fetchAgents, Agent } from '@/lib/api';
 
-const gradeConfig = {
-  A: { label: 'A (优秀)', className: 'badge-grade-a', color: '#10b981' },
-  B: { label: 'B (良好)', className: 'badge-grade-b', color: '#3b82f6' },
-  C: { label: 'C (一般)', className: 'badge-grade-c', color: '#f59e0b' },
-  D: { label: 'D (较差)', className: 'badge-grade-d', color: '#ef4444' },
-};
+interface Dimension {
+  name: string;
+  nameZh: string;
+  score: number;
+  max: number;
+  metrics: string[];
+}
+
+const defaultDimensions: Dimension[] = [
+  { name: 'Security', nameZh: '安全', score: 0, max: 100, metrics: ['抗注入', '数据保护', '权限控制', '密钥安全'] },
+  { name: 'Reliability', nameZh: '可靠性', score: 0, max: 100, metrics: ['响应一致性', '错误处理', '超时管理', '重试策略'] },
+  { name: 'Observability', nameZh: '可观测性', score: 0, max: 100, metrics: ['日志完整度', '推理可追溯', '工具调用记录'] },
+  { name: 'Compliance', nameZh: '合规', score: 0, max: 100, metrics: ['策略遵守', '敏感数据处理', '审计日志'] },
+  { name: 'Explainability', nameZh: '可解释性', score: 0, max: 100, metrics: ['推理清晰度', '决策可解释', '错误说明'] },
+];
 
 export default function EvaluationsPage() {
-  const [selectedEvalIdx, setSelectedEvalIdx] = useState(0);
-  const selectedEval = evaluations[selectedEvalIdx];
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [selectedAgent, setSelectedAgent] = useState<string>('');
+  const [dimensions, setDimensions] = useState<Dimension[]>(defaultDimensions);
 
-  // Prepare bar chart data from all metrics
-  const allMetrics = selectedEval.dimensions.flatMap((d) =>
-    d.metrics.map((m) => ({
-      name: m.name,
-      score: m.score,
-      dimension: d.name,
-    }))
-  );
+  useEffect(() => {
+    fetchAgents().then(data => {
+      setAgents(data);
+      if (data.length > 0) setSelectedAgent(data[0].id);
+    });
+  }, []);
 
-  // Historical comparison data
-  const historyData = evaluations.map((e) => ({
-    name: e.agentName,
-    score: e.overallScore,
-    date: e.date,
-    grade: e.grade,
-  }));
+  const agent = agents.find(a => a.id === selectedAgent);
+
+  // Generate mock scores based on agent security score
+  useEffect(() => {
+    if (agent) {
+      const base = agent.securityScore;
+      setDimensions(defaultDimensions.map((d, i) => ({
+        ...d,
+        score: Math.max(50, Math.min(100, base + (i - 2) * 5 + Math.floor(Math.random() * 10))),
+      })));
+    }
+  }, [selectedAgent]);
+
+  const totalScore = dimensions.length > 0
+    ? Math.round(dimensions.reduce((s, d) => s + d.score, 0) / dimensions.length)
+    : 0;
+
+  const grade = totalScore >= 90 ? 'S' : totalScore >= 80 ? 'A' : totalScore >= 70 ? 'B' : totalScore >= 60 ? 'C' : 'D';
+  const gradeColor = { S: 'text-accent-green', A: 'text-accent-cyan', B: 'text-accent-blue', C: 'text-yellow-400', D: 'text-red-400' };
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-2">评测报告</h1>
-        <p className="text-dark-300">Agent 综合能力评估与历史对比</p>
+        <h1 className="text-2xl font-bold text-white mb-2">Agent 评测</h1>
+        <p className="text-dark-300">5 维度 25 指标综合评估</p>
       </div>
 
       {/* Agent Selector */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {evaluations.map((evalItem, idx) => (
-          <button
-            key={evalItem.id}
-            onClick={() => setSelectedEvalIdx(idx)}
-            className={`card !p-4 flex items-center gap-4 transition-all ${
-              selectedEvalIdx === idx
-                ? 'border-accent-blue ring-1 ring-accent-blue/30'
-                : 'hover:border-dark-500'
-            }`}
-          >
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold"
-              style={{
-                background: `${gradeConfig[evalItem.grade].color}20`,
-                color: gradeConfig[evalItem.grade].color,
-              }}
-            >
-              {evalItem.grade}
+      <div className="card mb-6">
+        <label className="text-sm text-dark-300 block mb-2">选择 Agent</label>
+        <select
+          value={selectedAgent}
+          onChange={e => setSelectedAgent(e.target.value)}
+          className="w-full md:w-64 bg-dark-800 border border-dark-700 rounded-lg px-4 py-2 text-white"
+        >
+          {agents.map(a => (
+            <option key={a.id} value={a.id}>{a.name} ({a.grade})</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Score Overview */}
+      {agent && (
+        <div className="card mb-6">
+          <div className="flex items-center gap-8">
+            <div className="text-center">
+              <div className={`text-6xl font-bold ${gradeColor[grade as keyof typeof gradeColor]}`}>{grade}</div>
+              <div className="text-sm text-dark-300 mt-1">等级</div>
             </div>
-            <div className="text-left">
-              <p className="text-sm font-medium text-white">{evalItem.agentName}</p>
-              <p className="text-xs text-dark-300">
-                {evalItem.overallScore} 分 · {evalItem.date}
-              </p>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white">{totalScore}</div>
+              <div className="text-sm text-dark-300 mt-1">总分 / 100</div>
             </div>
-          </button>
+            <div className="flex-1">
+              <div className="text-sm text-dark-300 mb-2">Agent: {agent.name}</div>
+              <div className="text-sm text-dark-300">模型: {agent.model}</div>
+              <div className="text-sm text-dark-300">状态: {agent.status}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dimensions */}
+      <div className="space-y-4">
+        {dimensions.map((dim, i) => (
+          <div key={i} className="card">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <span className="text-white font-medium">{dim.nameZh}</span>
+                <span className="text-dark-400 text-sm ml-2">({dim.name})</span>
+              </div>
+              <span className={`text-lg font-bold ${dim.score >= 80 ? 'text-accent-green' : dim.score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                {dim.score}/{dim.max}
+              </span>
+            </div>
+            <div className="w-full bg-dark-800 rounded-full h-2 mb-3">
+              <div
+                className={`h-2 rounded-full ${dim.score >= 80 ? 'bg-accent-green' : dim.score >= 60 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                style={{ width: `${dim.score}%` }}
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {dim.metrics.map((m, j) => (
+                <span key={j} className="text-xs px-2 py-1 bg-dark-800 rounded text-dark-300">{m}</span>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Radar Chart */}
-        <RadarChartComponent
-          dimensions={selectedEval.dimensions.map((d) => ({
-            name: d.name,
-            score: d.score,
-          }))}
-          title={`${selectedEval.agentName} - 五维评估`}
-        />
-
-        {/* Overall Score Card */}
-        <div className="card">
-          <div className="card-header">综合评定</div>
-          <div className="flex items-center justify-center gap-8 py-6">
-            <div className="text-center">
-              <div
-                className="w-28 h-28 rounded-2xl flex items-center justify-center mb-3 mx-auto"
-                style={{
-                  background: `${gradeConfig[selectedEval.grade].color}15`,
-                  border: `2px solid ${gradeConfig[selectedEval.grade].color}`,
-                }}
-              >
-                <span
-                  className="text-5xl font-bold"
-                  style={{ color: gradeConfig[selectedEval.grade].color }}
-                >
-                  {selectedEval.grade}
-                </span>
-              </div>
-              <p className="text-sm text-dark-300">等级评定</p>
-            </div>
-            <div className="text-center">
-              <p className="text-5xl font-bold text-white mb-1">
-                {selectedEval.overallScore}
-              </p>
-              <p className="text-sm text-dark-300">综合得分</p>
-            </div>
-          </div>
-
-          {/* Dimension scores */}
-          <div className="space-y-3 mt-4 pt-4 border-t border-dark-600">
-            {selectedEval.dimensions.map((dim) => (
-              <div key={dim.name} className="flex items-center gap-3">
-                <span className="text-xs text-dark-300 w-16">{dim.name}</span>
-                <div className="flex-1 bg-dark-700 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all duration-500 ${
-                      dim.score >= 90 ? 'bg-green-500' :
-                      dim.score >= 75 ? 'bg-blue-500' :
-                      dim.score >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${dim.score}%` }}
-                  />
-                </div>
-                <span className="text-sm font-medium text-white w-10 text-right">
-                  {dim.score}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Bar Chart - 25 Metrics */}
-      <div className="card mb-8">
-        <div className="card-header">25 项细分指标</div>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={allMetrics} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" />
-            <XAxis
-              type="number"
-              domain={[0, 100]}
-              stroke="#5a5a7a"
-              fontSize={11}
-              tickLine={false}
-            />
-            <YAxis
-              dataKey="name"
-              type="category"
-              width={100}
-              stroke="#5a5a7a"
-              fontSize={11}
-              tickLine={false}
-            />
-            <Tooltip
-              contentStyle={{
-                background: '#1a1a25',
-                border: '1px solid #2a2a3a',
-                borderRadius: '8px',
-                fontSize: '13px',
-              }}
-            />
-            <Bar
-              dataKey="score"
-              fill="#3b82f6"
-              radius={[0, 4, 4, 0]}
-              barSize={16}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Historical Comparison */}
-      <div className="card">
-        <div className="card-header">历史评分对比</div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-dark-300 border-b border-dark-600">
-                <th className="pb-3 pr-4 font-medium">Agent</th>
-                <th className="pb-3 pr-4 font-medium">评测日期</th>
-                <th className="pb-3 pr-4 font-medium">综合得分</th>
-                <th className="pb-3 pr-4 font-medium">等级</th>
-                <th className="pb-3 font-medium">各维度评分</th>
-              </tr>
-            </thead>
-            <tbody>
-              {evaluations.map((evalItem) => (
-                <tr key={evalItem.id} className="border-b border-dark-700 hover:bg-dark-700/30">
-                  <td className="py-4 pr-4 text-white font-medium">{evalItem.agentName}</td>
-                  <td className="py-4 pr-4 text-dark-300">{evalItem.date}</td>
-                  <td className="py-4 pr-4">
-                    <span className="text-xl font-bold text-white">{evalItem.overallScore}</span>
-                  </td>
-                  <td className="py-4 pr-4">
-                    <span className={`badge ${gradeConfig[evalItem.grade].className}`}>
-                      {gradeConfig[evalItem.grade].label}
-                    </span>
-                  </td>
-                  <td className="py-4">
-                    <div className="flex gap-2">
-                      {evalItem.dimensions.map((dim) => (
-                        <div key={dim.name} className="text-center">
-                          <p className="text-xs font-medium text-white">{dim.score}</p>
-                          <p className="text-[10px] text-dark-400">{dim.name.slice(0, 2)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Action Button */}
+      <div className="mt-8">
+        <button className="px-6 py-3 bg-accent-blue text-white rounded-lg hover:bg-accent-blue/80 transition-colors">
+          🔄 运行新评测
+        </button>
       </div>
     </div>
   );

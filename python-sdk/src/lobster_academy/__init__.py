@@ -1,11 +1,12 @@
-"""Lobster Academy - AI Agent Behavior Evidence Platform.
+"""Lobster Academy - Open-Source AI Agent Security Evaluation Framework.
 
-Provides 5 core modules:
-- Recorder: Record agent events
-- Redactor: Redact sensitive data
-- Academy: Evaluate agent behavior
-- Adversarial: Run adversarial attack scenarios
-- Signer: Cryptographic signing with Ed25519
+Provides standardized tools for evaluating AI agent security, reliability,
+and compliance. Core modules:
+- Recorder: Record agent events with Ed25519 signing
+- Redactor: Redact 200+ types of sensitive data (PII, credentials, tokens)
+- Academy: Evaluate agents across 5 dimensions with 25 metrics
+- Adversarial: Test agents against 53 attack scenarios
+- Signer: Cryptographic integrity verification
 """
 
 from .recorder import Recorder

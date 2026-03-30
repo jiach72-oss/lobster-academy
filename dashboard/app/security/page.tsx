@@ -1,163 +1,119 @@
 'use client';
 
-import { useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { securityTestResults, attackScenarios } from '@/lib/mock-data';
+import { useEffect, useState } from 'react';
+import { fetchAgents, Agent } from '@/lib/api';
 import AttackResultTable from '@/components/AttackResultTable';
 
-const COLORS = ['#10b981', '#f59e0b', '#ef4444'];
+interface AttackCategory {
+  name: string;
+  nameZh: string;
+  count: number;
+  passed: number;
+  failed: number;
+  scenarios: { id: string; name: string; severity: string; status: string }[];
+}
+
+const defaultCategories: AttackCategory[] = [
+  { name: 'prompt_injection', nameZh: '提示注入', count: 12, passed: 11, failed: 1, scenarios: [] },
+  { name: 'data_exfiltration', nameZh: '数据泄露', count: 10, passed: 10, failed: 0, scenarios: [] },
+  { name: 'privilege_escalation', nameZh: '权限越界', count: 8, passed: 7, failed: 1, scenarios: [] },
+  { name: 'logic_bypass', nameZh: '逻辑绕过', count: 8, passed: 8, failed: 0, scenarios: [] },
+  { name: 'dos', nameZh: '拒绝服务', count: 5, passed: 5, failed: 0, scenarios: [] },
+  { name: 'injection', nameZh: '注入攻击', count: 5, passed: 4, failed: 1, scenarios: [] },
+  { name: 'social_engineering', nameZh: '社会工程', count: 5, passed: 5, failed: 0, scenarios: [] },
+];
 
 export default function SecurityPage() {
-  const [selectedAgentIdx, setSelectedAgentIdx] = useState(0);
-  const selectedResult = securityTestResults[selectedAgentIdx];
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [selectedAgent, setSelectedAgent] = useState<string>('');
+  const [categories, setCategories] = useState<AttackCategory[]>(defaultCategories);
 
-  // Category breakdown
-  const categoryMap = new Map<string, { passed: number; failed: number; critical: number }>();
-  attackScenarios.forEach((s) => {
-    if (!categoryMap.has(s.category)) {
-      categoryMap.set(s.category, { passed: 0, failed: 0, critical: 0 });
-    }
-    const cat = categoryMap.get(s.category)!;
-    if (s.status === 'passed') cat.passed++;
-    else if (s.status === 'failed') cat.failed++;
-    else cat.critical++;
-  });
+  useEffect(() => {
+    fetchAgents().then(data => {
+      setAgents(data);
+      if (data.length > 0) setSelectedAgent(data[0].id);
+    });
+  }, []);
 
-  const categoryStats = Array.from(categoryMap.entries()).map(([name, stats]) => ({
-    name,
-    ...stats,
-    total: stats.passed + stats.failed + stats.critical,
-    rate: Math.round((stats.passed / (stats.passed + stats.failed + stats.critical)) * 100),
-  }));
-
-  const pieData = [
-    { name: '通过', value: selectedResult.passed },
-    { name: '失败', value: selectedResult.failed },
-    { name: '严重', value: selectedResult.critical },
-  ];
+  const agent = agents.find(a => a.id === selectedAgent);
+  const totalScenarios = categories.reduce((s, c) => s + c.count, 0);
+  const totalPassed = categories.reduce((s, c) => s + c.passed, 0);
+  const totalFailed = categories.reduce((s, c) => s + c.failed, 0);
+  const defenseRate = totalScenarios > 0 ? Math.round(totalPassed / totalScenarios * 100) : 0;
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-2">安全测试</h1>
-        <p className="text-dark-300">53 种攻击场景测试结果与漏洞分析</p>
+        <p className="text-dark-300">53 种攻击场景对抗性测试</p>
       </div>
 
       {/* Agent Selector */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        {securityTestResults.map((result, idx) => (
-          <button
-            key={result.id}
-            onClick={() => setSelectedAgentIdx(idx)}
-            className={`card !p-4 flex items-center gap-4 transition-all ${
-              selectedAgentIdx === idx
-                ? 'border-accent-blue ring-1 ring-accent-blue/30'
-                : 'hover:border-dark-500'
-            }`}
-          >
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-              result.defenseRate >= 90 ? 'bg-green-500/15 text-green-400' :
-              result.defenseRate >= 75 ? 'bg-blue-500/15 text-blue-400' :
-              result.defenseRate >= 60 ? 'bg-yellow-500/15 text-yellow-400' :
-              'bg-red-500/15 text-red-400'
-            }`}>
-              <span className="text-xl font-bold">{result.defenseRate}%</span>
+      <div className="card mb-6">
+        <label className="text-sm text-dark-300 block mb-2">选择 Agent</label>
+        <select
+          value={selectedAgent}
+          onChange={e => setSelectedAgent(e.target.value)}
+          className="w-full md:w-64 bg-dark-800 border border-dark-700 rounded-lg px-4 py-2 text-white"
+        >
+          {agents.map(a => (
+            <option key={a.id} value={a.id}>{a.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="card text-center">
+          <p className="text-3xl font-bold text-white">{totalScenarios}</p>
+          <p className="text-xs text-dark-300 mt-1">攻击场景</p>
+        </div>
+        <div className="card text-center">
+          <p className="text-3xl font-bold text-accent-green">{totalPassed}</p>
+          <p className="text-xs text-dark-300 mt-1">防御成功</p>
+        </div>
+        <div className="card text-center">
+          <p className="text-3xl font-bold text-red-400">{totalFailed}</p>
+          <p className="text-xs text-dark-300 mt-1">防御失败</p>
+        </div>
+        <div className="card text-center">
+          <p className={`text-3xl font-bold ${defenseRate >= 90 ? 'text-accent-green' : defenseRate >= 70 ? 'text-yellow-400' : 'text-red-400'}`}>
+            {defenseRate}%
+          </p>
+          <p className="text-xs text-dark-300 mt-1">防御率</p>
+        </div>
+      </div>
+
+      {/* Categories */}
+      <div className="space-y-4">
+        {categories.map((cat, i) => (
+          <div key={i} className="card">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <span className="text-white font-medium">{cat.nameZh}</span>
+                <span className="text-dark-400 text-sm ml-2">({cat.name})</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-accent-green text-sm">✅ {cat.passed}</span>
+                <span className="text-red-400 text-sm">❌ {cat.failed}</span>
+                <span className="text-white font-bold">{Math.round(cat.passed / cat.count * 100)}%</span>
+              </div>
             </div>
-            <div className="text-left">
-              <p className="text-sm font-medium text-white">{result.agentName}</p>
-              <p className="text-xs text-dark-300">{result.date}</p>
+            <div className="w-full bg-dark-800 rounded-full h-2">
+              <div
+                className="h-2 rounded-full bg-accent-green"
+                style={{ width: `${(cat.passed / cat.count) * 100}%` }}
+              />
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
-      {/* Dashboard Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Defense Rate Gauge */}
-        <div className="card">
-          <div className="card-header">防御成功率</div>
-          <div className="flex flex-col items-center py-4">
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  startAngle={90}
-                  endAngle={-270}
-                  dataKey="value"
-                  strokeWidth={0}
-                >
-                  {pieData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: '#1a1a25',
-                    border: '1px solid #2a2a3a',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="text-center -mt-4">
-              <p className="text-3xl font-bold text-white">{selectedResult.defenseRate}%</p>
-              <p className="text-xs text-dark-300">防御成功率</p>
-            </div>
-          </div>
-          <div className="flex justify-center gap-4 mt-2">
-            {pieData.map((item, idx) => (
-              <div key={item.name} className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[idx] }} />
-                <span className="text-xs text-dark-200">{item.name}: {item.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="card lg:col-span-2">
-          <div className="card-header">攻击类别统计</div>
-          <div className="space-y-3">
-            {categoryStats.map((cat) => (
-              <div key={cat.name}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-dark-100">{cat.name}</span>
-                  <span className="text-xs text-dark-300">
-                    {cat.passed}/{cat.total} 通过 ({cat.rate}%)
-                  </span>
-                </div>
-                <div className="flex gap-0.5 h-3 rounded-full overflow-hidden bg-dark-700">
-                  <div
-                    className="bg-green-500 transition-all"
-                    style={{ width: `${(cat.passed / cat.total) * 100}%` }}
-                  />
-                  <div
-                    className="bg-yellow-500 transition-all"
-                    style={{ width: `${(cat.failed / cat.total) * 100}%` }}
-                  />
-                  <div
-                    className="bg-red-500 transition-all"
-                    style={{ width: `${(cat.critical / cat.total) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Attack Scenarios Table */}
-      <div className="card">
-        <div className="card-header">
-          攻击场景详情 ({selectedResult.agentName} · 共 {attackScenarios.length} 项)
-        </div>
-        <AttackResultTable scenarios={attackScenarios} />
+      {/* Action */}
+      <div className="mt-8">
+        <button className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+          🛡️ 运行安全测试
+        </button>
       </div>
     </div>
   );

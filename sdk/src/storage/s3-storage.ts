@@ -405,7 +405,7 @@ export class S3Storage implements StorageAdapter {
 
   async saveCertificate(cert: Certificate): Promise<void> {
     const { PutObjectCommand } = (this as any)._cmds;
-    const key = `${this.prefix}/certificates/${cert.agentId}/${cert.serialNumber}.json`;
+    const key = `${this.prefix}/certificates/${cert.agentId}/${cert.agentId}.json`;
     await this.client.send(new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -447,7 +447,7 @@ export class S3Storage implements StorageAdapter {
 
   async saveReport(report: AuditReport): Promise<void> {
     const { PutObjectCommand } = (this as any)._cmds;
-    const key = `${this.prefix}/reports/${report.agentId}/${report.serialNumber}.json`;
+    const key = `${this.prefix}/reports/${report.agentId}/${report.agentId}.json`;
     await this.client.send(new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,

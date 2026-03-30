@@ -1,96 +1,52 @@
-'use client';
-
 import Link from 'next/link';
-import { Agent } from '@/lib/mock-data';
+import { Agent } from '@/lib/api';
 
-interface Props {
-  agent: Agent;
-}
-
-const statusConfig = {
-  running: { label: '运行中', className: 'badge-running', dot: 'bg-blue-500 animate-pulse' },
-  idle: { label: '空闲', className: 'badge-idle', dot: 'bg-slate-500' },
-  error: { label: '异常', className: 'badge-error', dot: 'bg-red-500 animate-pulse' },
-  testing: { label: '测试中', className: 'badge-testing', dot: 'bg-yellow-500 animate-pulse' },
+const statusColors = {
+  running: 'bg-accent-green',
+  idle: 'bg-dark-400',
+  error: 'bg-red-400',
+  testing: 'bg-yellow-400',
 };
 
-export default function AgentCard({ agent }: Props) {
-  const config = statusConfig[agent.status];
-  const scoreColor = agent.securityScore >= 90
-    ? 'text-green-400'
-    : agent.securityScore >= 75
-    ? 'text-blue-400'
-    : agent.securityScore >= 60
-    ? 'text-yellow-400'
-    : 'text-red-400';
+const gradeColors: Record<string, string> = {
+  S: 'text-accent-green',
+  A: 'text-accent-cyan',
+  B: 'text-accent-blue',
+  C: 'text-yellow-400',
+  D: 'text-red-400',
+};
 
+export default function AgentCard({ agent }: { agent: Agent }) {
   return (
-    <div className="card hover:border-dark-500 transition-colors group">
-      <div className="flex items-start justify-between mb-4">
+    <Link href={`/sessions/${agent.id}`} className="card block hover:bg-dark-800/50 transition-colors">
+      <div className="flex items-start justify-between mb-3">
         <div>
-          <h3 className="text-white font-semibold text-base group-hover:text-accent-blue transition-colors">
-            {agent.name}
-          </h3>
-          <p className="text-xs text-dark-300 mt-0.5">{agent.model}</p>
+          <h3 className="text-white font-medium">{agent.name}</h3>
+          <p className="text-sm text-dark-300">{agent.model}</p>
         </div>
-        <span className={`badge ${config.className}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`}></span>
-          {config.label}
+        <div className="flex items-center gap-2">
+          <span className={`text-2xl font-bold ${gradeColors[agent.grade] || 'text-white'}`}>
+            {agent.grade}
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 text-xs text-dark-300 mb-3">
+        <span className="flex items-center gap-1">
+          <span className={`w-2 h-2 rounded-full ${statusColors[agent.status]}`}></span>
+          {agent.status === 'running' ? '运行中' : agent.status === 'idle' ? '空闲' : agent.status === 'error' ? '异常' : '测试中'}
         </span>
+        <span>{agent.sessionsCount} 会话</span>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        <div className="text-center">
-          <p className={`text-xl font-bold ${scoreColor}`}>
-            {agent.securityScore}
-          </p>
-          <p className="text-xs text-dark-400">安全评分</p>
-        </div>
-        <div className="text-center">
-          <p className="text-xl font-bold text-white">{agent.sessionsCount}</p>
-          <p className="text-xs text-dark-400">会话数</p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm font-medium text-dark-200">
-            {new Date(agent.lastActive).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
-          </p>
-          <p className="text-xs text-dark-400">最后活跃</p>
-        </div>
+      {/* Score Bar */}
+      <div className="w-full bg-dark-800 rounded-full h-2">
+        <div
+          className={`h-2 rounded-full ${agent.securityScore >= 80 ? 'bg-accent-green' : agent.securityScore >= 60 ? 'bg-yellow-400' : 'bg-red-400'}`}
+          style={{ width: `${agent.securityScore}%` }}
+        />
       </div>
-
-      {/* Score bar */}
-      <div className="mt-4">
-        <div className="w-full bg-dark-700 rounded-full h-1.5">
-          <div
-            className={`h-1.5 rounded-full transition-all duration-500 ${
-              agent.securityScore >= 90
-                ? 'bg-green-500'
-                : agent.securityScore >= 75
-                ? 'bg-blue-500'
-                : agent.securityScore >= 60
-                ? 'bg-yellow-500'
-                : 'bg-red-500'
-            }`}
-            style={{ width: `${agent.securityScore}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="mt-4 flex gap-2">
-        <Link
-          href={`/sessions/sess-001`}
-          className="flex-1 text-center text-xs py-2 rounded-lg bg-dark-700 text-dark-200 hover:bg-dark-600 hover:text-white transition-colors"
-        >
-          查看会话
-        </Link>
-        <Link
-          href="/security"
-          className="flex-1 text-center text-xs py-2 rounded-lg bg-dark-700 text-dark-200 hover:bg-dark-600 hover:text-white transition-colors"
-        >
-          安全测试
-        </Link>
-      </div>
-    </div>
+      <p className="text-xs text-dark-300 mt-1">安全评分: {agent.securityScore}/100</p>
+    </Link>
   );
 }

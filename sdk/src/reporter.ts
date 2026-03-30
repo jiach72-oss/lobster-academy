@@ -309,7 +309,7 @@ export class LobsterReporter {
       if (!response.ok) {
         return {
           success: false,
-          error: `HTTP ${response.status}: ${data?.error ?? response.statusText}`,
+          error: `HTTP ${response.status}: ${((data as any)?.error) || response.statusText}`,
         };
       }
 
