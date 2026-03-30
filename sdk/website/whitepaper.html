@@ -345,7 +345,7 @@ Score = ∏(score_i ^ w_i)
 <p><strong>零侵入原则</strong>：Agent 应用无需修改任何业务代码，通过 SDK 的 monkey-patching 或 middleware 注入机制实现自动录制。</p>
 <pre><code>
 # 用户集成代码（仅需 3 行）
-from lobster_blackbox import Blackbox
+from mirrorai import Blackbox
 
 bb = Blackbox(api_key="lb_live_xxx")
 bb.attach(my_agent)  # 自动注入录制钩子
