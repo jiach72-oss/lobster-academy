@@ -3,22 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>龙虾学院 — 文档中心</title>
-  <meta name="description" content="龙虾学院全部文档：技术白皮书、评测标准、提升指南、SDK 文档。">
+  <title>技术文档 / Documentation — Lobster Academy</title>
+  <meta name="description" content="深入了解Lobster Academy的技术原理、评测方法和实现细节。原创算法、架构白皮书、评测标准全公开。">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #09090f; --card: #14141f; --border: #252538;
-      --text: #e8e8f0; --dim: #7878a0; --orange: #ff6b35;
-      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24;
+      --bg: #09090f; --bg2: #0f0f18; --card: #14141f; --card-hover: #1c1c2e;
+      --border: #252538; --text: #e8e8f0; --dim: #7878a0;
+      --orange: #ff6b35; --orange-glow: rgba(255,107,53,0.25);
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
       --font: 'Inter', -apple-system, system-ui, sans-serif;
-      --mono: 'JetBrains Mono', monospace;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
     }
+    html { scroll-behavior: smooth; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
-    a { color: var(--orange); text-decoration: none; }
+    a { color: var(--orange); text-decoration: none; transition: 0.2s; }
     a:hover { opacity: 0.85; }
 
+    /* Nav */
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
@@ -26,165 +29,225 @@
       height: 60px; padding: 0 2rem;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-brand { font-size: 1.2rem; font-weight: 800; }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
     .nav-brand em { font-style: normal; color: var(--orange); }
     .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a { color: var(--dim); font-size: 0.88rem; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; font-weight: 500; }
     .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--orange); color: #fff !important; padding: 0.45rem 1.1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; }
+    .nav-github {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+      color: var(--text) !important; transition: all 0.2s;
+    }
+    .nav-github:hover { border-color: var(--orange); background: rgba(255,107,53,0.1); }
 
-    .page { max-width: 850px; margin: 0 auto; padding: 5rem 2rem 4rem; }
-    .page h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.5rem; }
-    .page .sub { color: var(--dim); margin-bottom: 3rem; font-size: 1.05rem; }
-
-    h2 {
-      font-size: 1.3rem; font-weight: 800; margin: 2.5rem 0 1rem;
-      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    /* Hero */
+    .hero {
+      min-height: 50vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 7rem 2rem 3rem; position: relative;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--orange-glow), transparent 70%);
+      opacity: 0.15; pointer-events: none;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900;
+      line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.03em;
+      position: relative; z-index: 1;
+    }
+    .hero h1 .hl {
+      background: linear-gradient(135deg, var(--orange), #ff9a5c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem); color: var(--dim);
+      max-width: 600px; position: relative; z-index: 1;
     }
 
-    .doc-card {
-      display: block; background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.5rem 2rem; margin: 0.8rem 0;
-      transition: 0.2s;
+    /* Section */
+    .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .sec-head { margin-bottom: 2.5rem; }
+    .sec-head h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .sec-head p { color: var(--dim); font-size: 0.95rem; }
+    .sec-badge {
+      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+      margin-bottom: 0.6rem;
     }
-    .doc-card:hover { border-color: var(--orange); }
-    .doc-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
-    .doc-card p { color: var(--dim); font-size: 0.88rem; margin: 0; }
-    .doc-card .meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.78rem; color: var(--dim); }
-    .doc-card .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 5px; font-size: 0.72rem; font-weight: 700; }
+    .badge-orange { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+    .badge-blue { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+    .badge-green { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+
+    /* Core Doc Cards (large) */
+    .core-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .core-card {
+      display: flex; flex-direction: column;
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 2rem; transition: 0.3s; position: relative; overflow: hidden;
+      text-decoration: none; color: var(--text);
+    }
+    .core-card:hover { border-color: var(--orange); transform: translateY(-4px); background: var(--card-hover); opacity: 1; }
+    .core-card .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .core-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); }
+    .core-card .desc { color: var(--dim); font-size: 0.9rem; margin-bottom: 1.2rem; flex: 1; }
+    .core-card .card-tag {
+      display: inline-block; padding: 0.25rem 0.7rem; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 700; align-self: flex-start;
+    }
     .tag-core { background: rgba(255,107,53,0.15); color: var(--orange); }
-    .tag-sdk { background: rgba(96,165,250,0.15); color: var(--blue); }
-    .tag-guide { background: rgba(52,211,153,0.15); color: var(--green); }
+    .tag-new { background: rgba(52,211,153,0.15); color: var(--green); }
+    .tag-method { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .tag-dev { background: rgba(167,139,250,0.15); color: var(--purple); }
+    .tag-security { background: rgba(248,113,113,0.15); color: var(--red); }
 
-    .cmd-box {
-      background: #0c0c14; border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem 1.5rem; font-family: var(--mono); font-size: 0.88rem;
-      margin: 1rem 0;
+    /* Guide Cards (smaller) */
+    .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
+    .guide-card {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.5rem; transition: 0.3s;
+      text-decoration: none; color: var(--text);
     }
-    .cmd-box .prompt { color: var(--green); }
+    .guide-card:hover { border-color: var(--orange); transform: translateY(-2px); opacity: 1; }
+    .guide-card .card-icon { font-size: 2rem; flex-shrink: 0; }
+    .guide-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; color: var(--text); }
+    .guide-card .desc { color: var(--dim); font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .guide-card .card-tag {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 5px;
+      font-size: 0.7rem; font-weight: 700;
+    }
 
+    /* CTA */
+    .cta-section { padding: 4rem 2rem; }
+    .cta {
+      max-width: 700px; margin: 0 auto; text-align: center;
+      background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,154,92,0.03));
+      border: 1px solid rgba(255,107,53,0.25); border-radius: 16px;
+      padding: 3.5rem 2.5rem;
+    }
+    .cta h2 { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .cta p { color: var(--dim); margin-bottom: 1.5rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.8rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; border: none; transition: 0.2s;
+    }
+    .btn-p { background: var(--orange); color: #fff; box-shadow: 0 0 30px var(--orange-glow); }
+    .btn-p:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--orange-glow); opacity: 1; }
+
+    /* Footer */
     .footer {
-      border-top: 1px solid var(--border); padding: 2rem;
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
       text-align: center; color: var(--dim); font-size: 0.82rem;
     }
-    @media (max-width: 640px) { .nav-links a:not(:last-child) { display: none; } }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+
+    @media (max-width: 640px) {
+      .nav-links a:not(.nav-cta):not(.nav-github) { display: none; }
+      .core-grid { grid-template-columns: 1fr; }
+      .guide-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
+<!-- Nav -->
 <nav class="nav">
-  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-brand">🦞 <em>龙虾学院</em> Lobster Academy</div>
   <div class="nav-links">
     <a href="index.html">首页</a>
     <a href="about.html">关于</a>
-    <a href="#docs">文档</a>
+    <a href="docs.html">文档</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy" class="nav-github" target="_blank">⭐ Star on GitHub</a>
+    <a href="index.html#start" class="nav-cta">开始评测</a>
   </div>
 </nav>
 
-<div class="page">
-  <h1>📚 文档中心</h1>
-  <p class="sub">所有你需要的资料都在这里</p>
+<!-- Hero -->
+<section class="hero">
+  <h1>技术文档 / <span class="hl">Documentation</span></h1>
+  <p class="hero-sub">深入了解Lobster Academy的技术原理、评测方法和实现细节<br>Deep dive into our technology, evaluation methodology, and implementation details</p>
+</section>
 
-  <!-- 快速开始 -->
-  <h2>🚀 快速开始</h2>
-
-  <div class="cmd-box">
-    <div><span class="prompt">$</span> npx lobster-check</div>
-    <div style="color: var(--dim); margin-top: 0.3rem;">→ 免费评测你的 Agent，5分钟获得 S/A/B/C/D 评级</div>
+<!-- 核心技术文档 -->
+<section class="section">
+  <div class="sec-head">
+    <span class="sec-badge badge-orange">CORE / 核心</span>
+    <h2>核心技术文档</h2>
+    <p>理解我们的技术，从这里开始 / Understand our technology, start here</p>
   </div>
-
-  <div class="cmd-box">
-    <div><span class="prompt">$</span> npm install @lobster-academy/blackbox</div>
-    <div style="color: var(--dim); margin-top: 0.3rem;">→ 安装 Blackbox SDK，开始录制 Agent 行为</div>
+  <div class="core-grid">
+    <a class="core-card" href="whitepaper.html">
+      <div class="card-icon">🏗️</div>
+      <h3>技术架构白皮书<br><span style="font-size:0.85rem;color:var(--dim);font-weight:500;">Technical Whitepaper</span></h3>
+      <p class="desc">三层架构设计——评测层、证据层、监控层。从Agent行为录制到防篡改审计的完整技术链路。<br>Three-layer architecture: Evaluation, Evidence, and Monitoring. Complete technical pipeline from Agent behavior recording to tamper-proof auditing.</p>
+      <span class="card-tag tag-core">核心 / Core</span>
+    </a>
+    <a class="core-card" href="algorithms.html">
+      <div class="card-icon">🔬</div>
+      <h3>原创算法详解<br><span style="font-size:0.85rem;color:var(--dim);font-weight:500;">Original Algorithms</span></h3>
+      <p class="desc">熵动力学监控、狄利克雷行为建模、轻量防篡改——3个原创算法的原理、数学基础和性能数据。<br>Entropy Dynamics, Dirichlet Behavior Model, Lightweight Audit Chain — principles, math foundations, and performance data of our 3 original algorithms.</p>
+      <span class="card-tag tag-new">新 / New</span>
+    </a>
+    <a class="core-card" href="eval-standard.html">
+      <div class="card-icon">📊</div>
+      <h3>评测标准<br><span style="font-size:0.85rem;color:var(--dim);font-weight:500;">Evaluation Standard</span></h3>
+      <p class="desc">5维度25项指标的完整方法论。如何给Agent打分？为什么这些指标重要？<br>Complete methodology of 5 dimensions and 25 indicators. How do we score Agents? Why do these metrics matter?</p>
+      <span class="card-tag tag-method">方法论 / Methodology</span>
+    </a>
   </div>
+</section>
 
-  <!-- 核心文档 -->
-  <h2>📄 核心文档</h2>
+<!-- 实用指南 -->
+<section class="section">
+  <div class="sec-head">
+    <span class="sec-badge badge-blue">GUIDES / 指南</span>
+    <h2>实用指南</h2>
+    <p>从理解到实践 / From understanding to practice</p>
+  </div>
+  <div class="guide-grid">
+    <a class="guide-card" href="upgrade-guide.html">
+      <div class="card-icon">🚀</div>
+      <div>
+        <h3>Agent提升指南<br><span style="font-size:0.8rem;color:var(--dim);font-weight:500;">Upgrade Guide</span></h3>
+        <p class="desc">从D级到S级的完整路径。每个等级需要什么？怎么改进？<br>Complete path from D to S grade. What does each level require? How to improve?</p>
+        <span class="card-tag tag-dev">开发者 / Developer</span>
+      </div>
+    </a>
+    <a class="guide-card" href="attacks.html">
+      <div class="card-icon">🛡️</div>
+      <div>
+        <h3>攻击场景库<br><span style="font-size:0.8rem;color:var(--dim);font-weight:500;">Attack Scenarios</span></h3>
+        <p class="desc">53种Agent攻击场景全览——提示注入、数据泄露、权限越权、逻辑绕过。你可能不知道的Agent安全风险。<br>53 Agent attack scenarios — prompt injection, data leakage, privilege escalation, logic bypass. Security risks you may not know about.</p>
+        <span class="card-tag tag-security">安全 / Security</span>
+      </div>
+    </a>
+  </div>
+</section>
 
-  <a class="doc-card" href="whitepaper.html">
-    <h3>技术白皮书 v1.0</h3>
-    <p>龙虾学院的技术方案全景。三层架构（评测层+证据层+监控层）、Blackbox 引擎设计、性能基准、竞品对比。</p>
-    <div class="meta">
-      <span class="tag tag-core">核心</span>
-      <span>面向 CTO/架构师</span>
-      <span>~4200字</span>
-    </div>
-  </a>
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta">
+    <h2>准备好评估你的Agent了吗？<br><span style="font-size:1rem;color:var(--dim);font-weight:500;">Ready to evaluate your Agent?</span></h2>
+    <p>免费 · 5分钟 · 获得 S/A/B/C/D 评级<br>Free · 5 minutes · Get your S/A/B/C/D rating</p>
+    <a href="index.html#start" class="btn btn-p">🦞 免费评测 / Free Evaluation</a>
+  </div>
+</section>
 
-  <a class="doc-card" href="eval-standard.html">
-    <h3>评测标准 v1.0</h3>
-    <p>5 维度 25 项指标的完整方法论。每项的检查方法、评分标准（0-满分分档）、改进建议。附 50 个动态评测用例。</p>
-    <div class="meta">
-      <span class="tag tag-core">核心</span>
-      <span>评测方法论</span>
-      <span>25项指标</span>
-    </div>
-  </a>
-
-  <a class="doc-card" href="upgrade-guide.html">
-    <h3>Agent 评级提升指南</h3>
-    <p>从 D 级到 S 级的完整路径。每个等级需要补什么，怎么补，代码示例。含可打印的检查清单。</p>
-    <div class="meta">
-      <span class="tag tag-guide">指南</span>
-      <span>面向开发者</span>
-      <span>含代码示例</span>
-    </div>
-  </a>
-
-  <!-- SDK 文档 -->
-  <h2>🦞 SDK 文档</h2>
-
-  <a class="doc-card" href="https://github.com/jiach72-oss/lobster-academy/blob/main/sdk/README.md">
-    <h3>Blackbox SDK README</h3>
-    <p>npm 包使用文档。30秒上手、API 参考、4个框架插件（OpenAI/LangChain/CrewAI/自定义）集成指南。</p>
-    <div class="meta">
-      <span class="tag tag-sdk">SDK</span>
-      <span>API 参考</span>
-      <span>117项测试通过</span>
-    </div>
-  </a>
-
-  <a class="doc-card" href="whitepaper.html">
-    <h3>Blackbox 技术白皮书 v0.1</h3>
-    <p>录制引擎、脱敏算法（PII 识别）、Ed25519 签名体系、报告生成器的技术实现细节。</p>
-    <div class="meta">
-      <span class="tag tag-sdk">SDK</span>
-      <span>技术细节</span>
-    </div>
-  </a>
-
-  <!-- 项目管理 -->
-  <h2>📋 项目文档</h2>
-
-  <a class="doc-card" href="https://github.com/jiach72-oss/lobster-academy/blob/main/README.md">
-    <h3>项目总览 README</h3>
-    <p>龙虾学院项目结构、快速开始、评测体系、定价、联系方式。</p>
-    <div class="meta">
-      <span class="tag tag-core">核心</span>
-      <span>项目首页</span>
-    </div>
-  </a>
-
-  <a class="doc-card" href="https://github.com/jiach72-oss/lobster-academy/blob/main/CONTRIBUTING.md">
-    <h3>贡献指南</h3>
-    <p>如何报告 Bug、提交代码、改进文档、修改评测标准。</p>
-    <div class="meta">
-      <span class="tag tag-guide">指南</span>
-      <span>开发者参与</span>
-    </div>
-  </a>
-
-  <a class="doc-card" href="https://github.com/jiach72-oss/lobster-academy/blob/main/CHANGELOG.md">
-    <h3>Changelog</h3>
-    <p>版本变更记录。</p>
-    <div class="meta">
-      <span>版本历史</span>
-    </div>
-  </a>
-
-</div>
-
+<!-- Footer -->
 <footer class="footer">
-  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子</p>
+  <div class="footer-links">
+    <a href="https://github.com/jiach72-oss/lobster-academy">GitHub</a>
+    <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">npm</a>
+    <a href="index.html">首页</a>
+    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+  </div>
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
 </footer>
 
 </body>

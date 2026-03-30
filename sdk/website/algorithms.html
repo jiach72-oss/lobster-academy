@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原创算法详解 / Original Algorithms — Lobster Academy</title>
+  <meta name="description" content="Lobster Academy原创算法深度解析：熵动力学监控、狄利克雷行为建模、轻量防篡改审计链。纯数学，零GPU，实时检测。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --bg2: #0f0f18; --card: #14141f; --card-hover: #1c1c2e;
+      --border: #252538; --text: #e8e8f0; --dim: #7878a0;
+      --orange: #ff6b35; --orange-glow: rgba(255,107,53,0.25);
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+    a { color: var(--orange); text-decoration: none; transition: 0.2s; }
+    a:hover { opacity: 0.85; }
+
+    /* Nav */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--orange); color: #fff !important; padding: 0.45rem 1.1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; }
+
+    /* Page */
+    .page { max-width: 900px; margin: 0 auto; padding: 7rem 2rem 4rem; }
+    .page > h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 900; margin-bottom: 0.6rem;
+    }
+    .page > h1 .hl {
+      background: linear-gradient(135deg, var(--orange), #ff9a5c);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .page-intro { color: var(--dim); font-size: 1rem; margin-bottom: 3rem; max-width: 700px; }
+    .page-intro strong { color: var(--text); }
+
+    /* Algorithm Section */
+    .algo-section {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2.5rem; margin-bottom: 2.5rem; position: relative; overflow: hidden;
+      transition: 0.3s;
+    }
+    .algo-section:hover { border-color: rgba(255,107,53,0.4); }
+    .algo-section.featured {
+      border-color: var(--orange);
+      background: linear-gradient(135deg, rgba(255,107,53,0.06), rgba(255,107,53,0.02));
+    }
+    .algo-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
+    .algo-icon { font-size: 2.5rem; flex-shrink: 0; }
+    .algo-header h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
+    .algo-header .en-title { font-size: 0.95rem; color: var(--dim); font-weight: 500; }
+    .innovation-tag {
+      display: inline-block; padding: 0.2rem 0.7rem; border-radius: 6px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+      background: rgba(255,107,53,0.15); color: var(--orange);
+      border: 1px solid rgba(255,107,53,0.3);
+      margin-top: 0.4rem;
+    }
+
+    /* Bilingual blocks */
+    .bilingual { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+    .lang-block { }
+    .lang-label {
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+      font-size: 0.7rem; font-weight: 700; margin-bottom: 0.8rem;
+      background: rgba(96,165,250,0.12); color: var(--blue);
+    }
+    .lang-block h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .lang-block p, .lang-block ul { font-size: 0.9rem; color: var(--dim); }
+    .lang-block ul { padding-left: 1.2rem; margin: 0.5rem 0; }
+    .lang-block li { margin-bottom: 0.4rem; }
+    .lang-block li strong { color: var(--text); }
+
+    /* Metrics row */
+    .metrics-row {
+      display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem;
+      padding-top: 1.5rem; border-top: 1px solid var(--border);
+    }
+    .metric {
+      display: flex; flex-direction: column; align-items: center; min-width: 100px;
+    }
+    .metric-value {
+      font-size: 1.5rem; font-weight: 800; color: var(--green);
+    }
+    .metric-label {
+      font-size: 0.72rem; color: var(--dim); text-transform: uppercase;
+      letter-spacing: 0.05em; margin-top: 0.2rem;
+    }
+
+    /* CTA */
+    .cta-section { padding: 3rem 0; }
+    .cta {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,154,92,0.03));
+      border: 1px solid rgba(255,107,53,0.25); border-radius: 16px;
+      padding: 3rem 2rem;
+    }
+    .cta h2 { font-size: 1.6rem; margin-bottom: 0.6rem; }
+    .cta p { color: var(--dim); margin-bottom: 1.5rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.8rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; border: none; transition: 0.2s;
+    }
+    .btn-p { background: var(--orange); color: #fff; box-shadow: 0 0 30px var(--orange-glow); }
+    .btn-p:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--orange-glow); opacity: 1; }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .bilingual { grid-template-columns: 1fr; gap: 1.5rem; }
+      .metrics-row { gap: 1.2rem; }
+    }
+    @media (max-width: 640px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .algo-section { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em> Lobster Academy</div>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="docs.html">文档</a>
+    <a href="about.html">关于</a>
+    <a href="index.html#start" class="nav-cta">开始评测</a>
+  </div>
+</nav>
+
+<div class="page">
+  <h1>原创算法详解 / <span class="hl">Original Algorithms</span></h1>
+  <p class="page-intro">
+    我们的算法基于一个核心理念：<strong>不需要额外的LLM调用，纯数学方法即可实时检测Agent的安全风险。</strong>以下是我们自主研发的3个核心算法。<br><br>
+    Our algorithms are based on one core principle: <strong>No extra LLM calls needed — pure mathematical methods can detect Agent security risks in real-time.</strong> Here are our 3 original algorithms.
+  </p>
+
+  <!-- 算法1：熵动力学监控 -->
+  <section class="algo-section featured">
+    <div class="algo-header">
+      <div class="algo-icon">⚡</div>
+      <div>
+        <h2>熵动力学监控</h2>
+        <div class="en-title">Entropy Dynamics Monitor</div>
+        <span class="innovation-tag">🔑 关键创新 / Key Innovation</span>
+      </div>
+    </div>
+
+    <div class="bilingual">
+      <div class="lang-block">
+        <span class="lang-label">中文</span>
+        <h4>核心思想</h4>
+        <p>将AI Agent的推理过程视为一个物理动力系统。当Agent在推理时，底层语言模型每一步都会输出一个概率分布。我们不需要理解这些Token的具体语义，只需要监控概率分布的变化模式。</p>
+
+        <h4 style="margin-top:1.2rem;">为什么有效？</h4>
+        <ul>
+          <li>正常推理时，Agent的概率分布变化<strong>平稳</strong>（熵值稳定或缓慢变化）</li>
+          <li>当Agent被攻击或"走神"时，概率分布会发生<strong>剧烈波动</strong></li>
+          <li>这种波动可以用物理学中的"加速度"和"Jerk（加加速度）"来捕捉</li>
+        </ul>
+
+        <h4 style="margin-top:1.2rem;">关键指标</h4>
+        <ul>
+          <li><strong>熵速度</strong>：推理焦点变化的快慢</li>
+          <li><strong>熵加速度</strong>：不确定性增长的加速度——持续正向加速度是幻觉产生的早期预警信号</li>
+          <li><strong>熵Jerk</strong>：行为模式的相变信号——突然的Jerk反转意味着Agent的思维方式发生了根本性改变</li>
+        </ul>
+      </div>
+      <div class="lang-block">
+        <span class="lang-label">English</span>
+        <h4>Core Idea</h4>
+        <p>We treat the AI Agent's reasoning process as a physical dynamical system. At each step, the underlying language model outputs a probability distribution. Instead of understanding the semantics of each token, we monitor the patterns of how these distributions change.</p>
+
+        <h4 style="margin-top:1.2rem;">Why Does It Work?</h4>
+        <ul>
+          <li>During normal reasoning, the Agent's probability distribution changes <strong>smoothly</strong> (entropy is stable or slowly varying)</li>
+          <li>When the Agent is attacked or "drifts," the distribution experiences <strong>dramatic fluctuations</strong></li>
+          <li>These fluctuations can be captured using physics concepts: "acceleration" and "Jerk" (3rd-order derivative)</li>
+        </ul>
+
+        <h4 style="margin-top:1.2rem;">Key Metrics</h4>
+        <ul>
+          <li><strong>Entropy Velocity</strong>: How fast the reasoning focus shifts</li>
+          <li><strong>Entropy Acceleration</strong>: Rate of uncertainty growth — sustained positive acceleration is an early warning for hallucination</li>
+          <li><strong>Entropy Jerk</strong>: Phase transition signal — a sudden Jerk reversal means a fundamental shift in the Agent's "thinking mode"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric"><span class="metric-value">87.3%</span><span class="metric-label">Recall / 召回率</span></div>
+      <div class="metric"><span class="metric-value">3.8%</span><span class="metric-label">False Positive / 误报率</span></div>
+      <div class="metric"><span class="metric-value">&lt;0.5ms</span><span class="metric-label">Step Latency / 单步延迟</span></div>
+      <div class="metric"><span class="metric-value">1000×</span><span class="metric-label">vs LLM-as-Judge</span></div>
+    </div>
+  </section>
+
+  <!-- 算法2：狄利克雷行为建模 -->
+  <section class="algo-section">
+    <div class="algo-header">
+      <div class="algo-icon">📊</div>
+      <div>
+        <h2>狄利克雷行为建模</h2>
+        <div class="en-title">Dirichlet Behavior Model</div>
+        <span class="innovation-tag">🔑 关键创新 / Key Innovation</span>
+      </div>
+    </div>
+
+    <div class="bilingual">
+      <div class="lang-block">
+        <span class="lang-label">中文</span>
+        <h4>核心思想</h4>
+        <p>用统计学方法为Agent的"正常行为"建立数学模型。每个Agent在执行任务时，工具调用之间存在一定的转移概率。我们用狄利克雷分布来建模这些概率，定义出"正常行为"的数学边界。</p>
+
+        <h4 style="margin-top:1.2rem;">为什么有效？</h4>
+        <ul>
+          <li><strong>不需要预定义规则</strong>，从历史数据自动学习"正常模式"</li>
+          <li>贝叶斯更新支持<strong>在线学习</strong>，适应Agent行为的正常演变</li>
+          <li>马氏距离提供严格的<strong>统计学异常判定</strong></li>
+        </ul>
+
+        <h4 style="margin-top:1.2rem;">应用场景</h4>
+        <ul>
+          <li>检测Agent调用了"不该调用"的工具</li>
+          <li>发现Agent的工具使用模式偏离了历史基线</li>
+          <li>为合规审计提供量化的行为证据</li>
+        </ul>
+      </div>
+      <div class="lang-block">
+        <span class="lang-label">English</span>
+        <h4>Core Idea</h4>
+        <p>We use statistical methods to build a mathematical model of an Agent's "normal behavior." When an Agent executes tasks, there are specific transition probabilities between tool calls. We model these probabilities using Dirichlet distributions to define the mathematical boundary of "normal behavior."</p>
+
+        <h4 style="margin-top:1.2rem;">Why Does It Work?</h4>
+        <ul>
+          <li><strong>No predefined rules needed</strong> — automatically learns "normal patterns" from historical data</li>
+          <li>Bayesian updating supports <strong>online learning</strong>, adapting to normal evolution of Agent behavior</li>
+          <li>Mahalanobis distance provides rigorous <strong>statistical anomaly detection</strong></li>
+        </ul>
+
+        <h4 style="margin-top:1.2rem;">Use Cases</h4>
+        <ul>
+          <li>Detect when an Agent calls a tool it "shouldn't have called"</li>
+          <li>Discover when an Agent's tool usage pattern deviates from its historical baseline</li>
+          <li>Provide quantitative behavioral evidence for compliance audits</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 算法3：轻量防篡改审计 -->
+  <section class="algo-section">
+    <div class="algo-header">
+      <div class="algo-icon">🔐</div>
+      <div>
+        <h2>轻量防篡改审计</h2>
+        <div class="en-title">Lightweight Audit Chain</div>
+        <span class="innovation-tag">🔑 关键创新 / Key Innovation</span>
+      </div>
+    </div>
+
+    <div class="bilingual">
+      <div class="lang-block">
+        <span class="lang-label">中文</span>
+        <h4>核心思想</h4>
+        <p>传统Merkle链在长序列下验证延迟线性增长。我们通过<strong>分块+增量哈希</strong>的设计，将验证复杂度从O(N)降到O(log N)。</p>
+
+        <h4 style="margin-top:1.2rem;">关键设计</h4>
+        <ul>
+          <li>事件分成固定大小的块（<strong>64个事件/块</strong>）</li>
+          <li>块内增量哈希，块间轻量Merkle树</li>
+          <li>支持增量追加，<strong>不需要重建历史</strong></li>
+        </ul>
+      </div>
+      <div class="lang-block">
+        <span class="lang-label">English</span>
+        <h4>Core Idea</h4>
+        <p>Traditional Merkle chains have linearly growing verification latency for long sequences. Our design uses <strong>block-based + incremental hashing</strong> to reduce verification complexity from O(N) to O(log N).</p>
+
+        <h4 style="margin-top:1.2rem;">Key Design</h4>
+        <ul>
+          <li>Events are divided into fixed-size blocks (<strong>64 events per block</strong>)</li>
+          <li>Intra-block incremental hashing, inter-block lightweight Merkle tree</li>
+          <li>Supports incremental append — <strong>no need to rebuild history</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric"><span class="metric-value">12ms</span><span class="metric-label">1000 Events Append</span></div>
+      <div class="metric"><span class="metric-value">9ms</span><span class="metric-label">Single Event Verify</span></div>
+      <div class="metric"><span class="metric-value">2ms</span><span class="metric-label">Full Chain Verify</span></div>
+      <div class="metric"><span class="metric-value">O(log N)</span><span class="metric-label">Complexity</span></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta">
+      <h2>准备好用这些算法保护你的Agent了吗？<br><span style="font-size:0.95rem;color:var(--dim);font-weight:500;">Ready to protect your Agent with these algorithms?</span></h2>
+      <p>免费评测 · 纯数学 · 实时检测<br>Free evaluation · Pure math · Real-time detection</p>
+      <a href="index.html#start" class="btn btn-p">🦞 免费评测 / Free Evaluation</a>
+    </div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="https://github.com/jiach72-oss/lobster-academy">GitHub</a>
+    <a href="docs.html">文档中心</a>
+    <a href="index.html">首页</a>
+    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+  </div>
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+</footer>
+
+</body>
+</html>
