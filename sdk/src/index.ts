@@ -155,6 +155,18 @@ export type { CriteriaStatus, CriteriaEntry, SOC2Report } from './compliance/soc
 export { ComplianceExporter } from './compliance/exporter';
 export type { ComplianceReport } from './compliance/exporter';
 
+// ─────────────────────────────────────────────
+// 自适应攻击生成模块（UCB 多臂老虎机）
+// ─────────────────────────────────────────────
+export { AdaptiveFuzzer, MUTATIONS } from './adaptive-fuzzer';
+export type { FuzzerConfig, AttackArm, FuzzingResult, MutatedAttack, MutationType } from './adaptive-fuzzer';
+
+// ─────────────────────────────────────────────
+// 轻量防篡改审计模块
+// ─────────────────────────────────────────────
+export { LightweightAudit } from './lightweight-audit';
+export type { AuditEvent, AuditEntry, VerificationResult, ChainVerificationResult, AuditConfig } from './lightweight-audit';
+
 /**
  * 验证 BlackboxConfig
  * @throws {BlackboxError} 配置无效时

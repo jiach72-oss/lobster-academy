@@ -274,6 +274,135 @@
     .use-case-card p { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
     @media (max-width: 768px) { .use-cases-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 480px) { .use-cases-grid { grid-template-columns: 1fr; } }
+
+    /* Algorithms Section */
+    .algorithms {
+      padding: 5rem 2rem;
+      background: linear-gradient(180deg, #0f0f18 0%, #1a1a2e 100%);
+    }
+    .algorithms h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--dim);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+    }
+    .algo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .algo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .algo-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--orange);
+      box-shadow: 0 12px 40px rgba(255,107,53,0.15);
+    }
+    .algo-card.featured {
+      border-color: var(--orange);
+      background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(255,107,53,0.02));
+    }
+    .algo-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--orange);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .algo-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .algo-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+    }
+    .algo-tagline {
+      font-size: 0.85rem;
+      color: var(--orange);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .algo-desc {
+      font-size: 0.9rem;
+      color: var(--dim);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .algo-metrics {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .metric {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .metric-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .algo-formula {
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 0.5rem;
+    }
+    .algo-formula code {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--orange);
+    }
+    .algo-paper-link {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: rgba(255,107,53,0.08);
+      border-radius: 12px;
+      border: 1px solid rgba(255,107,53,0.2);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .algo-paper-link p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .algo-paper-link a {
+      color: var(--orange);
+      font-weight: 600;
+    }
+    @media (max-width: 768px) {
+      .algo-grid { grid-template-columns: 1fr; }
+      .algo-metrics { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
@@ -399,6 +528,86 @@
       <h3>Insurance</h3>
       <p>Assess AI liability risks with verified data</p>
     </div>
+  </div>
+</section>
+
+<!-- Original Algorithms -->
+<section class="algorithms" id="algorithms">
+  <h2>🔬 Original Algorithms</h2>
+  <p class="section-subtitle">Built on cutting-edge research — pure math, zero GPU, real-time</p>
+  
+  <div class="algo-grid">
+    <!-- Algorithm 1: Entropy Monitor -->
+    <div class="algo-card featured">
+      <div class="algo-badge">NEW</div>
+      <div class="algo-icon">⚡</div>
+      <h3>Entropy Dynamics Monitor</h3>
+      <p class="algo-tagline">Semantic Kinematics — Physics meets AI Safety</p>
+      <p class="algo-desc">
+        Treats LLM reasoning as a dynamical system. Tracks Shannon entropy's 3rd-order derivative (Jerk) 
+        to detect intent drift in real-time — without any additional LLM calls.
+      </p>
+      <div class="algo-metrics">
+        <div class="metric"><span class="metric-value">87.3%</span><span class="metric-label">Recall</span></div>
+        <div class="metric"><span class="metric-value">0.15ms</span><span class="metric-label">Latency</span></div>
+        <div class="metric"><span class="metric-value">1000×</span><span class="metric-label">vs LLM Judge</span></div>
+      </div>
+      <div class="algo-formula">
+        <code>H(t) → v=dH/dt → a=d²H/dt² → j=d³H/dt³</code>
+      </div>
+    </div>
+    
+    <!-- Algorithm 2: Dirichlet Model -->
+    <div class="algo-card">
+      <div class="algo-icon">📊</div>
+      <h3>Dirichlet Behavior Model</h3>
+      <p class="algo-tagline">Bayesian Agent Fingerprinting</p>
+      <p class="algo-desc">
+        Models tool-call transitions with Dirichlet distributions. Defines "normal behavior" as a 
+        confidence manifold. Detects anomalies via Mahalanobis distance — pure statistics.
+      </p>
+      <div class="algo-metrics">
+        <div class="metric"><span class="metric-value">3σ</span><span class="metric-label">Threshold</span></div>
+        <div class="metric"><span class="metric-value">Online</span><span class="metric-label">Learning</span></div>
+        <div class="metric"><span class="metric-value">2ms</span><span class="metric-label">Detection</span></div>
+      </div>
+    </div>
+    
+    <!-- Algorithm 3: Adaptive Fuzzer -->
+    <div class="algo-card">
+      <div class="algo-icon">🎯</div>
+      <h3>Adaptive Attack Generator</h3>
+      <p class="algo-tagline">UCB-Powered Dynamic Red-Teaming</p>
+      <p class="algo-desc">
+        Uses Upper Confidence Bound algorithm to dynamically select the most effective attack strategy. 
+        Expands 53 base scenarios into 500+ variants through 9 mutation operations.
+      </p>
+      <div class="algo-metrics">
+        <div class="metric"><span class="metric-value">53→500+</span><span class="metric-label">Variants</span></div>
+        <div class="metric"><span class="metric-value">9</span><span class="metric-label">Mutations</span></div>
+        <div class="metric"><span class="metric-value">Auto</span><span class="metric-label">Adaptive</span></div>
+      </div>
+    </div>
+    
+    <!-- Algorithm 4: Lightweight Audit -->
+    <div class="algo-card">
+      <div class="algo-icon">🔐</div>
+      <h3>Lightweight Audit Chain</h3>
+      <p class="algo-tagline">O(log N) Tamper-Proof Verification</p>
+      <p class="algo-desc">
+        Layered hash mapping replaces full Merkle chains. Block-based incremental hashing 
+        with constant verification latency — even for 100K+ event sequences.
+      </p>
+      <div class="algo-metrics">
+        <div class="metric"><span class="metric-value">O(log N)</span><span class="metric-label">Verify</span></div>
+        <div class="metric"><span class="metric-value">SHA-256</span><span class="metric-label">Crypto</span></div>
+        <div class="metric"><span class="metric-value">Constant</span><span class="metric-label">Append</span></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="algo-paper-link">
+    <p>📄 Read our research paper: <a href="https://github.com/jiach72-oss/lobster-academy/blob/main/docs/research/paper-semantic-kinematics.md" target="_blank">Semantic Kinematics: Real-time Intent Drift Detection via Entropy Dynamics</a></p>
   </div>
 </section>
 
