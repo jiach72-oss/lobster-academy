@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * 🦞 Lobster — 龙虾学院 CLI
+ * 🪞 Lobster — 明镜 CLI
  * 
- * 一行命令接入龙虾学院，让每只 AI 龙虾都拥有自己的黑匣子。
+ * 一行命令接入明镜，让每只 AI 龙虾都拥有自己的黑匣子。
  */
 
 import { Command } from 'commander';
@@ -29,10 +29,10 @@ const program = new Command();
 
 program
   .name('lobster')
-  .description(chalk.blue('🦞 龙虾学院 CLI — 每只龙虾都该有一个黑匣子'))
+  .description(chalk.blue('🪞 明镜 CLI — 每只龙虾都该有一个黑匣子'))
   .version(version, '-v, --version', '显示版本号')
   .addHelpText('before', `
-${chalk.blue.bold('🦞 龙虾学院 Blackbox SDK')}
+${chalk.blue.bold('🪞 明镜 Blackbox SDK')}
 ${chalk.dim('每只 AI 龙虾都该有一个黑匣子')}
 `);
 

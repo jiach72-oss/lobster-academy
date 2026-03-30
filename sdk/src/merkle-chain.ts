@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Merkle 哈希链模块
+ * 明镜 Blackbox SDK — Merkle 哈希链模块
  * 
  * 事件哈希链实现，确保事件序列不可篡改：
  *   Event₁ → hash₁ = SHA256(event₁.data)

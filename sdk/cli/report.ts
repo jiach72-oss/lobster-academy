@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — CLI 报告生成命令
+ * 明镜 Blackbox — CLI 报告生成命令
  * 从本地存储的记录中生成审计报告
  * 
  * Usage: npx lobster-report [--from 2026-03-01] [--to 2026-03-31] [--format text|json]
@@ -114,7 +114,7 @@ async function generateReport(options: ReportOptions): Promise<void> {
 
 function printHelp(): void {
   console.log(`
-🦞 lobster-report — 龙虾学院审计报告生成工具
+🪞 lobster-report — 明镜审计报告生成工具
 
 用法:
   lobster-report [选项]

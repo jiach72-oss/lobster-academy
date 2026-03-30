@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — record 录制命令
+ * 明镜 CLI — record 录制命令
  */
 
 import { Command } from 'commander';

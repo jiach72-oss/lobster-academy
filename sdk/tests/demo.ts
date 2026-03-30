@@ -1,12 +1,12 @@
 /**
- * 龙虾学院 Blackbox SDK — 端到端演示
+ * 明镜 Blackbox SDK — 端到端演示
  * 展示完整的录制 → 脱敏 → 签名 → 报告 流程
  */
 
 import { LobsterBlackbox } from '../src/index';
 
 async function demo() {
-  console.log('🦞 龙虾学院 Blackbox SDK — 端到端演示\n');
+  console.log('🪞 明镜 Blackbox SDK — 端到端演示\n');
 
   // Step 1: 生成密钥对
   console.log('═══ Step 1: 生成 Ed25519 密钥对 ═══');

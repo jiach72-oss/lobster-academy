@@ -46,7 +46,7 @@ function makeEvent(id: string, type = 'action', data: Record<string, unknown> = 
 // ─────────────────────────────────────────────
 
 async function runTests() {
-  console.log('\n🦞 lightweight-audit 单元测试\n');
+  console.log('\n🪞 lightweight-audit 单元测试\n');
 
   // ─── 测试1: 单事件追加和验证 ───
   {

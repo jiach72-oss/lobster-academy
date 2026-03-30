@@ -1,4 +1,4 @@
-// Lobster Academy Dashboard API Client
+// MirrorAI Dashboard API Client
 // 对接 SDK 数据
 
 export interface Agent {

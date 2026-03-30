@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Anthropic 插件
+ * 明镜 Blackbox SDK — Anthropic 插件
  * 自动拦截 Anthropic Claude API 调用并录制到黑匣子
  */
 

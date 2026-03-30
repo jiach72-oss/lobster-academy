@@ -1,7 +1,7 @@
 # 🔒 安全指南 / Security Guide
 
-Lobster Academy SDK 的安全最佳实践和配置指南。
-Security best practices and configuration guide for Lobster Academy SDK.
+MirrorAI SDK 的安全最佳实践和配置指南。
+Security best practices and configuration guide for MirrorAI SDK.
 
 ---
 

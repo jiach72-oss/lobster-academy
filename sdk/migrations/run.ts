@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 /**
- * 龙虾学院 Blackbox — 数据库迁移工具
+ * 明镜 Blackbox — 数据库迁移工具
  *
  * 用法：
  *   npx ts-node migrations/run.ts init    # 创建表结构

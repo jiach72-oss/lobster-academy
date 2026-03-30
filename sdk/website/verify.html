@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦞 龙虾学院 · 证书验证</title>
+<title>🪞 明镜 · 证书验证</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
@@ -34,8 +34,8 @@
 <body>
 <div class="container">
   <div class="card">
-    <div class="logo">🦞</div>
-    <h1>龙虾学院 · 证书验证</h1>
+    <div class="logo">🪞</div>
+    <h1>明镜 · 证书验证</h1>
     <p class="subtitle">LOBBSTER ACADEMY — Certificate Verification</p>
 
     <!-- 输入证书 -->
@@ -83,7 +83,7 @@ function verifyCert() {
 
   // 显示证书信息
   document.getElementById('cert-id').textContent = cert.certId || '—';
-  document.getElementById('grade').textContent = `🦞 ${cert.grade || '?'} 级`;
+  document.getElementById('grade').textContent = `🪞 ${cert.grade || '?'} 级`;
 
   if (cert.dimensions) {
     const dimNames = { security: '安全', reliability: '可靠', observability: '观测', compliance: '合规', explainability: '解释' };

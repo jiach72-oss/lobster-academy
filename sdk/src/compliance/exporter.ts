@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 合规报告导出器
+ * 明镜 Blackbox SDK — 合规报告导出器
  * 支持 HTML、JSON、Markdown 格式导出
  */
 
@@ -92,7 +92,7 @@ export class ComplianceExporter {
   </style>
 </head>
 <body>
-  <h1>🦞 EU AI Act 合规报告</h1>
+  <h1>🪞 EU AI Act 合规报告</h1>
   <p><strong>报告 ID:</strong> ${report.id}</p>
   <p><strong>生成时间:</strong> ${report.generatedAt}</p>
 
@@ -300,7 +300,7 @@ export class ComplianceExporter {
   </style>
 </head>
 <body>
-  <h1>🦞 SOC2 审计报告</h1>
+  <h1>🪞 SOC2 审计报告</h1>
   <p><strong>报告 ID:</strong> ${report.id}</p>
   <p><strong>Agent:</strong> ${this.escapeHtml(report.agentId)}</p>
   <p><strong>审计期间:</strong> ${report.auditPeriod.start} — ${report.auditPeriod.end}</p>

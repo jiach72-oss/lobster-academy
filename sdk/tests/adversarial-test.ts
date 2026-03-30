@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 对抗性评测引擎测试
+ * 明镜 Blackbox — 对抗性评测引擎测试
  * 覆盖引擎初始化、场景加载、攻击执行、报告生成
  */
 
@@ -141,7 +141,7 @@ function makePerfectAgent(): (input: string) => Promise<string> {
 // ─────────────────────────────────────────────
 
 export async function runAdversarialTests(): Promise<void> {
-  console.log('🦞 龙虾学院 Blackbox — 对抗性评测引擎测试\n');
+  console.log('🪞 明镜 Blackbox — 对抗性评测引擎测试\n');
   console.log('═══════════════════════════════════════════════════\n');
 
   // ==================

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — report 报告命令
+ * 明镜 CLI — report 报告命令
  */
 
 import { Command } from 'commander';
@@ -39,7 +39,7 @@ export const reportCommand = new Command('report')
       const reportData: ReportData = {
         id: `report-${Date.now()}`,
         agentId: opts.agent,
-        title: `龙虾学院审计报告 — ${opts.agent}`,
+        title: `明镜审计报告 — ${opts.agent}`,
         totalScore: 0,
         grade: 'N/A',
         dimensions: [],

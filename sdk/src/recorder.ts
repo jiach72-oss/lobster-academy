@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 录制引擎
+ * 明镜 Blackbox SDK — 录制引擎
  * 核心模块：记录Agent的每一次决策
  */
 

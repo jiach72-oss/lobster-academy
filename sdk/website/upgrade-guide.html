@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent 评级提升指南 — 龙虾学院</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <title>Agent 评级提升指南 — 明镜</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪞</text></svg>">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -71,7 +71,7 @@
 <body>
 
 <nav class="nav">
-  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-brand">🪞 <em>明镜</em></div>
   <div class="nav-links">
     <a href="index.html">首页</a>
     <a href="about.html">关于</a>
@@ -81,7 +81,7 @@
 </nav>
 
 <div class="doc-content">
-<h1>龙虾学院 · Agent 评级提升指南</h1>
+<h1>明镜 · Agent 评级提升指南</h1>
 <p>> 让你的 Agent 从 D 级升到 S 级的完整路径</p>
 <hr>
 <h2>前言</h2>
@@ -227,7 +227,7 @@ app.post('/agent', (req, res) =&gt; {
 </code></pre>
 <h3>③ 决策记录（+3-5 分）</h3>
 <pre><code>
-import { LobsterBlackbox } from '@lobster-academy/blackbox';
+import { LobsterBlackbox } from '@mirrorai/blackbox';
 
 const box = new LobsterBlackbox({ agentId: 'my-agent' });
 
@@ -255,7 +255,7 @@ async function callWithRetry(fn, maxRetries = 3) {
 </code></pre>
 <h3>⑤ 数据脱敏（+2-4 分）</h3>
 <pre><code>
-import { Redactor } from '@lobster-academy/blackbox';
+import { Redactor } from '@mirrorai/blackbox';
 
 const redactor = new Redactor({ patterns: ['email', 'phone', 'idCard'] });
 
@@ -367,7 +367,7 @@ breaker.fallback(() =&gt; ({ error: '服务暂不可用' }));
 <p><strong>目标分数：90 分</strong> | <strong>金融/医疗级</strong></p>
 <h3>① 提示注入全面防护（+3-6 分）</h3>
 <pre><code>
-import { Guardrails } from '@lobster-academy/guardrails';
+import { Guardrails } from '@mirrorai/guardrails';
 
 const guard = new Guardrails({
   rules: ['no_prompt_injection', 'no_pii_leak', 'no_jailbreak'],
@@ -451,7 +451,7 @@ npx lobster-check --full-eval
 <th>解决的检查项</th>
 </tr></thead><tbody>
 <tr>
-<td><code>@lobster-academy/blackbox</code></td>
+<td><code>@mirrorai/blackbox</code></td>
 <td>行为录制+报告</td>
 <td>OBS-03, EXP-01, EXP-02</td>
 </tr>
@@ -487,7 +487,7 @@ npx lobster-check --full-eval
 </tr>
 <hr>
 </tbody></table>
-<p><em>© 2026 龙虾学院 Lobster Academy</em></p>
+<p><em>© 2026 明镜 MirrorAI</em></p>
 </div>
 
 <div class="doc-nav">
@@ -499,10 +499,10 @@ npx lobster-check --full-eval
   <div class="footer-links">
     <a href="docs.html">📚 文档中心</a>
     <a href="https://github.com/jiach72-oss/lobster-academy">GitHub</a>
-    <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">npm</a>
-    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+    <a href="https://www.npmjs.com/package/@mirrorai/blackbox">npm</a>
+    <a href="mailto:dev@mirrorai.ai">联系我们</a>
   </div>
-  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+  <p>© 2026 明镜 MirrorAI · 每只Agent都该有一面明镜 · MIT License</p>
 </footer>
 
 </body>

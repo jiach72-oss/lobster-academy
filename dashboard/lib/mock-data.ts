@@ -1,4 +1,4 @@
-// 模拟数据 - Lobster Academy Dashboard
+// 模拟数据 - MirrorAI Dashboard
 // 为"AI Agent 行为证据平台"提供可视化数据
 
 export interface Agent {

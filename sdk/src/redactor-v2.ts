@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Aho-Corasick 脱敏引擎 v2
+ * 明镜 Blackbox SDK — Aho-Corasick 脱敏引擎 v2
  * 
  * 三层分层匹配架构：
  *   Tier 1: Aho-Corasick 多模式快速扫描（O(N+M)）

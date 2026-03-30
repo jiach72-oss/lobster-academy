@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — S3 存储适配器
+ * 明镜 Blackbox SDK — S3 存储适配器
  * 支持按 session 归档，JSON/Parquet 格式导出
  */
 

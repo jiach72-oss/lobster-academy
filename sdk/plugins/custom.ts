@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 自定义 Agent 适配器
+ * 明镜 Blackbox SDK — 自定义 Agent 适配器
  * 适用于任何自定义 Agent 框架，提供通用录制接口
  */
 

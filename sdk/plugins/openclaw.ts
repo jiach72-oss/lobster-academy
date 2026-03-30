@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — OpenClaw Agent 集成插件
+ * 明镜 Blackbox SDK — OpenClaw Agent 集成插件
  * 自动拦截 OpenClaw Agent 的 LLM 调用和工具调用
  */
 

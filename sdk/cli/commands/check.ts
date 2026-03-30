@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — check 体检命令
+ * 明镜 CLI — check 体检命令
  */
 
 import { Command } from 'commander';
@@ -116,7 +116,7 @@ export const checkCommand = new Command('check')
       const dimensions = scorer.scoreByDimension(dimensionMap);
 
       for (const dim of dimensions) {
-        const gradeIcon = dim.grade === 'S' ? '🦞' : dim.grade === 'A' ? '🌟' : dim.grade === 'B' ? '✅' : dim.grade === 'C' ? '⚠️' : '❌';
+        const gradeIcon = dim.grade === 'S' ? '🪞' : dim.grade === 'A' ? '🌟' : dim.grade === 'B' ? '✅' : dim.grade === 'C' ? '⚠️' : '❌';
         console.log(`  ${dim.name}: ${dim.score.toFixed(1)}分 → ${dim.grade}级 ${gradeIcon}`);
       }
 

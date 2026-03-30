@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — SOC2 审计报告生成器
+ * 明镜 Blackbox SDK — SOC2 审计报告生成器
  * 生成符合 SOC2 信任服务标准的审计报告
  */
 

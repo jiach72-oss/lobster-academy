@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — PostgreSQL 存储实现
+ * 明镜 Blackbox SDK — PostgreSQL 存储实现
  * 基于 Drizzle ORM + pg 连接池
  */
 
@@ -210,7 +210,7 @@ export class PgStorage implements StorageAdapter {
       agentId: row.agentId,
       enrolledAt: meta.enrolledAt as string,
       department: row.department ?? 'general',
-      advisor: (meta.advisor as string) ?? '龙虾学院自动评测系统',
+      advisor: (meta.advisor as string) ?? '明镜自动评测系统',
       initialScore: meta.initialScore as number | undefined,
       currentGrade: (meta.currentGrade as string ?? 'D') as Enrollment['currentGrade'],
     };

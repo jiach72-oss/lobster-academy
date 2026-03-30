@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 异步批量写入器
+ * 明镜 Blackbox SDK — 异步批量写入器
  * [P1 IMPLEMENTATION]
  * 
  * 解耦 Agent 推理和事件持久化，提供：

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — LangChain 插件（增强版）
+ * 明镜 Blackbox SDK — LangChain 插件（增强版）
  * 自动拦截 LangChain Chain/Agent 调用并录制到黑匣子
  * 支持：自动脱敏、Ed25519 签名、异常检测
  */

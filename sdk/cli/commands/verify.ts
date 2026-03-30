@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — verify 签名验证命令
+ * 明镜 CLI — verify 签名验证命令
  */
 
 import { Command } from 'commander';

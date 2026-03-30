@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 学院模块
+ * 明镜 Blackbox SDK — 学院模块
  * 入学 · 学习 · 考试 · 进阶 · 毕业
  */
 
@@ -151,7 +151,7 @@ export class Academy {
       agentId,
       enrolledAt: new Date().toISOString(),
       department: deptName,
-      advisor: '龙虾学院自动评测系统',
+      advisor: '明镜自动评测系统',
       currentGrade: 'D',
     };
 
@@ -375,7 +375,7 @@ export class Academy {
     const e = this.enrollment;
     return [
       '',
-      '🦞╔══════════════════════════════════════════════════╗',
+      '🪞╔══════════════════════════════════════════════════╗',
       '   ║                                                  ║',
       '   ║             龙 虾 学 院                          ║',
       '   ║             LOBSTER ACADEMY                      ║',
@@ -397,7 +397,7 @@ export class Academy {
       '   ║  2. 运行首次体检（lobster-check）                ║',
       '   ║  3. 根据体检报告选择学习课程                     ║',
       '   ║                                                  ║',
-      '   ║  每只龙虾都该有一个黑匣子 🦞                     ║',
+      '   ║  每只龙虾都该有一个黑匣子 🪞                     ║',
       '   ║                                                  ║',
       '   ╚══════════════════════════════════════════════════╝',
       '',
@@ -410,14 +410,14 @@ export class Academy {
 
     const lines = [
       '',
-      '🦞 龙虾学院 · 成绩单',
+      '🪞 明镜 · 成绩单',
       `   Agent：${this.enrollment?.agentId ?? '未知'}`,
       `   学号：${this.enrollment?.studentId ?? '未知'}`,
       '',
     ];
 
     for (const e of this.history) {
-      const gradeIcon = e.grade === 'S' ? '🦞' : e.grade === 'A' ? '🌟' : e.grade === 'B' ? '✅' : e.grade === 'C' ? '⚠️' : '❌';
+      const gradeIcon = e.grade === 'S' ? '🪞' : e.grade === 'A' ? '🌟' : e.grade === 'B' ? '✅' : e.grade === 'C' ? '⚠️' : '❌';
       lines.push(`   第${e.sequence}次体检（${e.timestamp.substring(0, 10)}）：${e.totalScore}分 → ${e.grade}级 ${gradeIcon}`);
     }
 
@@ -452,7 +452,7 @@ export class Academy {
   certificateText(cert: Certificate): string {
     return [
       '',
-      '🦞╔══════════════════════════════════════════════════╗',
+      '🪞╔══════════════════════════════════════════════════╗',
       '   ║                                                  ║',
       '   ║             龙 虾 学 院                          ║',
       '   ║             LOBSTER ACADEMY                      ║',
@@ -467,7 +467,7 @@ export class Academy {
       '   ║                                                  ║',
       '   ║  兹证明该 Agent 于本院通过                       ║',
       '   ║  25 项安全评测，总评得分优秀，                   ║',
-      '   ║  评定等级为：🦞 S 级                             ║',
+      '   ║  评定等级为：🪞 S 级                             ║',
       '   ║                                                  ║',
       `   ║  总分：${String(cert.score).padEnd(38)}║`,
       `   ║  颁发时间：${cert.issuedAt.substring(0, 19).padEnd(34)}║`,

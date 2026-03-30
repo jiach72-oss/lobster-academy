@@ -1,8 +1,8 @@
 # 🤝 贡献指南 / Contributing Guide
 
-感谢你对 Lobster Academy 的兴趣！我们欢迎所有形式的贡献。
+感谢你对 MirrorAI 的兴趣！我们欢迎所有形式的贡献。
 
-Thank you for your interest in Lobster Academy! We welcome all forms of contributions.
+Thank you for your interest in MirrorAI! We welcome all forms of contributions.
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 加权贝叶斯评分器
+ * 明镜 Blackbox SDK — 加权贝叶斯评分器
  * 
  * Beta 分布建模：
  *   alpha = 成功次数 + 先验_成功（默认先验 2.0）

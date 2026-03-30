@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Agent护照管理器
+ * 明镜 Blackbox SDK — Agent护照管理器
  * 
  * 护照系统为每个Agent生成唯一的身份凭证，
  * 基于指纹算法追踪Agent配置变更，自动触发复测。

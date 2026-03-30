@@ -1,4 +1,4 @@
-# Lobster Academy × LangChain Integration
+# MirrorAI × LangChain Integration
 
 [![PyPI](https://img.shields.io/pypi/v/lobster-academy-langchain)](https://pypi.org/project/lobster-academy-langchain/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

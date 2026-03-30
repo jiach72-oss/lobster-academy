@@ -1,6 +1,6 @@
-# Lobster Academy Integrations
+# MirrorAI Integrations
 
-Lobster Academy 的框架集成插件，让主流 AI 框架的行为自动录制只需一行代码。
+MirrorAI 的框架集成插件，让主流 AI 框架的行为自动录制只需一行代码。
 
 ## 可用集成
 
@@ -33,7 +33,7 @@ Lobster Academy 的框架集成插件，让主流 AI 框架的行为自动录制
                         │
                         ▼
 ┌─────────────────────────────────────────────────────┐
-│                  Lobster Academy Core                │
+│                  MirrorAI Core                │
 │  Redactor (脱敏)  +  Storage (持久化)                 │
 └─────────────────────────────────────────────────────┘
 ```

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 自适应攻击生成模块（AdaptiveFuzzer）
+ * 明镜 Blackbox — 自适应攻击生成模块（AdaptiveFuzzer）
  * 
  * 使用 UCB（Upper Confidence Bound）多臂老虎机算法动态选择最有效的攻击策略。
  * 通过在线学习不断优化攻击覆盖率，自动发现 Agent 防御薄弱点。

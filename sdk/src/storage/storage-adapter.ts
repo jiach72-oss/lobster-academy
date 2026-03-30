@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 存储适配器接口
+ * 明镜 Blackbox SDK — 存储适配器接口
  * 抽象存储层，支持内存/PostgreSQL等多种后端
  */
 

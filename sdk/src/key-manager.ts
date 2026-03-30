@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 密钥管理器
+ * 明镜 Blackbox SDK — 密钥管理器
  * 
  * HKDF-SHA256 密钥派生 + 按时间段自动轮换 + 公钥链管理
  * 

@@ -20,7 +20,7 @@ function assert(condition: boolean, msg: string) {
   }
 }
 
-console.log('\n🦞 Agent护照系统测试\n');
+console.log('\n🪞 Agent护照系统测试\n');
 console.log('='.repeat(50));
 
 // ─── 测试1: 创建护照 ─────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ assert(passportNoSig.fingerprint.length === 16, '指纹仍然正确生成');
 
 // ─── 汇总 ─────────────────────────────────────────────────────────────────────
 console.log('\n' + '='.repeat(50));
-console.log(`\n🦞 测试完成: ${passed} 通过, ${failed} 失败\n`);
+console.log(`\n🪞 测试完成: ${passed} 通过, ${failed} 失败\n`);
 
 if (failed > 0) {
   process.exit(1);

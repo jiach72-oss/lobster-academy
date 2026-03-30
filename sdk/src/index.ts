@@ -1,5 +1,5 @@
 /**
- * 🦞 Lobster Academy — Open-Source AI Agent Security Evaluation Framework
+ * 🪞 MirrorAI — Open-Source AI Agent Security Evaluation Framework
  * 
  * 提供标准化的 Agent 行为评估工具：
  * - 行为录制 + Ed25519 签名
@@ -211,7 +211,7 @@ function validateConfig(config: BlackboxConfig): void {
 }
 
 /**
- * 龙虾学院 Blackbox — 主类
+ * 明镜 Blackbox — 主类
  * 
  * @example
  * ```typescript
@@ -441,7 +441,7 @@ export class LobsterBlackbox {
   }
 
   // ─────────────────────────────────────────────
-  // 🦞 学院系统
+  // 🪞 学院系统
   // ─────────────────────────────────────────────
 
   /**

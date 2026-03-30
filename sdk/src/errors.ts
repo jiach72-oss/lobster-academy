@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 错误码
+ * 明镜 Blackbox SDK — 错误码
  * 所有 SDK 异常的统一错误码定义
  */
 

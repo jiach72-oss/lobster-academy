@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 红队攻防演练
+ * 明镜 Blackbox — 红队攻防演练
  * 红队：尝试攻破 SDK 每一层防线
  * 蓝队：发现即修复
  */
@@ -29,7 +29,7 @@ function section(name: string): void {
 }
 
 async function runRedTeam(): Promise<void> {
-  console.log('🦞 龙虾学院 — 红队攻防演练');
+  console.log('🪞 明镜 — 红队攻防演练');
   console.log('═════════════════════════════════════════════════\n');
 
   // ============================================

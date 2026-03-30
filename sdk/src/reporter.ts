@@ -1,8 +1,8 @@
 /**
- * 龙虾学院 Blackbox SDK — Lobster Reporter
+ * 明镜 Blackbox SDK — Lobster Reporter
  * SDK ↔ 网站数据上报模块
  *
- * 负责将 SDK 的评测结果和行为数据上报到 Lobster Academy 网站。
+ * 负责将 SDK 的评测结果和行为数据上报到 MirrorAI 网站。
  * 支持注册、评测上报、批量行为同步、重试逻辑。
  */
 
@@ -88,7 +88,7 @@ export interface LobsterReporterConfig {
 /**
  * Lobster Reporter
  *
- * 将 SDK 数据上报到 Lobster Academy 网站。
+ * 将 SDK 数据上报到 MirrorAI 网站。
  *
  * @example
  * ```typescript

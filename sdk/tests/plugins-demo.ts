@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 全插件演示
+ * 明镜 Blackbox — 全插件演示
  * 展示 OpenAI / LangChain / CrewAI / 自定义 四种集成方式
  */
 
@@ -7,7 +7,7 @@ import { LobsterBlackbox } from '../src/index';
 import { AgentAdapter, wrapAgentFunction } from '../plugins/custom';
 
 async function demo() {
-  console.log('🦞 龙虾学院 Blackbox — 全插件演示\n');
+  console.log('🪞 明镜 Blackbox — 全插件演示\n');
 
   const box = new LobsterBlackbox({ agentId: 'plugin-demo' });
 

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 脱敏优化器
+ * 明镜 Blackbox SDK — 脱敏优化器
  * [P1 IMPLEMENTATION]
  * 
  * 三层性能优化：

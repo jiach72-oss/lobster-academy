@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — enroll 入学命令
+ * 明镜 CLI — enroll 入学命令
  */
 
 import { Command } from 'commander';
@@ -8,7 +8,7 @@ import { LobsterBlackbox } from '../../src/index';
 import { loadConfig, saveConfig } from '../config';
 
 export const enrollCommand = new Command('enroll')
-  .description('🦞 注册入学 — 加入龙虾学院')
+  .description('🪞 注册入学 — 加入明镜')
   .requiredOption('-a, --agent <agent-id>', 'Agent 唯一标识')
   .requiredOption('-d, --department <department>', '院系 (chatbot|agent|saas|fintech|healthcare|general)')
   .action(async (opts: { agent: string; department: string }) => {

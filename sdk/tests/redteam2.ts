@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 红队第二轮
+ * 明镜 Blackbox — 红队第二轮
  * 覆盖：Redos、插件层、CLI注入、内存安全、错误泄露、边界条件
  */
 
@@ -29,7 +29,7 @@ function section(name: string): void {
 }
 
 async function run(): Promise<void> {
-  console.log('🦞 龙虾学院 — 红队第二轮攻防');
+  console.log('🪞 明镜 — 红队第二轮攻防');
   console.log('═════════════════════════════════════════════════\n');
 
   // ============================================

@@ -1,5 +1,5 @@
 /**
- * Lobster Academy SDK 基础用法示例
+ * MirrorAI SDK 基础用法示例
  * 
  * 这个示例展示了如何使用 SDK 的核心功能：
  * 1. 录制 Agent 行为
@@ -190,7 +190,7 @@ console.log('  异常数:', report.anomalies.length);
 // 7. 完整示例：处理用户请求
 // ============================================
 
-console.log('\n🦞 完整示例：');
+console.log('\n🪞 完整示例：');
 
 async function handleUserRequest(message: string) {
   console.log(`\n处理请求: "${message}"`);

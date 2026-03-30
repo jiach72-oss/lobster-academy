@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 类型定义
+ * 明镜 Blackbox SDK — 类型定义
  * 每只龙虾都该有一个黑匣子
  */
 

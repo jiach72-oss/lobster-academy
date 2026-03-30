@@ -1,4 +1,4 @@
-# Lobster Academy API 参考
+# MirrorAI API 参考
 
 ## TypeScript SDK
 

@@ -1,6 +1,6 @@
 # I18n Redaction Patterns
 
-International sensitive data detection patterns for the Lobster Academy Redactor module.
+International sensitive data detection patterns for the MirrorAI Redactor module.
 
 ## Overview
 

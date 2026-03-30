@@ -1,4 +1,4 @@
-# Lobster Academy 攻击场景库
+# MirrorAI 攻击场景库
 
 一个全面的 AI/LLM 攻击场景集合，用于安全教育和红队测试。
 

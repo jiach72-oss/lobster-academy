@@ -1,7 +1,7 @@
 # 🚀 快速开始 / Quick Start
 
-5 分钟内将 Lobster Academy SDK 集成到你的 AI Agent 项目中。
-Integrate Lobster Academy SDK into your AI Agent project in 5 minutes.
+5 分钟内将 MirrorAI SDK 集成到你的 AI Agent 项目中。
+Integrate MirrorAI SDK into your AI Agent project in 5 minutes.
 
 ---
 

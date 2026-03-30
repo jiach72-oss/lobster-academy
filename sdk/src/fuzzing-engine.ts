@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Fuzzing 变异引擎
+ * 明镜 Blackbox SDK — Fuzzing 变异引擎
  * [P1 IMPLEMENTATION]
  * 
  * 从固定 payload 扩展为可变异的攻击模板，支持：

@@ -1,4 +1,4 @@
-# Lobster Academy × LlamaIndex Integration
+# MirrorAI × LlamaIndex Integration
 
 [![PyPI](https://img.shields.io/pypi/v/lobster-academy-llamaindex)](https://pypi.org/project/lobster-academy-llamaindex/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

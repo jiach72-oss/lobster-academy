@@ -1,4 +1,4 @@
-# 龙虾学院 Blackbox SDK — PostgreSQL 部署指南
+# 明镜 Blackbox SDK — PostgreSQL 部署指南
 
 ## 概述
 

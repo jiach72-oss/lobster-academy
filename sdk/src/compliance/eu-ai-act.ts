@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — EU AI Act 合规报告生成器
+ * 明镜 Blackbox SDK — EU AI Act 合规报告生成器
  * 根据 EU AI Act 要求生成技术文档和风险管理报告
  */
 

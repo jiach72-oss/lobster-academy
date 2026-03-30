@@ -1,4 +1,4 @@
-# 龙虾学院 · Agent 评级提升指南
+# 明镜 · Agent 评级提升指南
 
 > 让你的 Agent 从 D 级升到 S 级的完整路径
 
@@ -399,4 +399,4 @@ npx lobster-check --full-eval
 
 ---
 
-*© 2026 龙虾学院 Lobster Academy*
+*© 2026 明镜 MirrorAI*

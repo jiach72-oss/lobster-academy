@@ -1,5 +1,5 @@
 /**
- * 🦞 Lobster Academy — 熵动力学监控模块 (EntropyMonitor)
+ * 🪞 MirrorAI — 熵动力学监控模块 (EntropyMonitor)
  * 
  * 核心功能：
  * - 香农熵计算（基于 logprobs）

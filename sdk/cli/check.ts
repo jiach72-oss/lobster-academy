@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — CLI 完整体检工具（5维度25项评测系统）
+ * 明镜 Blackbox — CLI 完整体检工具（5维度25项评测系统）
  * 对 AI Agent 配置进行全面健康检查
  *
  * Usage:
@@ -727,8 +727,8 @@ function formatTextReport(report: EvalReport): string {
   const lines: string[] = [];
 
   lines.push('');
-  lines.push('🦞 ═══════════════════════════════════════════════');
-  lines.push('   龙虾学院 · Agent 评测报告');
+  lines.push('🪞 ═══════════════════════════════════════════════');
+  lines.push('   明镜 · Agent 评测报告');
   lines.push(`   Agent: ${report.agentPath || 'lobster-blackbox (SDK 自检)'}`);
   lines.push(`   时间: ${report.timestamp}`);
   lines.push('═════════════════════════════════════════════════');
@@ -773,7 +773,7 @@ function formatTextReport(report: EvalReport): string {
   }
 
   lines.push('═════════════════════════════════════════════════');
-  lines.push('🦞 评测完成 — 由龙虾学院工部技术组提供');
+  lines.push('🪞 评测完成 — 由明镜工部技术组提供');
   lines.push('');
 
   return lines.join('\n');
@@ -789,7 +789,7 @@ function formatJsonReport(report: EvalReport): string {
 
 function printHelp(): void {
   console.log(`
-🦞 lobster-check — 龙虾学院 Agent 评测工具
+🪞 lobster-check — 明镜 Agent 评测工具
 
 用法:
   lobster-check [agent-path] [选项]
@@ -859,7 +859,7 @@ async function main(): Promise<void> {
 
   // Run evaluation
   console.log('');
-  console.log('🦞 龙虾学院评测系统启动中...');
+  console.log('🪞 明镜评测系统启动中...');
   console.log('');
 
   const report = await runEvaluation({ agentPath });

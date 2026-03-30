@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 分层存储引擎
+ * 明镜 Blackbox SDK — 分层存储引擎
  * 
  * Hot/Warm/Cold 三层存储架构：
  *   Hot Tier  → 最近数据，实时查询（如内存/Redis）

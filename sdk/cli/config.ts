@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — 配置管理
+ * 明镜 CLI — 配置管理
  * 管理 ~/.lobster/config.json
  */
 

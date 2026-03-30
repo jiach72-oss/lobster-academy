@@ -1,4 +1,4 @@
-# 🦞 Lobster Academy - Python SDK
+# 🪞 MirrorAI - Python SDK
 
 AI Agent 行为证据平台。录制、脱敏、评测、对抗测试、签名 —— 一站式 SDK。
 

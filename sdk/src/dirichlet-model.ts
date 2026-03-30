@@ -1,5 +1,5 @@
 /**
- * 🦞 Lobster Academy — 狄利克雷分布行为建模模块 (DirichletModel)
+ * 🪞 MirrorAI — 狄利克雷分布行为建模模块 (DirichletModel)
  * 
  * 核心功能：
  * - 工具调用转移矩阵构建

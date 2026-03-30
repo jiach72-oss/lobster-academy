@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 入学/毕业流程管理
+ * 明镜 Blackbox SDK — 入学/毕业流程管理
  * [P2] P2 IMPLEMENTATION
  *
  * 完整的入学→学习→毕业流程管理：

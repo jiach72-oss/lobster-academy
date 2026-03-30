@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 存储模块
+ * 明镜 Blackbox SDK — 存储模块
  */
 
 export { StorageAdapter, SkillRecord, SignatureRecord } from './storage-adapter';

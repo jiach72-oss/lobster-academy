@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 插件统一导出
+ * 明镜 Blackbox SDK — 插件统一导出
  */
 
 export { instrumentOpenAI } from './openai';

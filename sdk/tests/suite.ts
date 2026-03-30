@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox — 零 Bug 测试套件
+ * 明镜 Blackbox — 零 Bug 测试套件
  * 覆盖所有边界条件、异常路径、安全场景
  */
 
@@ -59,7 +59,7 @@ function section(name: string): void {
 
 // ============================================================
 async function runTests(): Promise<void> {
-  console.log('🦞 龙虾学院 Blackbox — 零 Bug 测试套件\n');
+  console.log('🪞 明镜 Blackbox — 零 Bug 测试套件\n');
   console.log('═══════════════════════════════════════════════════\n');
 
   // ==================
@@ -558,7 +558,7 @@ async function runTests(): Promise<void> {
   await mdBox.record({ input: { q: 'hello' }, output: { a: 'world' }, duration: 50 });
   const mdReport = mdBox.generateReport();
   const md = mdBox.toMarkdown(mdReport);
-  assert(md.includes('# 🦞'), 'Markdown包含标题');
+  assert(md.includes('# 🪞'), 'Markdown包含标题');
   assert(md.includes('📊 统计摘要'), 'Markdown包含统计');
   assert(md.includes('| 指标 | 数值 |'), 'Markdown包含表格');
   assert(md.includes('总决策数'), 'Markdown包含决策数');

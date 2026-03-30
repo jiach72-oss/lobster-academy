@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 报告生成器 v2
+ * 明镜 Blackbox SDK — 报告生成器 v2
  * 
  * 支持四种输出格式：
  *   - JSON: 结构化数据输出，适合程序消费
@@ -144,7 +144,7 @@ export class ReporterV2 {
   constructor(config?: ReporterV2Config) {
     this.defaultFormat = config?.defaultFormat ?? 'json';
     this.defaultSummaryLength = config?.defaultSummaryLength ?? 'standard';
-    this.organization = config?.organization ?? 'Lobster Academy';
+    this.organization = config?.organization ?? 'MirrorAI';
     this.customTemplates = new Map(Object.entries(config?.customTemplates ?? {}));
   }
 
@@ -193,7 +193,7 @@ export class ReporterV2 {
     const lines: string[] = [];
 
     // 标题
-    lines.push(`# 🦞 ${data.title || 'Blackbox 审计报告'}`);
+    lines.push(`# 🪞 ${data.title || 'Blackbox 审计报告'}`);
     lines.push('');
     lines.push(`> ${this.organization} · Agent: \`${data.agentId}\` · 生成时间: ${data.generatedAt}`);
     if (data.period) {
@@ -311,7 +311,7 @@ export class ReporterV2 {
 <body>
   <div class="container">
     <div class="header">
-      <h1>🦞 ${safeTitle}</h1>
+      <h1>🪞 ${safeTitle}</h1>
       <div class="meta">
         ${safeOrganization} · Agent: <code>${safeAgentId}</code> · ${safeGeneratedAt}
         ${data.period ? `<br>时间范围: ${safePeriodFrom} → ${safePeriodTo}` : ''}
@@ -357,7 +357,7 @@ export class ReporterV2 {
     const thinSep = '─'.repeat(60);
 
     lines.push(sep);
-    lines.push(`🦞 ${data.title || 'Blackbox 审计报告'}`);
+    lines.push(`🪞 ${data.title || 'Blackbox 审计报告'}`);
     lines.push(sep);
     lines.push(`${this.organization} · Agent: ${data.agentId}`);
     lines.push(`生成时间: ${data.generatedAt}`);

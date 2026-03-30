@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — 存储工厂
+ * 明镜 Blackbox SDK — 存储工厂
  * 自动选择 PostgreSQL 或内存存储，支持优雅降级
  */
 

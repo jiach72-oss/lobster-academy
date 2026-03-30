@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — PostgreSQL Schema (Drizzle ORM)
+ * 明镜 Blackbox SDK — PostgreSQL Schema (Drizzle ORM)
  * 覆盖 PRD 中所有数据实体
  */
 

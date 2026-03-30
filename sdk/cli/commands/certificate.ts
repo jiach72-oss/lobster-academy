@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — certificate 证书命令
+ * 明镜 CLI — certificate 证书命令
  */
 
 import { Command } from 'commander';

@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 CLI — status 状态命令
+ * 明镜 CLI — status 状态命令
  */
 
 import { Command } from 'commander';
@@ -31,7 +31,7 @@ export const statusCommand = new Command('status')
       const history = box.getHistory();
 
       console.log('');
-      console.log(chalk.blue.bold('🦞 龙虾学院 · Agent 状态'));
+      console.log(chalk.blue.bold('🪞 明镜 · Agent 状态'));
       console.log(chalk.dim('─'.repeat(40)));
       console.log(`  Agent ID:  ${chalk.white(opts.agent)}`);
       console.log(`  学号:      ${chalk.white(config.studentId ?? '未入学')}`);
@@ -40,7 +40,7 @@ export const statusCommand = new Command('status')
       console.log(`  当前等级:  ${enrollment ? chalk.yellow(enrollment.currentGrade + '级') : chalk.gray('未知')}`);
 
       if (latestEval) {
-        const gradeIcon = latestEval.grade === 'S' ? '🦞' : latestEval.grade === 'A' ? '🌟' : '✅';
+        const gradeIcon = latestEval.grade === 'S' ? '🪞' : latestEval.grade === 'A' ? '🌟' : '✅';
         console.log(chalk.dim('─'.repeat(40)));
         console.log(chalk.yellow('  最近评测:'));
         console.log(`    时间:  ${latestEval.timestamp.substring(0, 19)}`);

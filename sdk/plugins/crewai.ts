@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — CrewAI 插件
+ * 明镜 Blackbox SDK — CrewAI 插件
  * 自动拦截 CrewAI Agent 任务执行并录制到黑匣子
  */
 

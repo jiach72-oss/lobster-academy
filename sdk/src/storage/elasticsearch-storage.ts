@@ -1,5 +1,5 @@
 /**
- * 龙虾学院 Blackbox SDK — Elasticsearch 存储适配器
+ * 明镜 Blackbox SDK — Elasticsearch 存储适配器
  * 支持全文搜索、时间范围查询、批量写入
  */
 
