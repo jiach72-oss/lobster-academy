@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>龙虾学院 — Agent 行为证据平台</title>
-  <meta name="description" content="AI Agent 评测、行为证据、持续监控。每只龙虾都该有一个黑匣子。">
+  <title>Lobster Academy — Open-Source AI Agent Security Evaluation Framework</title>
+  <meta name="description" content="Open-source AI agent security evaluation framework. Grade your agents with S/A/B/C/D ratings, record behavioral evidence, and generate audit reports for EU AI Act compliance.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -219,6 +219,61 @@
       .btn { width: 100%; max-width: 280px; justify-content: center; }
       .hero-stats { gap: 1.5rem; }
     }
+
+    /* ===== Demo Terminal ===== */
+    .demo-terminal {
+      max-width: 600px; margin: 2rem auto; background: #1a1a2e;
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 1px solid #252538;
+      text-align: left;
+    }
+    .terminal-header {
+      padding: 12px 16px; background: #16162a;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dot-small { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-small.red { background: #f87171; }
+    .dot-small.yellow { background: #fbbf24; }
+    .dot-small.green { background: #34d399; }
+    .terminal-title { color: #7878a0; font-size: 0.8rem; margin-left: 8px; }
+    .terminal-body {
+      padding: 16px 20px; font-family: var(--mono);
+      font-size: 0.85rem; line-height: 1.8;
+    }
+    .line { white-space: nowrap; }
+    .prompt { color: #34d399; margin-right: 8px; }
+    .output { color: #7878a0; padding-left: 20px; }
+    .output.success { color: #34d399; }
+    .output.warning { color: #fbbf24; }
+    .cursor { animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ===== GitHub Nav Button ===== */
+    .nav-github {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+      color: var(--text) !important; transition: all 0.2s;
+    }
+    .nav-github:hover { border-color: var(--orange); background: rgba(255,107,53,0.1); }
+
+    /* ===== Use Cases ===== */
+    .use-cases { padding: 5rem 2rem; }
+    .use-cases h2 { text-align: center; font-size: 2rem; margin-bottom: 3rem; }
+    .use-cases-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+    }
+    .use-case-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem; text-align: center; transition: 0.3s;
+    }
+    .use-case-card:hover { transform: translateY(-4px); border-color: var(--orange); }
+    .use-case-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .use-case-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .use-case-card p { font-size: 0.9rem; color: var(--dim); line-height: 1.5; }
+    @media (max-width: 768px) { .use-cases-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .use-cases-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -233,6 +288,7 @@
     <a href="#rating">评测</a>
     <a href="#pricing">定价</a>
     <a href="https://github.com/lobster-academy" target="_blank">GitHub</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy" class="nav-github" target="_blank">⭐ Star on GitHub</a>
     <a href="#start" class="nav-cta">开始评测</a>
   </div>
 </nav>
@@ -242,6 +298,24 @@
   <div class="hero-logo">🦞</div>
   <h1>AI Agent 的<br><span class="hl">行为证据平台</span></h1>
   <p class="hero-sub">评测 Agent 能力 · 录制行为证据 · 持续监控异常<br>让每一次 Agent 决策都可追溯、可审计、可证明</p>
+  <div class="demo-terminal">
+    <div class="terminal-header">
+      <span class="dot-small red"></span>
+      <span class="dot-small yellow"></span>
+      <span class="dot-small green"></span>
+      <span class="terminal-title">terminal</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="prompt">$</span> npm install lobster-academy</div>
+      <div class="line output">+ lobster-academy@0.2.0</div>
+      <div class="line"><span class="prompt">$</span> npx lobster-academy check my-agent</div>
+      <div class="line output success">✅ Security: 95/100</div>
+      <div class="line output success">✅ Reliability: 88/100</div>
+      <div class="line output warning">⚠️ Compliance: 72/100</div>
+      <div class="line output">📊 Overall Score: 85/100</div>
+      <div class="line"><span class="prompt">$</span> <span class="cursor">█</span></div>
+    </div>
+  </div>
   <div class="hero-btns">
     <a href="#start" class="btn btn-p">🦞 免费评测你的 Agent</a>
     <a href="https://github.com/lobster-academy/blackbox" target="_blank" class="btn btn-s">💻 查看源码</a>
@@ -297,6 +371,33 @@
       <h3>Agent 排行榜</h3>
       <div class="desc">公开的 Agent 能力排行榜。按行业、按场景、按维度排名。让优秀的 Agent 被看见。</div>
       <span class="tag tag-plan">📋 规划中</span>
+    </div>
+  </div>
+</section>
+
+<!-- Use Cases -->
+<section class="use-cases" id="use-cases">
+  <h2>Who Uses Lobster Academy?</h2>
+  <div class="use-cases-grid">
+    <div class="use-case-card">
+      <div class="use-case-icon">🚀</div>
+      <h3>AI Startups</h3>
+      <p>Prove your agent is safe before shipping to customers</p>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-icon">🏢</div>
+      <h3>Enterprise Security</h3>
+      <p>Evaluate internal AI agents before deployment</p>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-icon">📋</div>
+      <h3>Compliance Officers</h3>
+      <p>Generate EU AI Act and SOC2 audit reports</p>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-icon">🛡️</div>
+      <h3>Insurance</h3>
+      <p>Assess AI liability risks with verified data</p>
     </div>
   </div>
 </section>
@@ -494,6 +595,14 @@
     <br>
     <a href="https://github.com/lobster-academy" class="btn btn-p">🦞 前往 GitHub</a>
   </div>
+</section>
+
+<!-- Star History -->
+<section class="star-history" style="text-align: center; padding: 3rem 2rem;">
+  <h2 style="margin-bottom: 1.5rem;">Star History</h2>
+  <a href="https://github.com/jiach72-oss/lobster-academy">
+    <img src="https://api.star-history.com/svg?repos=jiach72-oss/lobster-academy&type=Date" alt="Star History" style="max-width: 600px; width: 100%; border-radius: 12px;">
+  </a>
 </section>
 
 <!-- Footer -->

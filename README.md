@@ -1,3 +1,7 @@
+<p align="center">
+  <b>⭐ If you find this useful, please star this repo to support the project!</b>
+</p>
+
 <div align="center">
 
 # 🦞 Lobster Academy
@@ -9,8 +13,11 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-108_passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-566_passing-brightgreen.svg)]()
 [![Scenarios](https://img.shields.io/badge/Attack_Scenarios-53-red.svg)]()
+[![GitHub Stars](https://img.shields.io/github/stars/jiach72-oss/lobster-academy?style=social)](https://github.com/jiach72-oss/lobster-academy/stargazers)
+[![npm version](https://img.shields.io/npm/v/lobster-academy.svg)](https://www.npmjs.com/package/lobster-academy)
+[![Downloads](https://img.shields.io/npm/dm/lobster-academy.svg)](https://www.npmjs.com/package/lobster-academy)
 
 [中文文档](#-龙虾学院是什么) • [English](#what-is-lobster-academy) • [快速开始](#-快速开始--quick-start) • [API](docs/api-reference.md)
 
@@ -53,6 +60,29 @@ Lobster Academy is an **open-source AI Agent security evaluation framework** —
 | 📡 **持续监控** | 性能退化检测、异常行为预警、证书过期提醒 | ✅ 可用 |
 | 🛂 **Agent 护照** | 可验证身份、变更追踪、权限审计 | ✅ 可用 |
 | 📊 **合规报告** | EU AI Act / SOC2 一键生成 | ✅ 可用 |
+
+### ⚡ 快速体验 / Quick Try
+
+```bash
+# Install 安装
+npm install lobster-academy
+
+# Or try instantly 或者立即体验
+npx lobster-academy check my-agent
+```
+
+---
+
+## 🆚 Why Lobster Academy / 为什么选择我们
+
+| Feature | Lakera | Protect AI | Robust Intelligence | 🦞 Lobster Academy |
+|---------|--------|-----------|-------------------|-------------------|
+| Agent-Specific / Agent专项 | ❌ | ❌ | ❌ | ✅ 53 scenarios |
+| Open Source / 开源 | ❌ | ❌ | ❌ | ✅ |
+| Tamper-Proof Audit / 防篡改审计 | ❌ | ❌ | ❌ | ✅ Ed25519 + Merkle |
+| PII Redaction (24 countries) / 24国脱敏 | Basic | Basic | Basic | ✅ 200+ patterns |
+| EU AI Act Reports / 合规报告 | ❌ | Basic | Basic | ✅ One-click |
+| Price / 价格 | $500+/mo | $200/agent/mo | $50K+/yr | $0 — $99/mo |
 
 ---
 
@@ -141,7 +171,7 @@ print(f"防御率: {results.defense_rate}%")
 | 脱敏模式 | 200+（覆盖 24 国 PII） |
 | 攻击场景 | 53 种（7 大类） |
 | 评测维度 | 5 维度 25 指标 |
-| 测试通过率 | 93%（108/116） |
+| 测试通过率 | 93%（566 tests passing） |
 | 存储适配器 | In-Memory, PostgreSQL, Supabase, S3 |
 | 签名算法 | Ed25519 |
 
@@ -202,17 +232,44 @@ print(f"防御率: {results.defense_rate}%")
 
 ---
 
+## 🏢 Use Cases / 适用场景
+
+- **AI Startups** — Prove your agent is safe before shipping
+- **Enterprise Security Teams** — Evaluate internal AI agents
+- **Compliance Officers** — Generate EU AI Act / SOC2 audit reports
+- **Insurance Companies** — Assess AI liability risks
+
+---
+
+## 💬 Community / 社区
+
+- [Discord](#) — Join our community
+- [Twitter/X](#) — Follow for updates
+- [Blog](#) — Security research & tutorials
+
+---
+
 ## 📄 许可证 / License
 
 本项目使用 [Apache License 2.0](LICENSE) 许可证。
 
-This project is licensed under the [Apache License 2.0](LICENSE).
+This project is licensed under the [Apache License 2.0](LICENSE) — Free for commercial and personal use.
 
 <div align="center">
 
 **[文档 / Docs](docs/)** •
 **[GitHub](https://github.com/jiach72-oss/lobster-academy)**
 
-Made with 🦞 by Lobster Academy Team
-
 </div>
+
+---
+
+<p align="center">
+  <a href="https://github.com/jiach72-oss/lobster-academy">
+    <img src="https://api.star-history.com/svg?repos=jiach72-oss/lobster-academy&type=Date" alt="Star History Chart" width="600">
+  </a>
+</p>
+
+<p align="center">
+  Made with 🦞 by the Lobster Academy team
+</p>
