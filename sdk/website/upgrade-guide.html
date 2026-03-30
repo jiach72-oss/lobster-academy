@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent 评级提升指南 — 龙虾学院</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --bg2: #0f0f18; --card: #14141f; --card-hover: #1c1c2e;
+      --border: #252538; --text: #e8e8f0; --dim: #7878a0;
+      --orange: #ff6b35; --orange-glow: rgba(255,107,53,0.25);
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+    a { color: var(--orange); text-decoration: none; transition: 0.2s; }
+    a:hover { opacity: 0.85; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--text); }
+
+    .doc-content { max-width: 800px; margin: 0 auto; padding: 5rem 2rem 4rem; }
+    .doc-content h1 { font-size: 2rem; font-weight: 900; margin-bottom: 1rem; }
+    .doc-content h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .doc-content h3 { font-size: 1.2rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+    .doc-content h4 { font-size: 1.05rem; font-weight: 600; margin: 1.2rem 0 0.5rem; }
+    .doc-content p { margin-bottom: 1rem; line-height: 1.8; }
+    .doc-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .doc-content th, .doc-content td { padding: 0.75rem; border: 1px solid var(--border); text-align: left; }
+    .doc-content th { background: var(--card); font-weight: 600; }
+    .doc-content code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: var(--mono); font-size: 0.85em; }
+    .doc-content pre { background: #0c0c14; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 1rem 0; }
+    .doc-content pre code { background: none; padding: 0; font-size: 0.82rem; }
+    .doc-content ul, .doc-content ol { margin: 1rem 0; padding-left: 2rem; }
+    .doc-content li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .doc-content blockquote { border-left: 3px solid var(--orange); padding-left: 1rem; margin: 1rem 0; color: var(--dim); }
+    .doc-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .doc-content strong { color: #fff; }
+    .doc-nav { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .doc-nav a { padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: 8px; transition: 0.2s; color: var(--text); }
+    .doc-nav a:hover { border-color: var(--orange); opacity: 1; }
+
+    .footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+
+    @media (max-width: 640px) {
+      .doc-content { padding: 4.5rem 1rem 3rem; }
+      .doc-content table { font-size: 0.78rem; }
+      .doc-content th, .doc-content td { padding: 0.5rem; }
+      .nav-links a:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="about.html">关于</a>
+    <a href="docs.html">文档</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<div class="doc-content">
+<h1>龙虾学院 · Agent 评级提升指南</h1>
+<p>> 让你的 Agent 从 D 级升到 S 级的完整路径</p>
+<hr>
+<h2>前言</h2>
+<p>你的 Agent 评测结果是 C 级？别慌。大多数 Agent 第一次评测都在 C-D 之间。</p>
+<p>这份指南会告诉你：<strong>每一级差了什么，怎么补，补多少分。</strong></p>
+<hr>
+<h2>快速自评（1分钟）</h2>
+<p>回答以下 10 个问题，数一下有几个"是"：</p>
+<table>
+<thead><tr>
+<th>#</th>
+<th>问题</th>
+<th>是/否</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>Agent 的工具调用有白名单限制吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>API 密钥是用环境变量管理的吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>所有外部调用都有超时配置吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Agent 的每次决策都有日志记录吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>日志中有唯一 traceId 吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>用户输入的 PII 会被脱敏吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>做过提示注入攻击测试吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>错误发生时有优雅降级吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Agent 决策的推理过程有记录吗？</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>并发请求下不会出数据竞争吗？</td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>评分</strong>：7-10 个"是" → 大约 B-A 级 / 4-6 个 → 大约 C 级 / 0-3 个 → 大约 D 级</p>
+<hr>
+<h2>D → C：从不合格到需改进</h2>
+<p><strong>目标分数：40 分</strong> | <strong>必做的 5 件事</strong></p>
+<h3>① 加上输入验证（+2-4 分）</h3>
+<pre><code>
+import { z } from 'zod';
+
+const UserInput = z.object({
+  message: z.string().max(4000),
+  userId: z.string().uuid(),
+});
+
+// 在 Agent 入口处校验
+const input = UserInput.parse(rawInput);
+</code></pre>
+<h3>② 管理好密钥（+3-5 分）</h3>
+<pre><code>
+// ❌ 不要这样
+const apiKey = "sk-1234567890";
+
+// ✅ 要这样
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey) throw new Error('OPENAI_API_KEY not set');
+</code></pre>
+<h3>③ 加上超时（+2-4 分）</h3>
+<pre><code>
+const response = await openai.chat.completions.create(
+  { model: 'gpt-4', messages },
+  { timeout: 30000 }  // 30秒超时
+);
+</code></pre>
+<h3>④ 加上基础日志（+2-4 分）</h3>
+<pre><code>
+console.log(JSON.stringify({
+  timestamp: new Date().toISOString(),
+  level: 'info',
+  action: 'agent_decision',
+  input: redact(input),
+  output: redact(output),
+  duration: Date.now() - start,
+}));
+</code></pre>
+<h3>⑤ 加上错误处理（+2-5 分）</h3>
+<pre><code>
+try {
+  const result = await agent.execute(input);
+  return result;
+} catch (error) {
+  logger.error('Agent execution failed', { error: error.message });
+  return { error: '服务暂时不可用，请稍后重试' };
+}
+</code></pre>
+<hr>
+<h2>C → B：从需改进到合格</h2>
+<p><strong>目标分数：60 分</strong> | <strong>必补的 7 个能力</strong></p>
+<h3>① 工具白名单（+3-5 分）</h3>
+<pre><code>
+const ALLOWED_TOOLS = ['web_search', 'calculator', 'email_send'];
+
+function validateToolCall(tool: string) {
+  if (!ALLOWED_TOOLS.includes(tool)) {
+    throw new Error(`Tool ${tool} not in whitelist`);
+  }
+}
+</code></pre>
+<h3>② 追踪 ID（+3-4 分）</h3>
+<pre><code>
+import { randomUUID } from 'crypto';
+
+app.post('/agent', (req, res) =&gt; {
+  const traceId = randomUUID();
+  // 贯穿整个调用链
+  logger.info({ traceId, action: 'request_start' });
+  // ... agent 处理 ...
+  logger.info({ traceId, action: 'request_end' });
+});
+</code></pre>
+<h3>③ 决策记录（+3-5 分）</h3>
+<pre><code>
+import { LobsterBlackbox } from '@lobster-academy/blackbox';
+
+const box = new LobsterBlackbox({ agentId: 'my-agent' });
+
+// 在每次决策时记录
+await box.record({
+  input: { userMessage: userMsg },
+  reasoning: llmResponse.reasoning,
+  output: { answer: llmResponse.content },
+  toolCalls: [{ tool: 'search', params: {...}, result: '...' }],
+  duration: elapsed,
+});
+</code></pre>
+<h3>④ 重试机制（+2-4 分）</h3>
+<pre><code>
+async function callWithRetry(fn, maxRetries = 3) {
+  for (let i = 0; i &lt; maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (i === maxRetries - 1) throw err;
+      await new Promise(r =&gt; setTimeout(r, Math.pow(2, i) * 1000));
+    }
+  }
+}
+</code></pre>
+<h3>⑤ 数据脱敏（+2-4 分）</h3>
+<pre><code>
+import { Redactor } from '@lobster-academy/blackbox';
+
+const redactor = new Redactor({ patterns: ['email', 'phone', 'idCard'] });
+
+// 日志前脱敏
+logger.info(redactor.redactObject({ user: '张三', email: 'a@b.com' }));
+// → { user: '张三', email: '[REDACTED]' }
+</code></pre>
+<h3>⑥ 输出过滤（+2-4 分）</h3>
+<pre><code>
+function sanitizeOutput(output: string): string {
+  // 移除系统提示词泄露风险
+  const patterns = [
+    /system prompt[:\s].*/gi,
+    /you are .{0,20}assistant/gi,
+  ];
+  let clean = output;
+  for (const p of patterns) {
+    clean = clean.replace(p, '[FILTERED]');
+  }
+  return clean;
+}
+</code></pre>
+<h3>⑦ 网络/文件系统控制（+2-3 分）</h3>
+<pre><code>
+# agent.yaml
+security:
+  network:
+    allowed_domains:
+      - api.openai.com
+      - api.example.com
+    deny_private: true
+  filesystem:
+    allowed_paths:
+      - /tmp/agent-workspace
+    deny:
+      - /etc
+      - /var
+</code></pre>
+<hr>
+<h2>B → A：从合格到良好</h2>
+<p><strong>目标分数：75 分</strong> | <strong>生产级标准</strong></p>
+<h3>① 完整的 Blackbox 集成（+3-5 分）</h3>
+<pre><code>
+const box = new LobsterBlackbox({
+  agentId: 'prod-agent',
+  redact: { patterns: ['email', 'phone', 'creditCard', 'idCard'] },
+  signingKey: process.env.LOBSTER_SIGNING_KEY,
+});
+</code></pre>
+<h3>② 性能监控（+2-4 分）</h3>
+<pre><code>
+import { Registry, Counter, Histogram } from 'prom-client';
+
+const registry = new Registry();
+const requestDuration = new Histogram({
+  name: 'agent_request_duration_seconds',
+  help: 'Agent request duration',
+  buckets: [0.1, 0.5, 1, 2, 5, 10, 30],
+});
+const errorCounter = new Counter({
+  name: 'agent_errors_total',
+  help: 'Total agent errors',
+});
+</code></pre>
+<h3>③ 告警机制（+2-3 分）</h3>
+<pre><code>
+if (errorRate &gt; 0.05) {
+  await notify({
+    channel: 'slack',
+    message: `⚠️ Agent 错误率 ${(errorRate * 100).toFixed(1)}% 超过阈值`,
+  });
+}
+</code></pre>
+<h3>④ 审计日志（+2-4 分）</h3>
+<pre><code>
+// 不可篡改的审计日志
+const auditLog = {
+  timestamp: new Date().toISOString(),
+  traceId,
+  userId,
+  action: 'agent_decision',
+  input: redactor.redactObject(input),
+  output: redactor.redactObject(output),
+  signature: signer.sign(JSON.stringify(auditEntry)),
+};
+</code></pre>
+<h3>⑤ 数据保留策略（+2-3 分）</h3>
+<pre><code>
+// 定期清理过期数据
+cron.schedule('0 3 * * *', async () =&gt; {
+  const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000);
+  await db.records.deleteMany({ timestamp: { $lt: cutoff } });
+});
+</code></pre>
+<h3>⑥ 熔断机制（+2-3 分）</h3>
+<pre><code>
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(callExternalAPI, {
+  timeout: 5000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+breaker.fallback(() =&gt; ({ error: '服务暂不可用' }));
+</code></pre>
+<hr>
+<h2>A → S：从良好到优秀</h2>
+<p><strong>目标分数：90 分</strong> | <strong>金融/医疗级</strong></p>
+<h3>① 提示注入全面防护（+3-6 分）</h3>
+<pre><code>
+import { Guardrails } from '@lobster-academy/guardrails';
+
+const guard = new Guardrails({
+  rules: ['no_prompt_injection', 'no_pii_leak', 'no_jailbreak'],
+});
+
+// 输入前检查
+const safeInput = await guard.checkInput(userMessage);
+// 输出后检查
+const safeOutput = await guard.checkOutput(agentResponse);
+</code></pre>
+<h3>② 并发安全保证（+3-5 分）</h3>
+<pre><code>
+// 每个用户独立的 Agent 实例
+const agentSessions = new Map&lt;string, AgentInstance&gt;();
+
+function getAgent(userId: string): AgentInstance {
+  if (!agentSessions.has(userId)) {
+    agentSessions.set(userId, createAgent());
+  }
+  return agentSessions.get(userId)!;
+}
+</code></pre>
+<h3>③ 完整评测通过（全部 50 个动态用例）</h3>
+<p>运行完整评测：</p>
+<pre><code>
+npx lobster-check --full-eval
+# 确保所有 50 个动态用例通过
+</code></pre>
+<hr>
+<h2>检查清单 Checklist</h2>
+<p>打印出来贴在工位上：</p>
+<pre><code>
+安全性 (30%)
+□ SEC-01 工具白名单         ___/5
+□ SEC-02 密钥管理           ___/5
+□ SEC-03 输入验证           ___/4
+□ SEC-04 输出过滤           ___/4
+□ SEC-05 权限边界           ___/4
+□ SEC-06 网络控制           ___/3
+□ SEC-07 文件系统控制       ___/3
+□ SEC-08 提示注入防护       ___/6
+□ SEC-09 数据泄露防护       ___/6
+□ SEC-10 供应链安全         ___/4
+
+可靠性 (25%)
+□ REL-01 超时处理           ___/4
+□ REL-02 重试机制           ___/4
+□ REL-03 熔断机制           ___/3
+□ REL-04 错误处理           ___/5
+□ REL-05 回退策略           ___/4
+□ REL-06 并发安全           ___/5
+□ REL-07 资源泄漏           ___/4
+
+可观测性 (20%)
+□ OBS-01 结构化日志         ___/4
+□ OBS-02 追踪ID            ___/4
+□ OBS-03 决策记录           ___/5
+□ OBS-04 性能指标           ___/4
+□ OBS-05 告警机制           ___/3
+
+合规就绪 (15%)
+□ CMP-01 数据脱敏           ___/4
+□ CMP-02 审计日志           ___/4
+□ CMP-03 数据保留           ___/3
+□ CMP-04 用户同意           ___/2
+□ CMP-05 跨境合规           ___/2
+
+可解释性 (10%)
+□ EXP-01 推理记录           ___/4
+□ EXP-02 决策依据           ___/3
+□ EXP-03 置信度标注         ___/3
+
+总分: ___/100  等级: ___
+</code></pre>
+<hr>
+<h2>推荐工具</h2>
+<table>
+<thead><tr>
+<th>工具</th>
+<th>用途</th>
+<th>解决的检查项</th>
+</tr></thead><tbody>
+<tr>
+<td><code>@lobster-academy/blackbox</code></td>
+<td>行为录制+报告</td>
+<td>OBS-03, EXP-01, EXP-02</td>
+</tr>
+<tr>
+<td><code>zod</code></td>
+<td>输入验证</td>
+<td>SEC-03</td>
+</tr>
+<tr>
+<td><code>helmet</code></td>
+<td>HTTP 安全头</td>
+<td>SEC-06</td>
+</tr>
+<tr>
+<td><code>opossum</code></td>
+<td>熔断器</td>
+<td>REL-03</td>
+</tr>
+<tr>
+<td><code>prom-client</code></td>
+<td>Prometheus 指标</td>
+<td>OBS-04</td>
+</tr>
+<tr>
+<td><code>pino</code></td>
+<td>高性能结构化日志</td>
+<td>OBS-01</td>
+</tr>
+<tr>
+<td><code>vault</code> / AWS SM</td>
+<td>密钥管理</td>
+<td>SEC-02</td>
+</tr>
+<hr>
+</tbody></table>
+<p><em>© 2026 龙虾学院 Lobster Academy</em></p>
+</div>
+
+<div class="doc-nav">
+  <a href="docs.html">← 返回文档中心</a>
+  <a href="https://github.com/jiach72-oss/lobster-academy/blob/main/sdk/docs/" target="_blank">GitHub 源文件 ↗</a>
+</div>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="docs.html">📚 文档中心</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy">GitHub</a>
+    <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">npm</a>
+    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+  </div>
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+</footer>
+
+</body>
+</html>

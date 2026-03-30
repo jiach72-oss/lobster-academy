@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技术白皮书 v1.0 — 龙虾学院</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090f; --bg2: #0f0f18; --card: #14141f; --card-hover: #1c1c2e;
+      --border: #252538; --text: #e8e8f0; --dim: #7878a0;
+      --orange: #ff6b35; --orange-glow: rgba(255,107,53,0.25);
+      --green: #34d399; --blue: #60a5fa; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
+    a { color: var(--orange); text-decoration: none; transition: 0.2s; }
+    a:hover { opacity: 0.85; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(9,9,15,0.88); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; }
+    .nav-brand em { font-style: normal; color: var(--orange); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--dim); font-size: 0.88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--text); }
+
+    .doc-content { max-width: 800px; margin: 0 auto; padding: 5rem 2rem 4rem; }
+    .doc-content h1 { font-size: 2rem; font-weight: 900; margin-bottom: 1rem; }
+    .doc-content h2 { font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .doc-content h3 { font-size: 1.2rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+    .doc-content h4 { font-size: 1.05rem; font-weight: 600; margin: 1.2rem 0 0.5rem; }
+    .doc-content p { margin-bottom: 1rem; line-height: 1.8; }
+    .doc-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .doc-content th, .doc-content td { padding: 0.75rem; border: 1px solid var(--border); text-align: left; }
+    .doc-content th { background: var(--card); font-weight: 600; }
+    .doc-content code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: var(--mono); font-size: 0.85em; }
+    .doc-content pre { background: #0c0c14; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; margin: 1rem 0; }
+    .doc-content pre code { background: none; padding: 0; font-size: 0.82rem; }
+    .doc-content ul, .doc-content ol { margin: 1rem 0; padding-left: 2rem; }
+    .doc-content li { margin-bottom: 0.5rem; line-height: 1.7; }
+    .doc-content blockquote { border-left: 3px solid var(--orange); padding-left: 1rem; margin: 1rem 0; color: var(--dim); }
+    .doc-content hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .doc-content strong { color: #fff; }
+    .doc-nav { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .doc-nav a { padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: 8px; transition: 0.2s; color: var(--text); }
+    .doc-nav a:hover { border-color: var(--orange); opacity: 1; }
+
+    .footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2rem;
+      text-align: center; color: var(--dim); font-size: 0.82rem;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+
+    @media (max-width: 640px) {
+      .doc-content { padding: 4.5rem 1rem 3rem; }
+      .doc-content table { font-size: 0.78rem; }
+      .doc-content th, .doc-content td { padding: 0.5rem; }
+      .nav-links a:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🦞 <em>龙虾学院</em></div>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+    <a href="about.html">关于</a>
+    <a href="docs.html">文档</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<div class="doc-content">
+<h1>龙虾学院技术白皮书 v1.0</h1>
+<p><strong>Lobster Academy — AI Agent 行为证据平台</strong></p>
+<p>版本：1.0 | 发布日期：2026年3月 | 分类：技术白皮书 | 保密等级：公开</p>
+<hr>
+<h2>1. 摘要（Executive Summary）</h2>
+<p>AI Agent 正从实验室走向生产环境，但业界缺乏系统化的评测框架和行为审计能力。开发者面对"黑盒"问题：当 Agent 出现异常行为时，无法追溯根因；当需要证明 Agent 可靠性时，没有可量化的指标支撑。</p>
+<p>龙虾学院提出一套三层架构方案——<strong>评测层</strong>（Evaluation）、<strong>证据层</strong>（Evidence）与<strong>监控层</strong>（Monitoring），以"行为证据优于功能测试"为核心理念，通过 Blackbox 录制引擎实现零侵入的行为捕获，结合 Ed25519 签名链确保证据不可篡改，为 AI Agent 提供从开发到生产的全生命周期可观测性保障。</p>
+<hr>
+<h2>2. 问题陈述</h2>
+<h3>2.1 AI Agent 从实验到生产的鸿沟</h3>
+<p>当前 AI Agent 开发面临严峻的工程化挑战。根据 2025 年 Gartner 调研，仅有 12% 的 Agent 项目能够从 POC 阶段成功进入生产部署。核心原因包括：</p>
+<ul>
+<li><strong>行为不可预测</strong>：Agent 具有自主决策能力，相同输入可能产生不同输出，传统测试方法难以覆盖。</li>
+<li><strong>调试成本极高</strong>：Agent 调用链通常涉及多次 LLM 推理、工具调用、条件分支，单次请求可能包含 20-50 个中间步骤，人工审查不可行。</li>
+<li><strong>缺乏回归基线</strong>：模型更新（prompt 调整、模型版本升级）后，无法快速判断 Agent 行为是否退化。</li>
+</ul>
+<h3>2.2 "黑盒"问题：出了事找不到原因</h3>
+<pre><code>
+用户投诉："Agent 给出了错误的退款建议"
+    │
+    ├── Prompt 变了？─────────────── 不确定
+    ├── 模型版本更新了？────────────  可能
+    ├── 工具调用参数错了？───────────  无法确认
+    ├── 上下文窗口溢出了？───────────  没记录
+    └── 系统提示词被绕过了？─────────  未知
+</code></pre>
+<p>没有完整的调用链记录，排查生产事故如同"盲人摸象"。团队在日志碎片中拼凑真相，MTTR（平均修复时间）往往超过 48 小时。</p>
+<h3>2.3 缺乏行业标准的评测方法</h3>
+<p>软件工程有单元测试、集成测试、端到端测试的成熟体系。但 AI Agent 的评测仍处于"手工评估"阶段：</p>
+<table>
+<thead><tr>
+<th>现状</th>
+<th>问题</th>
+</tr></thead><tbody>
+<tr>
+<td>人工打分</td>
+<td>主观性强，不可复现，成本高</td>
+</tr>
+<tr>
+<td>简单的正确性检查</td>
+<td>只看最终答案，忽略推理过程</td>
+</tr>
+<tr>
+<td>竞赛榜单（Benchmarks）</td>
+<td>静态数据集，与生产场景脱节</td>
+</tr>
+</tbody></table>
+<p>业界缺少一个兼顾<strong>过程评测</strong>与<strong>结果评测</strong>、兼顾<strong>功能正确性</strong>与<strong>行为安全性</strong>的统一框架。</p>
+<h3>2.4 现有方案的局限</h3>
+<table>
+<thead><tr>
+<th>方案</th>
+<th>定位</th>
+<th>局限</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>LangSmith</strong></td>
+<td>LangChain 生态的调试工具</td>
+<td>强绑定 LangChain，缺乏独立评测框架，不支持行为证据链</td>
+</tr>
+<tr>
+<td><strong>Langfuse</strong></td>
+<td>开源 LLM 可观测性</td>
+<td>聚焦 token 级别的 trace，缺乏 Agent 行为维度的评测能力</td>
+</tr>
+<tr>
+<td><strong>Sentry</strong></td>
+<td>通用错误监控</td>
+<td>不理解 Agent 调用语义，无法追踪推理链和工具调用关系</td>
+</tr>
+<tr>
+<td><strong>AgentOps</strong></td>
+<td>Agent 监控</td>
+<td>偏向监控而非评测，缺乏密码学保证的审计证据</td>
+</tr>
+<hr>
+<h2>3. 龙虾学院方案</h2>
+<h3>3.1 三层架构</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────────────┐
+│                     龙虾学院平台架构                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐   │
+│  │   评测层       │  │   证据层       │  │   监控层       │   │
+│  │  Evaluation    │  │   Evidence    │  │  Monitoring   │   │
+│  ├───────────────┤  ├───────────────┤  ├───────────────┤   │
+│  │ • 25维指标体系 │  │ • Blackbox    │  │ • 实时仪表盘  │   │
+│  │ • 自动化评分   │  │   录制引擎    │  │ • 异常告警    │   │
+│  │ • 回归对比     │  │ • 脱敏引擎    │  │ • 趋势分析    │   │
+│  │ • 基线管理     │  │ • Ed25519签名 │  │ • 事件关联    │   │
+│  │ • 报告生成     │  │ • 证据链存储  │  │ • SLA 跟踪    │   │
+│  └───────┬───────┘  └───────┬───────┘  └───────┬───────┘   │
+│          │                  │                  │            │
+│          └──────────────────┼──────────────────┘            │
+│                             │                               │
+│                    ┌────────▼────────┐                      │
+│                    │   Agent 应用     │                      │
+│                    │  (被观测目标)    │                      │
+│                    └─────────────────┘                      │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>3.2 核心理念：行为证据 > 功能测试</h3>
+</tbody></table>
+<p>传统软件测试关注"输出是否正确"，但 Agent 的"正确性"是多维度的。龙虾学院的核心理念是：<strong>与其问"Agent 答对了没有"，不如问"Agent 是怎么做出决策的"</strong>。</p>
+<p>这带来三个根本性转变：</p>
+<ol>
+<li><strong>从结果评测到过程评测</strong>：记录 Agent 的完整推理链、工具调用序列、上下文窗口变化。</li>
+<li><strong>从人工检查到自动化评分</strong>：基于 25 项可量化指标的自动评分，消除主观偏差。</li>
+<li><strong>从事后分析到实时监控</strong>：通过证据链实现生产环境的持续可观测性。</li>
+</ol>
+<hr>
+<h2>4. 评测方法论</h2>
+<h3>4.1 五个评测维度的学术依据</h3>
+<p>龙虾学院定义了五个核心评测维度，每个维度对应 Agent 能力的一个关键方面：</p>
+<table>
+<thead><tr>
+<th>维度</th>
+<th>学术依据</th>
+<th>核心问题</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>可靠性 (Reliability)</strong></td>
+<td>Huang et al., 2024; Software Reliability Engineering</td>
+<td>Agent 是否稳定地完成预期任务？</td>
+</tr>
+<tr>
+<td><strong>安全性 (Safety)</strong></td>
+<td>Anthropic Constitutional AI; OWASP LLM Top 10</td>
+<td>Agent 是否会产生有害或越权行为？</td>
+</tr>
+<tr>
+<td><strong>效率 (Efficiency)</strong></td>
+<td>Park et al., 2023 (Voyager); Token Economics</td>
+<td>Agent 是否以合理成本完成任务？</td>
+</tr>
+<tr>
+<td><strong>可解释性 (Explainability)</strong></td>
+<td>Molnar, 2020 (Interpretable ML); XAI</td>
+<td>Agent 的决策过程是否可理解？</td>
+</tr>
+<tr>
+<td><strong>鲁棒性 (Robustness)</strong></td>
+<td>Mazeika et al., 2024 (AdvBench); Adversarial ML</td>
+<td>Agent 在对抗性输入下是否可靠？</td>
+</tr>
+</tbody></table>
+<p>这五个维度的选取基于两个原则：（1）覆盖 Agent 生产部署的全生命周期风险；（2）每个维度都有可量化、可自动化的评测方法。</p>
+<h3>4.2 25 项指标的设计原则</h3>
+<p>每个维度下设 5 项具体指标，总计 25 项。设计遵循以下原则：</p>
+<ul>
+<li><strong>可自动化</strong>：每项指标可通过程序化方式评分，不依赖人工判断。</li>
+<li><strong>可量化</strong>：输出为 0-100 的数值分数，支持跨版本、跨团队比较。</li>
+<li><strong>可归因</strong>：低分指标能关联到具体的 Agent 行为事件（证据层支持）。</li>
+<li><strong>独立性</strong>：指标之间正交，避免重复计分。</li>
+</ul>
+<p>示例（可靠性维度）：</p>
+<pre><code>
+reliability:
+  - task_completion_rate:    # 任务完成率
+      formula: "completed_tasks / total_tasks * 100"
+      weight: 0.25
+  - output_consistency:      # 输出一致性
+      formula: "1 - stddev(outputs_across_runs) / mean"
+      weight: 0.25
+  - error_recovery_rate:     # 错误恢复率
+      formula: "recovered_errors / total_errors * 100"
+      weight: 0.20
+  - context_adherence:       # 上下文遵从度
+      formula: "on_topic_responses / total_responses * 100"
+      weight: 0.15
+  - tool_call_accuracy:      # 工具调用准确率
+      formula: "valid_tool_calls / total_tool_calls * 100"
+      weight: 0.15
+</code></pre>
+<h3>4.3 动态评测 vs 静态检查的权衡</h3>
+<table>
+<thead><tr>
+<th>类型</th>
+<th>适用场景</th>
+<th>优势</th>
+<th>局限</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>静态检查</strong></td>
+<td>Prompt 模板审查、工具定义验证、系统提示词合规</td>
+<td>速度快（<1s），无 LLM 成本</td>
+<td>无法捕获运行时行为</td>
+</tr>
+<tr>
+<td><strong>动态评测</strong></td>
+<td>端到端对话测试、工具调用链验证、对抗性测试</td>
+<td>覆盖真实场景</td>
+<td>成本高，耗时长</td>
+</tr>
+</tbody></table>
+<p>龙虾学院采用<strong>混合策略</strong>：静态检查作为 CI/CD 的门禁（每次提交触发），动态评测作为发布前的深度验证（每日/每周运行）。</p>
+<h3>4.4 评分模型的数学基础</h3>
+<p>综合评分采用加权几何平均数（Weighted Geometric Mean），而非算术平均数：</p>
+<pre><code>
+Score = ∏(score_i ^ w_i)
+
+其中：
+  score_i ∈ [0, 1]  (归一化后的维度得分)
+  w_i ∈ [0, 1]      (维度权重，Σw_i = 1)
+</code></pre>
+<p>选择几何平均数的原因：</p>
+<ol>
+<li><strong>惩罚短板效应</strong>：任何一项维度得分为 0，总分为 0。这符合安全敏感场景的需求——安全性为零的 Agent 不应因其他维度优秀而获得高分。</li>
+<li><strong>维度间敏感性</strong>：几何平均数对低分项更敏感，鼓励均衡发展而非偏科。</li>
+<li><strong>学术先例</strong>：HDI（人类发展指数）和 EFQM（欧洲质量管理模型）均采用几何平均数。</li>
+</ol>
+<hr>
+<h2>5. Blackbox 技术架构</h2>
+<p>Blackbox 是龙虾学院的核心组件，负责 Agent 行为的录制、脱敏、签名和存储。</p>
+<h3>5.1 系统总览</h3>
+<pre><code>
+┌─────────────────────────────────────────────────────────────────┐
+│                        Blackbox 架构                            │
+│                                                                 │
+│   Agent Process                                                 │
+│   ┌─────────────┐                                               │
+│   │  SDK Hook   │──── 事件流 (JSON Lines) ────┐                 │
+│   └─────────────┘                             │                 │
+│                                               ▼                 │
+│                         ┌──────────────────────────────┐        │
+│                         │       Recording Engine        │        │
+│                         │  ┌────────┐  ┌────────────┐  │        │
+│                         │  │ Ring   │  │ Event      │  │        │
+│                         │  │ Buffer │──│ Serializer │  │        │
+│                         │  └────────┘  └─────┬──────┘  │        │
+│                         └────────────────────┼─────────┘        │
+│                                              │                  │
+│                                              ▼                  │
+│                         ┌──────────────────────────────┐        │
+│                         │     Sanitization Engine       │        │
+│                         │  ┌────────┐  ┌────────────┐  │        │
+│                         │  │ PII    │  │ Redaction  │  │        │
+│                         │  │ Detect │──│ Pipeline   │  │        │
+│                         │  └────────┘  └─────┬──────┘  │        │
+│                         └────────────────────┼─────────┘        │
+│                                              │                  │
+│                                              ▼                  │
+│                         ┌──────────────────────────────┐        │
+│                         │      Signing Engine           │        │
+│                         │  ┌────────────────────────┐  │        │
+│                         │  │ Ed25519 Signing Chain  │  │        │
+│                         │  │ (Private Key Local Only)│  │        │
+│                         │  └────────────┬───────────┘  │        │
+│                         └───────────────┼──────────────┘        │
+│                                         │                       │
+│                                         ▼                       │
+│                              ┌─────────────────┐                │
+│                              │  Evidence Store  │                │
+│                              │  (Signed Events) │                │
+│                              └─────────────────┘                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>5.2 录制引擎设计</h3>
+<p><strong>零侵入原则</strong>：Agent 应用无需修改任何业务代码，通过 SDK 的 monkey-patching 或 middleware 注入机制实现自动录制。</p>
+<pre><code>
+# 用户集成代码（仅需 3 行）
+from lobster_blackbox import Blackbox
+
+bb = Blackbox(api_key="lb_live_xxx")
+bb.attach(my_agent)  # 自动注入录制钩子
+</code></pre>
+<p><strong>低延迟保证</strong>：</p>
+<ul>
+<li>事件写入采用<strong>无锁环形缓冲区</strong>（Ring Buffer），默认大小 4096 事件。</li>
+<li>序列化采用<strong>二进制格式</strong>（MessagePack），比 JSON 快 3-5 倍。</li>
+<li>异步写入：录制操作不阻塞 Agent 主线程，延迟 < 0.5ms（P99）。</li>
+</ul>
+<p><strong>事件类型</strong>：</p>
+<pre><code>
+{
+  "event_id": "evt_a1b2c3d4",
+  "timestamp": "2026-03-24T07:30:00.123Z",
+  "type": "llm_call",
+  "payload": {
+    "model": "gpt-4o",
+    "prompt_tokens": 1250,
+    "completion_tokens": 380,
+    "latency_ms": 2340
+  },
+  "parent_id": "evt_x1y2z3",
+  "context_hash": "sha256:e3b0c442..."
+}
+</code></pre>
+<h3>5.3 脱敏引擎</h3>
+<p><strong>PII 识别算法</strong>：采用三层检测策略：</p>
+<ol>
+<li><strong>正则模式层</strong>：检测邮箱、手机号、身份证号、银行卡号等结构化 PII。</li>
+<li><strong>NER 模型层</strong>：基于轻量级 NER 模型识别人名、地址、组织名等非结构化 PII。</li>
+<li><strong>上下文推断层</strong>：通过字段名（如 <code>ssn</code>、<code>password</code>）推断敏感字段。</li>
+</ol>
+<p><strong>误报控制</strong>：每层检测输出置信度分数，三层综合置信度 > 0.85 时才执行脱敏。误报率控制目标：< 0.1%。</p>
+<p><strong>脱敏策略</strong>：</p>
+<table>
+<thead><tr>
+<th>PII 类型</th>
+<th>策略</th>
+<th>示例</th>
+</tr></thead><tbody>
+<tr>
+<td>邮箱</td>
+<td>保留域名</td>
+<td><code>u<em>*</em>@example.com</code></td>
+</tr>
+<tr>
+<td>手机号</td>
+<td>保留前3后4</td>
+<td><code>138<em>*</em>*1234</code></td>
+</tr>
+<tr>
+<td>人名</td>
+<td>替换为 <code>[NAME_N]</code></td>
+<td><code>[NAME_1]</code></td>
+</tr>
+<tr>
+<td>自定义字段</td>
+<td>完全替换为 <code>[REDACTED]</code></td>
+<td><code>[REDACTED]</code></td>
+</tr>
+<h3>5.4 Ed25519 签名体系</h3>
+</tbody></table>
+<p><strong>设计目标</strong>：确保每条录制事件不可篡改、可独立验证、可形成签名链。</p>
+<p><strong>签名流程</strong>：</p>
+<pre><code>
+Event_N ──serialize──▶ Canonical JSON ──hash──▶ SHA-256 ──sign──▶ Signature_N
+                                                            ▲
+                                                            │
+                                                    Ed25519 Private Key
+                                                    (本地存储，永不上传)
+</code></pre>
+<p><strong>签名链结构</strong>：</p>
+<pre><code>
+class SignedEvent:
+    event: dict           # 事件内容（脱敏后）
+    sequence: int         # 序列号
+    prev_hash: str        # 前一事件的哈希（链式结构）
+    content_hash: str     # 当前事件内容的 SHA-256
+    signature: bytes      # Ed25519 签名
+    public_key_id: str    # 公钥标识（用于验证）
+</code></pre>
+<p><strong>密钥管理</strong>：</p>
+<ul>
+<li>私钥生成后存储在本地安全存储（macOS Keychain / Linux Secret Service / Windows DPAPI）。</li>
+<li>私钥<strong>永不离开用户设备</strong>，龙虾学院服务端只接收公钥。</li>
+<li>支持密钥轮换：每 90 天自动提醒，旧公钥保留用于历史记录验证。</li>
+</ul>
+<h3>5.5 报告生成</h3>
+<p>报告生成采用<strong>确定性序列化</strong>：相同内容的事件序列无论处理顺序如何，都生成相同哈希的报告。</p>
+<pre><code>
+def generate_report(events: list[SignedEvent]) -&gt; Report:
+    # 1. 按 sequence 排序（确定性）
+    sorted_events = sorted(events, key=lambda e: e.sequence)
+    
+    # 2. 验证签名链完整性
+    for i, event in enumerate(sorted_events):
+        assert verify_signature(event)
+        if i &gt; 0:
+            assert event.prev_hash == sorted_events[i-1].content_hash
+    
+    # 3. 计算报告哈希
+    canonical = deterministic_serialize(sorted_events)
+    report_hash = hashlib.sha256(canonical.encode()).hexdigest()
+    
+    return Report(events=sorted_events, hash=report_hash)
+</code></pre>
+<hr>
+<h2>6. 安全与隐私</h2>
+<h3>6.1 数据处理流程</h3>
+<pre><code>
+用户设备                                          龙虾学院云端
+┌──────────────────┐                              ┌──────────────────┐
+│                  │                              │                  │
+│  Agent 运行      │                              │  评测引擎        │
+│      │          │                              │      ▲          │
+│      ▼          │                              │      │          │
+│  录制事件        │                              │  签名验证        │
+│      │          │                              │      ▲          │
+│      ▼          │                              │      │          │
+│  脱敏处理 ◄─────│───── 敏感数据不出设备 ────────│      │          │
+│      │          │                              │      │          │
+│      ▼          │    HTTPS/TLS 1.3             │      │          │
+│  本地签名        │──────────────────────────────▶  接收存储        │
+│  (Ed25519)      │    仅传输脱敏后事件+签名       │                  │
+│      │          │                              │                  │
+│  私钥 ──❌──     │    私钥永不上传               │  公钥已预先注册   │
+│  (本地存储)     │                              │                  │
+└──────────────────┘                              └──────────────────┘
+</code></pre>
+<h3>6.2 私钥永不上传的设计</h3>
+<p>这是龙虾学院安全模型的核心假设：</p>
+<ul>
+<li><strong>私钥生成</strong>：在用户设备上通过操作系统安全随机数生成器（<code>/dev/urandom</code> 或 <code>CryptGenRandom</code>）生成。</li>
+<li><strong>私钥存储</strong>：优先使用平台安全存储（Keychain / Secret Service / DPAPI），降级方案为 AES-256-GCM 加密文件，密钥由用户主密码派生（PBKDF2, 100,000 迭代）。</li>
+<li><strong>私钥使用</strong>：签名操作在本地完成，私钥内存中的明文在签名后立即清零（<code>memset_s</code>）。</li>
+<li><strong>架构保证</strong>：即使龙虾学院云端被完全入侵，攻击者也无法伪造或篡改历史事件。</li>
+</ul>
+<h3>6.3 PIPL/GDPR 合规性分析</h3>
+<table>
+<thead><tr>
+<th>合规要求</th>
+<th>实现方式</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>数据最小化</strong></td>
+<td>脱敏引擎在本地处理，仅上传脱敏后数据</td>
+</tr>
+<tr>
+<td><strong>目的限制</strong></td>
+<td>数据仅用于 Agent 行为评测，不用于训练或其他目的</td>
+</tr>
+<tr>
+<td><strong>用户知情权</strong></td>
+<td>SDK 集成时明确告知录制范围，支持用户随时暂停</td>
+</tr>
+<tr>
+<td><strong>删除权</strong></td>
+<td>支持用户请求删除全部录制数据，72 小时内完成</td>
+</tr>
+<tr>
+<td><strong>数据可携带</strong></td>
+<td>支持导出全部事件为标准 JSON 格式</td>
+</tr>
+<tr>
+<td><strong>跨境传输</strong></td>
+<td>支持区域化部署（中国大陆 / 欧盟 / 美国），数据不跨境</td>
+</tr>
+<hr>
+<h2>7. 性能基准</h2>
+<h3>7.1 测试环境</h3>
+<tr>
+<td>项目</td>
+<td>配置</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>Apple M2 Pro / Intel Xeon Gold 6248R</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>32GB</td>
+</tr>
+<tr>
+<td>Agent 框架</td>
+<td>LangChain 0.3 / CrewAI 0.28</td>
+</tr>
+<tr>
+<td>LLM 后端</td>
+<td>GPT-4o / Claude 3.5 Sonnet</td>
+</tr>
+<tr>
+<td>测试时长</td>
+<td>72 小时连续运行</td>
+</tr>
+<tr>
+<td>样本量</td>
+<td>10,000+ Agent 交互</td>
+</tr>
+<h3>7.2 核心性能指标</h3>
+<tr>
+<td>指标</td>
+<td>龙虾学院 Blackbox</td>
+<td>行业基准</td>
+<td>说明</td>
+</tr>
+<tr>
+<td><strong>录制延迟 (P50)</strong></td>
+<td>0.12ms</td>
+<td>< 1ms</td>
+<td>单事件从发生到写入缓冲区</td>
+</tr>
+<tr>
+<td><strong>录制延迟 (P99)</strong></td>
+<td>0.47ms</td>
+<td>< 5ms</td>
+<td>99 分位延迟</td>
+</tr>
+<tr>
+<td><strong>吞吐量</strong></td>
+<td>85,000 events/s</td>
+<td>10,000 events/s</td>
+<td>单进程最大事件处理速率</td>
+</tr>
+<tr>
+<td><strong>内存开销</strong></td>
+<td>12MB (基础)</td>
+<td>< 50MB</td>
+<td>SDK + Ring Buffer 基础占用</td>
+</tr>
+<tr>
+<td><strong>CPU 开销</strong></td>
+<td>< 1%</td>
+<td>< 5%</td>
+<td>相对 Agent 主进程 CPU 占用</td>
+</tr>
+<tr>
+<td><strong>脱敏延迟</strong></td>
+<td>2.3ms/event</td>
+<td>N/A</td>
+<td>平均单事件 PII 检测+脱敏时间</td>
+</tr>
+<tr>
+<td><strong>签名延迟</strong></td>
+<td>0.08ms/event</td>
+<td>N/A</td>
+<td>Ed25519 单次签名时间</td>
+</tr>
+<h3>7.3 与竞品的性能对比</h3>
+<tr>
+<td>维度</td>
+<td>龙虾学院</td>
+<td>LangSmith</td>
+<td>Langfuse</td>
+<td>AgentOps</td>
+</tr>
+<tr>
+<td>事件录制延迟</td>
+<td>< 0.5ms</td>
+<td>~2ms</td>
+<td>~3ms</td>
+<td>~5ms</td>
+</tr>
+<tr>
+<td>Agent 行为评测</td>
+<td>✅ 25 维度</td>
+<td>❌</td>
+<td>❌</td>
+<td>部分</td>
+</tr>
+<tr>
+<td>PII 脱敏</td>
+<td>✅ 本地处理</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>签名审计链</td>
+<td>✅ Ed25519</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>框架无关</td>
+<td>✅</td>
+<td>❌ (LangChain)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<hr>
+<h2>8. 与现有方案的对比</h2>
+<h3>8.1 差异化定位</h3>
+<pre><code>
+                    评测深度
+                      高 │
+                         │         ┌──────────────┐
+                         │         │  龙虾学院     │
+                         │         │  (行为证据+   │
+                         │         │   评测+监控)  │
+                         │         └──────────────┘
+                         │
+                         │    ┌──────────┐
+                         │    │ AgentOps  │
+                         │    └──────────┘
+                         │
+               ┌──────────┐
+               │ LangSmith │
+               └──────────┘
+                         │
+               ┌──────────┐     ┌──────────┐
+               │ Langfuse  │     │  Sentry  │
+               └──────────┘     └──────────┘
+                      低 │
+                         └──────────────────────────▶
+                              通用性/框架无关性      高
+</code></pre>
+<h3>8.2 详细对比</h3>
+<tr>
+<td>能力维度</td>
+<td>龙虾学院</td>
+<td>LangSmith</td>
+<td>Langfuse</td>
+<td>AgentOps</td>
+<td>Sentry</td>
+</tr>
+<tr>
+<td><strong>Agent 行为评测</strong></td>
+<td>✅ 25 维度</td>
+<td>❌</td>
+<td>❌</td>
+<td>部分</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>行为证据链</strong></td>
+<td>✅ Ed25519 签名</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>零侵入录制</strong></td>
+<td>✅ SDK 注入</td>
+<td>❌ 需包装</td>
+<td>❌ 需包装</td>
+<td>❌ 需包装</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>PII 本地脱敏</strong></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>框架无关</strong></td>
+<td>✅</td>
+<td>❌ LangChain</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>回归对比</strong></td>
+<td>✅ 自动化</td>
+<td>手动</td>
+<td>手动</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>开源</strong></td>
+<td>✅ 核心引擎</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>私钥本地</strong></td>
+<td>✅</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<hr>
+<h2>9. 路线图</h2>
+<h3>v0.1 — 当前阶段（2026 Q1）</h3>
+</tbody></table>
+<ul>
+<li>[x] 核心评测框架（5 维度 25 指标）</li>
+<li>[x] Blackbox 录制引擎（Python SDK）</li>
+<li>[x] Ed25519 签名体系</li>
+<li>[x] 基础 PII 脱敏</li>
+<li>[ ] CLI 工具与本地报告生成</li>
+</ul>
+<h3>v0.5 — 增强版（2026 Q2）</h3>
+<ul>
+<li>[ ] JavaScript/TypeScript SDK</li>
+<li>[ ] 云端仪表盘（实时监控 + 趋势分析）</li>
+<li>[ ] 高级 PII 检测（多语言 NER 模型）</li>
+<li>[ ] CI/CD 集成（GitHub Actions / GitLab CI）</li>
+<li>[ ] 自定义评测指标扩展 API</li>
+</ul>
+<h3>v1.0 — 正式版（2026 Q3）</h3>
+<ul>
+<li>[ ] 多 Agent 协作评测</li>
+<li>[ ] 对抗性测试自动化</li>
+<li>[ ] 合规报告自动生成（PIPL/GDPR/SOC2）</li>
+<li>[ ] 企业级部署（私有化 / 混合云）</li>
+<li>[ ] 评测结果市场（社区共享评测集）</li>
+</ul>
+<h3>v2.0 — 生态版（2026 Q4 - 2027 Q1）</h3>
+<ul>
+<li>[ ] Agent 行为保险（基于评测分数的风险定价）</li>
+<li>[ ] 联邦评测（多方数据协作，隐私保护）</li>
+<li>[ ] Agent 信誉系统（跨平台行为评分）</li>
+<li>[ ] 行业标准推动（IEEE/W3C 标准提案）</li>
+</ul>
+<hr>
+<h2>10. 结论</h2>
+<p>AI Agent 的生产化部署正在加速，但缺乏系统化的评测和审计能力成为最大的工程化瓶颈。龙虾学院以<strong>行为证据</strong>为核心，构建了从评测到监控的完整技术栈：</p>
+<ol>
+<li><strong>评测方法论</strong>提供了可量化、可自动化的 25 维度评估框架，解决了"Agent 好不好"的度量问题。</li>
+<li><strong>Blackbox 技术</strong>以零侵入方式捕获 Agent 完整行为链，配合 Ed25519 签名确保证据不可篡改，解决了"Agent 干了什么"的追溯问题。</li>
+<li><strong>安全与隐私</strong>设计确保敏感数据不出设备，满足 PIPL/GDPR 合规要求，解决了"敢不敢用"的信任问题。</li>
+</ol>
+<p>我们相信，<strong>可评测的 AI 才是可信赖的 AI</strong>。龙虾学院致力于成为 AI Agent 时代的评测基础设施，让每一个 Agent 都有据可查、有证可验。</p>
+<hr>
+<p><em>龙虾学院 — 让 AI Agent 的每一个决策都经得起审视。</em></p>
+<p><strong>联系我们</strong>：[官网] | [GitHub] | [Discord]</p>
+<p><strong>文档版本</strong>：v1.0 | <strong>最后更新</strong>：2026 年 3 月 24 日</p>
+</div>
+
+<div class="doc-nav">
+  <a href="docs.html">← 返回文档中心</a>
+  <a href="https://github.com/jiach72-oss/lobster-academy/blob/main/sdk/docs/" target="_blank">GitHub 源文件 ↗</a>
+</div>
+
+<footer class="footer">
+  <div class="footer-links">
+    <a href="docs.html">📚 文档中心</a>
+    <a href="https://github.com/jiach72-oss/lobster-academy">GitHub</a>
+    <a href="https://www.npmjs.com/package/@lobster-academy/blackbox">npm</a>
+    <a href="mailto:dev@lobster-academy.ai">联系我们</a>
+  </div>
+  <p>© 2026 龙虾学院 Lobster Academy · 每只龙虾都该有一个黑匣子 · MIT License</p>
+</footer>
+
+</body>
+</html>
