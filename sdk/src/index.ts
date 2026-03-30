@@ -118,6 +118,15 @@ export { ConsistentHashingRouter, ShardedTieredStorage } from './storage/tiered-
 export type { ShardInfo, ShardRouteResult, ConsistentHashingConfig } from './storage/tiered-storage';
 
 // ─────────────────────────────────────────────
+// 熵动力学监控 + 狄利克雷行为建模
+// ─────────────────────────────────────────────
+export { EntropyMonitor, EntropyDynamics, savitzkyGolay, shannonEntropy } from './entropy-monitor';
+export type { EntropyMonitorConfig, LogProbEntry, MonitorResult, ChainAnalysisResult, MonitorStatus } from './entropy-monitor';
+
+export { DirichletModel, ToolTransitionMatrix, mahalanobisDistance } from './dirichlet-model';
+export type { DirichletConfig, ToolCallSequence, BehaviorAnalysis, ModelSnapshot } from './dirichlet-model';
+
+// ─────────────────────────────────────────────
 // Agent 护照系统
 // ─────────────────────────────────────────────
 export { PassportManager } from './passport';
