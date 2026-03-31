@@ -158,8 +158,6 @@ export class LightweightAudit {
    * 追加事件并返回审计条目
    */
   append(event: AuditEvent): AuditEntry {
-    const blockIndex = this.blocks.length - 1 + (this.blocks.length === 0 || this.blocks[this.blocks.length - 1].length >= this.config.blockSize ? 1 : 0);
-
     // 确定当前块
     if (this.blocks.length === 0 || this.blocks[this.blocks.length - 1].length >= this.config.blockSize) {
       this.blocks.push([]);

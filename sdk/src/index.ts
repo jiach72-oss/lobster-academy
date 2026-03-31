@@ -13,6 +13,7 @@ import { Recorder } from './recorder';
 import { Redactor } from './redactor';
 import { Signer } from './signer';
 import { ReporterV2 as Reporter } from './reporter-v2';
+import type { ReportData } from './reporter-v2';
 import { Academy } from './academy';
 import { BlackboxConfig, DecisionRecord, AuditReport, Enrollment, EvalRecord, Badge, Certificate, Grade } from './types';
 import { BlackboxError, BlackboxErrorCode } from './errors';
@@ -159,13 +160,55 @@ export type { ComplianceReport } from './compliance/exporter';
 // 自适应攻击生成模块（UCB 多臂老虎机）
 // ─────────────────────────────────────────────
 export { AdaptiveFuzzer, MUTATIONS } from './adaptive-fuzzer';
-export type { FuzzerConfig, AttackArm, FuzzingResult, MutatedAttack, MutationType } from './adaptive-fuzzer';
+export type { FuzzerConfig, AttackArm } from './adaptive-fuzzer';
 
 // ─────────────────────────────────────────────
 // 轻量防篡改审计模块
 // ─────────────────────────────────────────────
 export { LightweightAudit } from './lightweight-audit';
-export type { AuditEvent, AuditEntry, VerificationResult, ChainVerificationResult, AuditConfig } from './lightweight-audit';
+export type { AuditEvent, AuditEntry, VerificationResult, AuditConfig } from './lightweight-audit';
+
+// ─────────────────────────────────────────────
+// SaaS 客户端
+// ─────────────────────────────────────────────
+export { MirrorAIClient } from './saas-client';
+export type { SaasClientConfig, SyncResult } from './saas-client';
+
+// ─────────────────────────────────────────────
+// 实时防护层
+// ─────────────────────────────────────────────
+export { Guard } from './guard';
+export type { GuardResult, GuardDecision, GuardConfig } from './guard';
+
+export { Shield } from './shield';
+export type { ShieldResult, ShieldDecision, ShieldConfig, Detection } from './shield';
+
+export { Gate } from './gate';
+export type { GateResult, GateDecision, GateConfig, ToolCall, ToolPermission } from './gate';
+
+export { Interceptor } from './interceptor';
+export type { InterceptorConfig, WrappedLLMFunction, WrappedToolFunction } from './interceptor';
+
+// ─────────────────────────────────────────────
+// 功能增强
+// ─────────────────────────────────────────────
+export { CryptoRedactor } from './crypto-redactor';
+export type { EncryptedToken } from './crypto-redactor';
+
+export { EvalSigner } from './eval-signer';
+export type { SignedEvalStep } from './eval-signer';
+
+export { AlertExplainer } from './alert-explainer';
+export type { ExplainedAlert } from './alert-explainer';
+
+export { CloudScenarioLibrary } from './cloud-scenarios';
+export type { CloudScenarioConfig } from './cloud-scenarios';
+
+export { Benchmark } from './benchmark';
+export type { BenchmarkResult } from './benchmark';
+
+export { VersionTracker } from './version-tracker';
+export type { AgentSnapshot, VersionDiff } from './version-tracker';
 
 /**
  * 验证 BlackboxConfig
@@ -369,7 +412,7 @@ export class LobsterBlackbox {
       
       return {
         id: `report-${Date.now()}`,
-        agentId: this.recorder['agentId'] || 'unknown',
+        agentId: this.recorder.getAgentId() || 'unknown',
         generatedAt: new Date().toISOString(),
         period: { from: options?.from || '', to: options?.to || '' },
         summary: { totalDecisions: decisions, totalToolCalls: toolCalls, totalErrors: errors, avgDuration },
@@ -386,6 +429,24 @@ export class LobsterBlackbox {
     }
   }
 
+  /** 将 AuditReport 转换为 ReporterV2 兼容的 ReportData
+   *  注：AuditReport 运行时包含 id/agentId/period 等字段，但类型定义尚未同步，
+   *  因此此处使用一次性类型断言而非逐字段 as any。
+   */
+  private toReportData(report: AuditReport): ReportData {
+    const r = report as unknown as ReportData;
+    return {
+      id: r.id || `report-${Date.now()}`,
+      agentId: r.agentId || 'unknown',
+      title: 'Blackbox 审计报告',
+      totalScore: 0,
+      grade: '-',
+      dimensions: [],
+      period: r.period || { from: '', to: '' },
+      generatedAt: r.generatedAt || new Date().toISOString(),
+    };
+  }
+
   /**
    * 生成文本格式报告
    * @param report 审计报告
@@ -393,7 +454,11 @@ export class LobsterBlackbox {
    */
   toText(report: AuditReport): string {
     if (!report) throw new BlackboxError(BlackboxErrorCode.REPORT_GENERATION_FAILED, 'report is required');
-    return `=== 审计报告 ===\nAgent: ${report.agentId}\n时间: ${report.generatedAt}\n\n` + JSON.stringify(report, null, 2);
+    try {
+      return this.reporter.toText(this.toReportData(report));
+    } catch {
+      return `=== 审计报告 ===\nAgent: ${(report as any).agentId || 'unknown'}\n时间: ${(report as any).generatedAt || ''}\n\n` + JSON.stringify(report, null, 2);
+    }
   }
 
   /**
@@ -412,7 +477,12 @@ export class LobsterBlackbox {
    * @returns HTML 字符串
    */
   toHTML(report: AuditReport): string {
-    return `<pre>${JSON.stringify(report, null, 2)}</pre>`;
+    if (!report) throw new BlackboxError(BlackboxErrorCode.REPORT_GENERATION_FAILED, 'report is required');
+    try {
+      return this.reporter.toHTML(this.toReportData(report));
+    } catch {
+      return `<pre>${JSON.stringify(report, null, 2)}</pre>`;
+    }
   }
 
   /**
@@ -421,7 +491,12 @@ export class LobsterBlackbox {
    * @returns Markdown 字符串
    */
   toMarkdown(report: AuditReport): string {
-    return '```json\n' + JSON.stringify(report, null, 2) + '\n```';
+    if (!report) throw new BlackboxError(BlackboxErrorCode.REPORT_GENERATION_FAILED, 'report is required');
+    try {
+      return this.reporter.toMarkdown(this.toReportData(report));
+    } catch {
+      return '```json\n' + JSON.stringify(report, null, 2) + '\n```';
+    }
   }
 
   /**
@@ -432,12 +507,12 @@ export class LobsterBlackbox {
    */
   static verifyReport(report: AuditReport, publicKey: string): boolean {
     if (!report || !report.signature || !publicKey) return false;
-    // Simplified: check signature exists and is non-empty string
-    // Full verification requires Ed25519 crypto
-    if (typeof report.signature !== 'string' || report.signature.length === 0) return false;
-    // If signature is tampered (e.g., modified), reject
-    if (report.signature === 'tampered' || report.signature.includes('invalid')) return false;
-    return true;
+    try {
+      const { signature, ...data } = report;
+      return Signer.verify(JSON.stringify(data), signature, publicKey);
+    } catch {
+      return false;
+    }
   }
 
   // ─────────────────────────────────────────────
@@ -450,7 +525,7 @@ export class LobsterBlackbox {
    * @returns 入学信息
    */
   enroll(department = 'general'): Enrollment {
-    return this.academy.enroll(this.recorder['agentId'], department);
+    return this.academy.enroll(this.recorder.getAgentId(), department);
   }
 
   /** 获取入学信息 */

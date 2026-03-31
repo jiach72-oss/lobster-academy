@@ -69,7 +69,7 @@ export async function createStorage(config?: StorageFactoryConfig): Promise<Stor
   try {
     const pg = new PgStorage(pgConfig);
     await pg.initialize();
-    console.log('✅ PostgreSQL 存储已连接');
+    // PostgreSQL 存储已连接
     return { storage: pg, fallback: false };
   } catch (error) {
     const graceful = config?.gracefulFallback ?? true;

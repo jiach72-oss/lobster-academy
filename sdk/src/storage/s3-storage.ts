@@ -278,7 +278,7 @@ export class S3Storage implements StorageAdapter {
         archives.push({
           key: obj.Key!,
           size: obj.Size ?? 0,
-          lastModified: obj.LastDate?.toISOString() ?? '',
+          lastModified: obj.LastModified?.toISOString() ?? '',
           agentId: parts[2] ?? '',
           sessionId: parts[3] ?? '',
           eventCount: 0, // Would need to read metadata

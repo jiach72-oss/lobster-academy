@@ -106,15 +106,26 @@ export class Recorder {
   }
 
   /** 批量录制 */
-  async recordBatch(items: Array<Parameters<Recorder['record']>[0]>): Promise<DecisionRecord[]> {
+  async recordBatch(items: Array<Parameters<Recorder['record']>[0]>): Promise<{
+    succeeded: DecisionRecord[];
+    failed: Array<{ index: number; error: string }>;
+  }> {
     if (!Array.isArray(items)) {
       throw new TypeError('recordBatch() requires an array');
     }
-    const results: DecisionRecord[] = [];
-    for (const item of items) {
-      results.push(await this.record(item));
+    const succeeded: DecisionRecord[] = [];
+    const failed: Array<{ index: number; error: string }> = [];
+    for (let i = 0; i < items.length; i++) {
+      try {
+        succeeded.push(await this.record(items[i]));
+      } catch (e) {
+        failed.push({
+          index: i,
+          error: e instanceof Error ? e.message : String(e),
+        });
+      }
     }
-    return results;
+    return { succeeded, failed };
   }
 
   /** 获取所有记录（返回深拷贝副本） */
@@ -128,7 +139,9 @@ export class Recorder {
     if (!['decision', 'tool_call', 'error', 'system'].includes(type)) {
       throw new TypeError(`Invalid record type: ${type}`);
     }
-    return this.records.filter(r => r.type === type);
+    return JSON.parse(JSON.stringify(
+      this.records.filter(r => r.type === type)
+    ));
   }
 
   /** 清空记录 */
@@ -144,6 +157,11 @@ export class Recorder {
   /** 获取签名器 */
   getSigner(): Signer {
     return this.signer;
+  }
+
+  /** 获取 agentId */
+  getAgentId(): string {
+    return this.agentId;
   }
 
   /** 获取脱敏器 */

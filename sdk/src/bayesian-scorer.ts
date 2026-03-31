@@ -111,10 +111,17 @@ const DEFAULT_HALLUCINATION_PATTERNS = [
   '据我所知', '根据我的知识', '众所周知',
   'I know that', 'as far as I know', 'it is well known',
   'according to my training', 'based on my knowledge',
-  'certainly', 'definitely', 'absolutely',
   '我确定', '我确信', '毫无疑问',
   'studies show', 'research proves', 'scientists say',
   '数据显示', '研究表明',
+];
+
+/**
+ * 需要上下文组合才触发的幻觉标记词（单独出现不触发，需与幻觉模式组合）
+ * 避免 "certainly/definitely/absolutely" 在正常表达中误触发
+ */
+const CONTEXTUAL_HALLUCINATION_PATTERNS = [
+  'certainly', 'definitely', 'absolutely',
 ];
 
 /** 默认不确定性表达词 */
@@ -186,6 +193,7 @@ export class HallucinationDetector {
     const results: HallucinationResult[] = [];
     const lower = text.toLowerCase();
 
+    // 强模式：直接触发
     for (const pattern of this.patterns) {
       if (lower.includes(pattern.toLowerCase())) {
         results.push({
@@ -195,6 +203,22 @@ export class HallucinationDetector {
           description: `检测到幻觉标记词: "${pattern}"`,
           matchedRule: pattern,
         });
+      }
+    }
+
+    // 上下文模式：仅当同时命中强模式时才触发，降低误报
+    const hasStrongMatch = results.length > 0;
+    if (hasStrongMatch) {
+      for (const pattern of CONTEXTUAL_HALLUCINATION_PATTERNS) {
+        if (lower.includes(pattern.toLowerCase())) {
+          results.push({
+            detected: true,
+            layer: 1,
+            confidence: 0.5,
+            description: `检测到上下文相关幻觉标记词: "${pattern}"（与强模式共现）`,
+            matchedRule: pattern,
+          });
+        }
       }
     }
 

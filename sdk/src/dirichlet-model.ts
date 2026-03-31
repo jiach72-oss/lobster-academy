@@ -60,6 +60,8 @@ export interface ModelSnapshot {
   mean: number[];
   /** 协方差矩阵的逆（扁平化） */
   sigmaInv: number[];
+  /** 行为指纹数组 */
+  fingerprints?: number[][];
 }
 
 // ─────────────────────────────────────────────
@@ -259,6 +261,13 @@ function computeCovariance(fingerprints: number[][]): number[][] {
   if (n < 2) return [];
 
   const dim = fingerprints[0].length;
+
+  // 当样本数小于维度时，协方差矩阵奇异，返回单位矩阵
+  if (n < dim) {
+    return Array.from({ length: dim }, (_, i) =>
+      Array.from({ length: dim }, (_, j) => i === j ? 1 : 0)
+    );
+  }
 
   // 计算均值
   const mean = new Array(dim).fill(0);
@@ -467,7 +476,6 @@ export class DirichletModel {
    * @returns 可序列化的模型状态
    */
   export(): ModelSnapshot {
-    const n = this.tools.length;
     return {
       tools: [...this.tools],
       alphaMatrix: this.alphaCounts.flat(),
@@ -477,6 +485,7 @@ export class DirichletModel {
       sampleCount: this.sampleCount,
       mean: [...this.mean],
       sigmaInv: this.sigmaInv.flat(),
+      fingerprints: this.fingerprints.map(fp => [...fp]),
     };
   }
 
@@ -501,6 +510,11 @@ export class DirichletModel {
     this.sigmaInv = [];
     for (let i = 0; i < n * n; i += n) {
       this.sigmaInv.push(snapshot.sigmaInv.slice(i, i + n));
+    }
+
+    // 恢复行为指纹
+    if (snapshot.fingerprints) {
+      this.fingerprints = snapshot.fingerprints.map(fp => [...fp]);
     }
   }
 

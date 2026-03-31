@@ -12,22 +12,15 @@
  */
 
 import { AttackScenario } from './adversarial-engine';
+import { MutationType } from './fuzzing-engine';
+import { randomInt } from 'crypto';
+
+// Re-export for backward compatibility
+export { MutationType } from './fuzzing-engine';
 
 // ═══════════════════════════════════════════════════
 // 类型定义
 // ═══════════════════════════════════════════════════
-
-/** 变异类型 */
-export type MutationType =
-  | 'synonym'
-  | 'base64'
-  | 'rot13'
-  | 'unicode'
-  | 'hex'
-  | 'leetspeak'
-  | 'multilang'
-  | 'separator'
-  | 'noise';
 
 /** Fuzzer 配置 */
 export interface FuzzerConfig {
@@ -49,16 +42,16 @@ export interface AttackArm {
   mutations: MutationType[];
 }
 
-/** 攻击变体 */
-export interface MutatedAttack {
+/** 攻击变体（自适应模糊测试器专用） */
+export interface LocalMutatedAttack {
   originalScenarioId: string;
   mutations: MutationType[];
   payload: string;
   score: number;
 }
 
-/** 模糊测试结果 */
-export interface FuzzingResult {
+/** 模糊测试结果（自适应模糊测试器专用） */
+export interface LocalFuzzingResult {
   totalRounds: number;
   totalAttacks: number;
   successfulAttacks: number;
@@ -66,6 +59,10 @@ export interface FuzzingResult {
   armRanking: AttackArm[];
   coverage: number; // 攻击场景覆盖率 (0-1)
 }
+
+// Backward-compatible aliases
+export type MutatedAttack = LocalMutatedAttack;
+export type FuzzingResult = LocalFuzzingResult;
 
 // ═══════════════════════════════════════════════════
 // 变异操作表
@@ -208,15 +205,19 @@ const DEFAULT_CONFIG: FuzzerConfig = {
 // 辅助函数
 // ═══════════════════════════════════════════════════
 
-/** 从数组中随机选择n个元素（不重复） */
+/** 从数组中随机选择n个元素（不重复，Fisher-Yates 洗牌） */
 function pickRandom<T>(arr: T[], n: number): T[] {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(n, arr.length));
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = randomInt(0, i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result.slice(0, Math.min(n, arr.length));
 }
 
 /** 生成 [min, max] 范围内的随机整数 */
 function randInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomInt(min, max + 1);
 }
 
 // ═══════════════════════════════════════════════════
@@ -343,7 +344,7 @@ export class AdaptiveFuzzer {
    * @param scenario 攻击场景
    * @returns 变异后的攻击
    */
-  private mutate(scenario: AttackScenario): MutatedAttack {
+  private mutate(scenario: AttackScenario): LocalMutatedAttack {
     const payload =
       typeof scenario.payload === 'string'
         ? scenario.payload
@@ -373,11 +374,11 @@ export class AdaptiveFuzzer {
    * @param count 变体数量
    * @returns 变异攻击列表
    */
-  private generateAttacks(arm: AttackArm, count: number): MutatedAttack[] {
+  private generateAttacks(arm: AttackArm, count: number): LocalMutatedAttack[] {
     const scenario = this.scenarios.find((s) => s.id === arm.scenarioId);
     if (!scenario) return [];
 
-    const attacks: MutatedAttack[] = [];
+    const attacks: LocalMutatedAttack[] = [];
 
     // 包含原始payload（baseline）
     const originalPayload =
@@ -442,7 +443,7 @@ export class AdaptiveFuzzer {
    * @param agentFn 被测Agent函数，接收payload返回response
    * @returns 模糊测试结果
    */
-  async run(agentFn: (payload: string) => Promise<string>): Promise<FuzzingResult> {
+  async run(agentFn: (payload: string) => Promise<string>): Promise<LocalFuzzingResult> {
     // 重置状态
     this.totalAttacks = 0;
     this.successfulAttacks = 0;
@@ -526,7 +527,7 @@ export class AdaptiveFuzzer {
    * @param count 生成的攻击数量
    * @returns 变异攻击列表
    */
-  nextAttacks(count: number): MutatedAttack[] {
+  nextAttacks(count: number): LocalMutatedAttack[] {
     const arm = this.selectArm();
     return this.generateAttacks(arm, count);
   }
@@ -563,7 +564,7 @@ export class AdaptiveFuzzer {
   // ─────────────────────────────────────────────
 
   /** 构建最终结果 */
-  private buildResult(totalRounds: number): FuzzingResult {
+  private buildResult(totalRounds: number): LocalFuzzingResult {
     const allScenarios = this.scenarios.length;
     const testedScenarios = Array.from(this.arms.values()).filter(
       (a) => a.totalPlays > 0

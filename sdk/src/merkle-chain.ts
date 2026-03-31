@@ -12,7 +12,7 @@
  * - 篡改检测（标记从异常事件起为 tampered）
  */
 
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 // ─────────────────────────────────────────────
 // 类型定义
@@ -374,7 +374,7 @@ export class MerkleChain {
   }
 
   private _generateId(): string {
-    return `evt-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    return 'mc_' + randomBytes(16).toString('hex');
   }
 }
 

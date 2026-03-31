@@ -1,7 +1,7 @@
 {
-  "name": "lobster-academy",
-  "version": "0.2.0",
-  "description": "AI Agent Blackbox SDK — Recording, Redaction, Evaluation, Certification",
+  "name": "@mirrorai/blackbox",
+  "version": "0.3.0",
+  "description": "MirrorAI SDK — AI Agent Security Evaluation Framework with Real-time Protection",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
@@ -57,23 +57,29 @@
     "security",
     "evaluation",
     "blackbox",
-    "recording"
+    "recording",
+    "guard",
+    "shield",
+    "gate",
+    "interceptor",
+    "llm-security",
+    "prompt-injection",
+    "agent-safety"
   ],
   "author": "MirrorAI",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jiach72-oss/lobster-academy"
+    "url": "https://github.com/mirrorai/blackbox-sdk"
   },
-  "homepage": "https://github.com/jiach72-oss/lobster-academy",
+  "homepage": "https://mirrorai.run",
   "bugs": {
-    "url": "https://github.com/jiach72-oss/lobster-academy/issues"
+    "url": "https://github.com/mirrorai/blackbox-sdk/issues"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@types/pg": "^8.20.0",
     "chalk": "^4.1.2",
     "commander": "^14.0.3",
     "drizzle-orm": "^0.45.1",
@@ -82,6 +88,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.37",
+    "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.30.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"

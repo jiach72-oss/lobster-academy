@@ -583,13 +583,12 @@ export class EntropyMonitor {
    * @returns 分析结果
    */
   analyze(chain: LogProbEntry[][]): ChainAnalysisResult {
-    // 重置状态以确保独立分析
-    this.reset();
-
+    // 创建独立的监控实例，不污染 step() 的流式状态
+    const monitor = new EntropyMonitor(this.config);
     const timeline: MonitorResult[] = [];
 
-    for (const stepLogprobs of chain) {
-      const result = this.step(stepLogprobs);
+    for (let i = 0; i < chain.length; i++) {
+      const result = monitor.step(chain[i]);
       timeline.push(result);
     }
 
@@ -604,11 +603,13 @@ export class EntropyMonitor {
 
     // 意图漂移评分 (0-100)
     // 基于异常比例 + 平均加速度绝对值 + Jerk 波动
-    const avgAccelAbs = this.accelHistory.length > 0
-      ? this.accelHistory.reduce((s, v) => s + Math.abs(v), 0) / this.accelHistory.length
+    const accelHistory = monitor.accelHistory;
+    const jerkHistory = monitor.jerkHistory;
+    const avgAccelAbs = accelHistory.length > 0
+      ? accelHistory.reduce((s, v) => s + Math.abs(v), 0) / accelHistory.length
       : 0;
-    const jerkStd = this.jerkHistory.length > 1
-      ? Math.sqrt(this.jerkHistory.reduce((s, v) => s + v * v, 0) / this.jerkHistory.length)
+    const jerkStd = jerkHistory.length > 1
+      ? Math.sqrt(jerkHistory.reduce((s, v) => s + v * v, 0) / jerkHistory.length)
       : 0;
 
     const intentDriftScore = Math.min(100, Math.round(

@@ -28,8 +28,8 @@ const BUILT_IN_PATTERNS: Record<string, { source: string; flags: string }> = {
   'tw-idcard': { source: /\b[A-Z][12]\d{8}\b/.source, flags: 'g' },
   // 军官证
   'cn-military-id': { source: /\b[\u4e00-\u9fa5]字第\d{8}号\b/.source, flags: 'g' },
-  // H2: 驾照号(中国) — 收紧为身份证格式约束（原始: \b\d{12}\b 误报率高）
-  'cn-driving-license': { source: /\b[1-9]\d{5}(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx]\b/.source, flags: 'g' },
+  // 中国驾照号：省简称(1位字母) + 12位数字/字母
+  'cn-driving-license': { source: /\b[1-9A-Z]\d{11,12}\b/.source, flags: 'g' },
 
   // 美国SSN
   'us-ssn': { source: /\b\d{3}-\d{2}-\d{4}\b/.source, flags: 'g' },

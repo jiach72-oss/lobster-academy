@@ -287,6 +287,15 @@ const BUILT_IN_TIERED_PATTERNS: PatternDefinition[] = [
 const DEFAULT_TIMEOUT_MS = 5000;
 const MAX_INPUT_LENGTH = 50_000;
 
+/** RedactorV2 敏感键列表 */
+const SENSITIVE_KEYS_V2 = [
+  'password', 'secret', 'token', 'api_key', 'apikey', 'private_key', 'authorization', 'credential',
+  'access_token', 'refresh_token', 'session_id', 'session_token', 'auth_token',
+  'client_secret', 'client_id', 'app_secret', 'app_key',
+  'aws_access_key', 'aws_secret', 'database_url', 'connection_string',
+  'encryption_key', 'signing_key', 'webhook_secret', 'stripe_key',
+];
+
 /**
  * Aho-Corasick 分层脱敏引擎
  * 
@@ -536,7 +545,7 @@ export class RedactorV2 {
     for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
       // 简单敏感键检测
       const lowerKey = key.toLowerCase();
-      if (['password', 'secret', 'token', 'api_key', 'apikey', 'private_key', 'authorization', 'credential'].some(k => lowerKey.includes(k))) {
+      if (SENSITIVE_KEYS_V2.some(k => lowerKey.includes(k))) {
         result[key] = this.replacement;
       } else {
         result[key] = this._redactObjectImpl(value, depth + 1);

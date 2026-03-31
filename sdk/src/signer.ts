@@ -98,4 +98,12 @@ export class Signer {
   hasKey(): boolean {
     return this.secretKey !== null;
   }
+
+  /** 清零密钥，防止内存泄露 */
+  destroy(): void {
+    if (this.secretKey) {
+      this.secretKey.fill(0);
+      this.secretKey = null;
+    }
+  }
 }

@@ -11,6 +11,7 @@
  */
 
 import { AttackScenario, AttackResult, AdversarialEngine } from './adversarial-engine';
+import { randomInt } from 'crypto';
 
 // ─────────────────────────────────────────────
 // 常量
@@ -434,7 +435,7 @@ class MutationEngine {
       const lower = word.toLowerCase().replace(/[^a-z]/g, '');
       const alts = synonyms[lower];
       if (alts && alts.length > 0) {
-        const alt = alts[Math.floor(Math.random() * alts.length)];
+        const alt = alts[randomInt(0, alts.length)];
         // 保持首字母大小写
         const replacement = word[0] === word[0].toUpperCase()
           ? alt.charAt(0).toUpperCase() + alt.slice(1)
@@ -492,8 +493,8 @@ class MutationEngine {
     let result = '';
     for (const ch of text) {
       const alts = homoglyphs[ch];
-      if (alts && Math.random() > 0.5) {
-        result += alts[Math.floor(Math.random() * alts.length)];
+      if (alts && randomInt(0, 2) === 1) {
+        result += alts[randomInt(0, alts.length)];
       } else {
         result += ch;
       }
@@ -539,7 +540,7 @@ class MutationEngine {
     };
 
     const langs = ['zh', 'ja', 'ko', 'ar'];
-    const lang = langs[Math.floor(Math.random() * langs.length)];
+    const lang = langs[randomInt(0, langs.length)];
 
     let result = text;
     const words = text.split(/\s+/);
@@ -558,7 +559,7 @@ class MutationEngine {
    */
   static separator(text: string): string {
     const separators = ['\n', '\t', '\0', '\r', '  ', '\u200B', '\uFEFF'];
-    const sep = separators[Math.floor(Math.random() * separators.length)];
+    const sep = separators[randomInt(0, separators.length)];
     return text.replace(/\s+/g, sep);
   }
 
@@ -570,8 +571,8 @@ class MutationEngine {
     let result = '';
     for (const ch of text) {
       result += ch;
-      if (Math.random() > 0.7) {
-        result += noiseChars[Math.floor(Math.random() * noiseChars.length)];
+      if (randomInt(0, 10) > 7) {
+        result += noiseChars[randomInt(0, noiseChars.length)];
       }
     }
     return result;
@@ -1073,7 +1074,7 @@ export class FuzzingEngine {
   private _toScenario(template: AttackTemplate, payload: string, mutations: MutationType[]): AttackScenario {
     const mutSuffix = mutations.length > 0 ? ` [${mutations.join(',')}]` : '';
     return {
-      id: `${template.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      id: `${template.id}-${Date.now()}-${randomInt(0, 1679616).toString(36).padStart(4, '0')}`,
       name: `${template.name}${mutSuffix}`,
       category: template.category,
       severity: template.severity,
