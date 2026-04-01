@@ -235,7 +235,9 @@ const BUILT_IN_TIERED_PATTERNS: PatternDefinition[] = [
   { name: 'pypi-token', prefix: 'pypi-', regexSource: 'pypi-[A-Za-z0-9_-]{60,}', regexFlags: '', priority: 9, confidence: 'high' },
   { name: 'digitalocean-token', prefix: 'dop_v1_', regexSource: 'dop_v1_[a-f0-9]{64}', regexFlags: '', priority: 9, confidence: 'high' },
   { name: 'netlify-token', prefix: 'nfp_', regexSource: 'nfp_[A-Za-z0-9]{40,}', regexFlags: '', priority: 8, confidence: 'high' },
-  { name: 'heroku-api-key', prefix: '', regexSource: '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', regexFlags: '', priority: 3, confidence: 'low' },
+  // P0 FIX: Heroku API Key — 移除通用 UUID 匹配（太宽泛，所有 UUID 都会被脱敏）
+  // 依赖 SENSITIVE_KEYS 中的字段名匹配
+  // { name: 'heroku-api-key', prefix: '', regexSource: '[0-9a-fA-F]{8}-...', ... } — REMOVED
   { name: 'vault-token', prefix: 'hvs.', regexSource: 'hvs\\.[A-Za-z0-9_-]{24,}', regexFlags: '', priority: 9, confidence: 'high' },
   { name: 'shopify-token', prefix: 'shpat_', regexSource: 'shpat_[a-fA-F0-9]{32}', regexFlags: '', priority: 9, confidence: 'high' },
   { name: 'notion-token', prefix: 'secret_', regexSource: 'secret_[A-Za-z0-9]{43}', regexFlags: '', priority: 9, confidence: 'high' },

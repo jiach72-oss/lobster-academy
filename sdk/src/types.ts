@@ -155,6 +155,7 @@ export interface Anomaly {
   message: string;
   recordId?: string;
   timestamp: string;
+  [key: string]: unknown;
 }
 
 /** 脱敏规则 */

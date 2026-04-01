@@ -11,7 +11,7 @@
  */
 
 import { AttackScenario, AttackResult, AdversarialEngine } from './adversarial-engine';
-import { randomInt } from 'crypto';
+import { randomInt, createHash } from 'crypto';
 
 // ─────────────────────────────────────────────
 // 常量
@@ -1062,12 +1062,7 @@ export class FuzzingEngine {
    * @private
    */
   private _hashPayload(payload: string): string {
-    let hash = 0;
-    for (let i = 0; i < payload.length; i++) {
-      const ch = payload.charCodeAt(i);
-      hash = ((hash << 5) - hash + ch) | 0;
-    }
-    return hash.toString(36);
+    return createHash('sha256').update(payload).digest('hex');
   }
 
   /** 将变体转为 AttackScenario */

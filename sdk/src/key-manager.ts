@@ -631,7 +631,7 @@ export class KeyManager {
     details: string,
   ): void {
     this.revocationAuditLog.push({
-      eventId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      eventId: `${Date.now()}-${randomBytes(4).toString('hex')}`,
       eventType,
       period,
       timestamp: new Date().toISOString(),

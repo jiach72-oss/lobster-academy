@@ -38,7 +38,8 @@ const BUILT_IN_PATTERNS: Record<string, { source: string; flags: string }> = {
   // 美国EIN
   'us-ein': { source: /\b\d{2}-\d{7}\b/.source, flags: 'g' },
   // H2: 美国NPI(医疗) — 收紧（NPI 以 1 开头，10位数字）
-  'us-npi': { source: /\b1\d{9}\b/.source, flags: 'g' },
+  // P0 FIX: 添加上下文前缀约束，避免匹配所有以1开头的10位数字
+  'us-npi': { source: /(?:NPI|npi|provider)[\s:#-]*\b1\d{9}\b/.source, flags: 'g' },
   // 美国驾照(通用格式)
   'us-driving-license': { source: /\b[A-Z]\d{7,12}\b/.source, flags: 'g' },
   // 美国护照
@@ -149,7 +150,9 @@ const BUILT_IN_PATTERNS: Record<string, { source: string; flags: string }> = {
   // AWS STS Temporary
   'aws-sts-key': { source: /\bASIA[0-9A-Z]{16}\b/.source, flags: 'g' },
   // AWS Secret Key
-  'aws-secret-key': { source: /\b[A-Za-z0-9/+=]{40}\b/.source, flags: 'g' },
+  // P0 FIX: 要求在 AWS access key 上下文中出现（同一字段/上下文中包含 AKIA/ASIA），避免匹配任意40字符base64
+  // 纯 40 字符 base64 过于宽泛，依赖 SENSITIVE_KEYS 中的 'aws_secret_access_key' 字段名匹配
+  'aws-secret-key': { source: /(?:aws_secret|secret_access_key|AKIA|ASIA)[^\n]{0,200}\b[A-Za-z0-9/+=]{40}\b/.source, flags: 'g' },
   // AWS ARN
   'aws-arn': { source: /\barn:aws:[a-z0-9-]+:[a-z0-9-]*:\d{12}:[a-zA-Z0-9/_-]+/.source, flags: 'g' },
   // AWS MWS Key
@@ -229,7 +232,9 @@ const BUILT_IN_PATTERNS: Record<string, { source: string; flags: string }> = {
   // Note: removed bare 40-char pattern — too broad, matches random strings
 
   // Heroku API Key
-  'heroku-api-key': { source: /\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b/.source, flags: 'g' },
+  // P0 FIX: 移除通用 UUID 匹配（太宽泛，所有 UUID 都会被脱敏）
+  // Heroku keys 无标准前缀，依赖 SENSITIVE_KEYS 中的 'heroku_api_key' 字段名匹配
+  // 'heroku-api-key': REMOVED — bare UUID pattern causes massive false positives
 
   // DigitalOcean Token
   'digitalocean-token': { source: /\bdop_v1_[a-f0-9]{64}\b/.source, flags: 'g' },
@@ -340,7 +345,8 @@ const BUILT_IN_PATTERNS: Record<string, { source: string; flags: string }> = {
   // 处方号(通用)
   'prescription-number': { source: /\bRx\s*#?\s*\d{6,10}\b/i.source, flags: 'g' },
   // 医保号(中国)
-  'cn-medical-insurance': { source: /\b\d{10,18}\b/.source, flags: 'g' },
+  // P0 FIX: 添加上下文约束（中文医保/社保关键词），避免匹配任意10-18位数字
+  'cn-medical-insurance': { source: /(?:医保|社保|医疗保障)[^\n]{0,5}?\b\d{10,18}\b/.source, flags: 'g' },
 
   // ═══════════════════════════════════════════
   // 六、其他敏感数据 (15种)

@@ -25,6 +25,11 @@ export interface VersionDiff {
 
 export class VersionTracker {
   private snapshots: Map<string, AgentSnapshot[]> = new Map();
+  private maxSnapshots: number;
+
+  constructor(maxSnapshots = 1000) {
+    this.maxSnapshots = maxSnapshots;
+  }
 
   /**
    * 记录 Agent 快照
@@ -45,6 +50,12 @@ export class VersionTracker {
       this.snapshots.set(agentId, []);
     }
     this.snapshots.get(agentId)!.push(snap);
+
+    // Enforce snapshot cap
+    const snaps = this.snapshots.get(agentId)!;
+    if (snaps.length > this.maxSnapshots) {
+      snaps.splice(0, snaps.length - this.maxSnapshots);
+    }
 
     return snap;
   }

@@ -20,6 +20,11 @@ export class InMemoryStorage implements StorageAdapter {
   private skills: SkillRecord[] = [];
   private signatures: SignatureRecord[] = [];
   private _connected = true;
+  private maxRecords: number;
+
+  constructor(maxRecords = 10000) {
+    this.maxRecords = maxRecords;
+  }
 
   // ─────────────────────────────────────────────
   // 录制记录
@@ -28,6 +33,10 @@ export class InMemoryStorage implements StorageAdapter {
   async saveRecord(record: DecisionRecord): Promise<void> {
     const agentRecords = this.records.get(record.agentId) ?? [];
     agentRecords.push(record);
+    // Enforce per-agent record cap
+    if (agentRecords.length > this.maxRecords) {
+      agentRecords.splice(0, agentRecords.length - this.maxRecords);
+    }
     this.records.set(record.agentId, agentRecords);
   }
 
@@ -66,7 +75,7 @@ export class InMemoryStorage implements StorageAdapter {
     if (agentId) {
       this.records.delete(agentId);
     } else {
-      this.records.clear();
+      throw new Error('clearRecords requires an agentId to prevent accidental full-table deletion');
     }
   }
 

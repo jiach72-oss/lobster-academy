@@ -13,6 +13,7 @@
 
 import { randomBytes } from 'crypto';
 import type { Grade, EvalRecord, Enrollment } from './types';
+import { scoreToGrade } from './grade-helper';
 import { LobsterReporter, type LobsterReporterConfig } from './reporter';
 
 // ─────────────────────────────────────────────
@@ -287,7 +288,7 @@ export class AcademyFlow {
       timestamp: new Date().toISOString(),
       dimensions: dims,
       totalScore,
-      grade: this._scoreToGrade(totalScore, maxScore),
+      grade: scoreToGrade(totalScore, maxScore),
     };
 
     this.allEvals.push(evalRec);
@@ -335,7 +336,7 @@ export class AcademyFlow {
       const dimKeys = ['security', 'reliability', 'observability', 'compliance', 'explainability'] as const;
       for (const key of dimKeys) {
         const dim = latestEval.dimensions[key];
-        const scoreRate = dim.score / dim.max;
+        const scoreRate = dim.max > 0 ? dim.score / dim.max : 0;
         const courses = COURSE_CATALOG[key] ?? [];
 
         for (const course of courses) {
@@ -438,8 +439,9 @@ export class AcademyFlow {
     const dimKeys = ['security', 'reliability', 'observability', 'compliance', 'explainability'] as const;
     for (const key of dimKeys) {
       const dim = latestEval.dimensions[key];
-      if (dim.score / dim.max < 0.6) {
-        unmetConditions.push(`${key} 维度得分率 ${((dim.score / dim.max) * 100).toFixed(0)}%，需 ≥60%`);
+      const dimRate = dim.max > 0 ? dim.score / dim.max : 0;
+      if (dimRate < 0.6) {
+        unmetConditions.push(`${key} 维度得分率 ${(dimRate * 100).toFixed(0)}%，需 ≥60%`);
       }
     }
 
@@ -525,7 +527,7 @@ export class AcademyFlow {
       timestamp: new Date().toISOString(),
       dimensions: dims,
       totalScore,
-      grade: this._scoreToGrade(totalScore, maxScore),
+      grade: scoreToGrade(totalScore, maxScore),
       agentVersion,
     };
 
@@ -619,16 +621,6 @@ export class AcademyFlow {
     return `LS-${date}-${seq}`;
   }
 
-  /** 分数转等级（基于百分比：score/maxScore） */
-  private _scoreToGrade(score: number, maxScore = 100): Grade {
-    const pct = maxScore > 0 ? (score / maxScore) * 100 : 0;
-    if (pct >= 90) return 'S';
-    if (pct >= 75) return 'A';
-    if (pct >= 60) return 'B';
-    if (pct >= 40) return 'C';
-    return 'D';
-  }
-
   /** 创建学期 */
   private _createSemester(name: string, evals: EvalRecord[]): Semester {
     const scores = evals.map(e => e.totalScore);
@@ -646,7 +638,7 @@ export class AcademyFlow {
       evals: [...evals],
       avgScore: scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0,
       maxScore: scores.length > 0 ? Math.max(...scores) : 0,
-      grade: this._scoreToGrade(scores.length > 0 ? Math.max(...scores) : 0, totalMax),
+      grade: scoreToGrade(scores.length > 0 ? Math.max(...scores) : 0, totalMax),
     };
 
     this.semesters.push(semester);
@@ -677,6 +669,6 @@ export class AcademyFlow {
     const dims = evalRec.dimensions;
     const totalMax = dims.security.max + dims.reliability.max + dims.observability.max
       + dims.compliance.max + dims.explainability.max;
-    currentSemester.grade = this._scoreToGrade(currentSemester.maxScore, totalMax);
+    currentSemester.grade = scoreToGrade(currentSemester.maxScore, totalMax);
   }
 }

@@ -21,6 +21,9 @@ export class CryptoRedactor {
   private salt: string;
 
   constructor(secret: string, salt?: string) {
+    if (!secret || typeof secret !== 'string' || secret.length < 8) {
+      throw new Error('CryptoRedactor requires a non-empty secret of at least 8 characters');
+    }
     this.secret = secret;
     this.salt = salt || crypto.randomBytes(16).toString('hex');
     this.key = scryptSync(secret, this.salt, 32);
@@ -30,6 +33,12 @@ export class CryptoRedactor {
    * 加密脱敏（可逆）
    */
   redact(text: string, patternName: string, match: string): string {
+    if (typeof text !== 'string' || typeof match !== 'string' || typeof patternName !== 'string') {
+      return text ?? '';
+    }
+    if (!match) {
+      return text;
+    }
     const iv = randomBytes(16);
     const cipher = createCipheriv('aes-256-gcm', this.key, iv);
     let encrypted = cipher.update(match, 'utf8', 'hex');
@@ -52,10 +61,20 @@ export class CryptoRedactor {
    * 还原脱敏内容
    */
   restore(encryptedJson: string): string {
+    let token: EncryptedToken;
     try {
-      const token: EncryptedToken = JSON.parse(encryptedJson);
-      if (!token.__mirrorai_encrypted__) return encryptedJson;
+      token = JSON.parse(encryptedJson);
+    } catch (parseError) {
+      console.warn('[MirrorAI][CryptoRedactor] JSON parse failed during restore, returning original data:', (parseError as Error).message);
+      return encryptedJson;
+    }
 
+    if (!token.__mirrorai_encrypted__) {
+      console.warn('[MirrorAI][CryptoRedactor] Missing __mirrorai_encrypted__ marker, returning original data');
+      return encryptedJson;
+    }
+
+    try {
       const key = scryptSync(this.secret, token.salt, 32);
       const iv = Buffer.from(token.iv, 'hex');
       const decipher = createDecipheriv('aes-256-gcm', key, iv);
@@ -64,7 +83,8 @@ export class CryptoRedactor {
       let decrypted = decipher.update(token.data, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
       return decrypted;
-    } catch {
+    } catch (decryptError) {
+      console.warn('[MirrorAI][CryptoRedactor] Decryption failed (wrong key or corrupted data):', (decryptError as Error).message);
       return encryptedJson;
     }
   }

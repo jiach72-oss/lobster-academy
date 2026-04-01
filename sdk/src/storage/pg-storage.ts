@@ -5,7 +5,7 @@
 
 import { Pool, PoolConfig } from 'pg';
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq, and, gte, lte, desc, count, inArray } from 'drizzle-orm';
+import { eq, and, gte, lte, desc, count, inArray, sql } from 'drizzle-orm';
 import {
   DecisionRecord, RecordType,
   Enrollment, EvalRecord, Badge, Certificate,
@@ -75,27 +75,33 @@ export class PgStorage implements StorageAdapter {
   async saveRecords(records: DecisionRecord[]): Promise<void> {
     if (records.length === 0) return;
 
-    // 批量插入，分批处理避免过大事务
+    // 批量插入，分批处理避免过大事务，全部包裹在单个事务中保证原子性
     const BATCH_SIZE = 100;
+    const batches: DecisionRecord[][] = [];
     for (let i = 0; i < records.length; i += BATCH_SIZE) {
-      const batch = records.slice(i, i + BATCH_SIZE);
-      await this.db.insert(schema.recordings).values(
-        batch.map(r => ({
-          id: r.id,
-          agentId: r.agentId,
-          timestamp: new Date(r.timestamp),
-          type: r.type,
-          input: r.input,
-          reasoning: r.reasoning ?? null,
-          output: r.output,
-          toolCalls: r.toolCalls ?? [],
-          duration: r.duration ?? null,
-          signature: r.signature ?? null,
-          hash: r.hash ?? null,
-          metadata: r.metadata ?? {},
-        }))
-      );
+      batches.push(records.slice(i, i + BATCH_SIZE));
     }
+
+    await this.db.transaction(async (tx) => {
+      for (const batch of batches) {
+        await tx.insert(schema.recordings).values(
+          batch.map(r => ({
+            id: r.id,
+            agentId: r.agentId,
+            timestamp: new Date(r.timestamp),
+            type: r.type,
+            input: r.input,
+            reasoning: r.reasoning ?? null,
+            output: r.output,
+            toolCalls: r.toolCalls ?? [],
+            duration: r.duration ?? null,
+            signature: r.signature ?? null,
+            hash: r.hash ?? null,
+            metadata: r.metadata ?? {},
+          }))
+        );
+      }
+    });
   }
 
   async getRecords(agentId?: string): Promise<DecisionRecord[]> {
@@ -137,11 +143,10 @@ export class PgStorage implements StorageAdapter {
   }
 
   async clearRecords(agentId?: string): Promise<void> {
-    if (agentId) {
-      await this.db.delete(schema.recordings).where(eq(schema.recordings.agentId, agentId));
-    } else {
-      await this.db.delete(schema.recordings);
+    if (!agentId) {
+      throw new Error('clearRecords requires an agentId to prevent accidental full-table deletion');
     }
+    await this.db.delete(schema.recordings).where(eq(schema.recordings.agentId, agentId));
   }
 
   async countRecords(agentId?: string): Promise<number> {
@@ -158,39 +163,30 @@ export class PgStorage implements StorageAdapter {
   // ─────────────────────────────────────────────
 
   async saveEnrollment(enrollment: Enrollment): Promise<void> {
-    // 先查找是否已存在
-    const existing = await this.getEnrollment(enrollment.agentId);
+    const metadataValue = {
+      studentId: enrollment.studentId,
+      enrolledAt: enrollment.enrolledAt,
+      advisor: enrollment.advisor,
+      initialScore: enrollment.initialScore,
+      currentGrade: enrollment.currentGrade,
+    };
 
-    if (existing) {
-      // 更新 agents 表
-      await this.db
-        .update(schema.agents)
-        .set({
-          department: enrollment.department,
-          metadata: {
-            studentId: enrollment.studentId,
-            enrolledAt: enrollment.enrolledAt,
-            advisor: enrollment.advisor,
-            initialScore: enrollment.initialScore,
-            currentGrade: enrollment.currentGrade,
-          },
-          updatedAt: new Date(),
-        })
-        .where(eq(schema.agents.agentId, enrollment.agentId));
-    } else {
-      // 插入 agents 表
-      await this.db.insert(schema.agents).values({
+    // 使用 upsert 避免 TOCTOU 竞态
+    await this.db
+      .insert(schema.agents)
+      .values({
         agentId: enrollment.agentId,
         department: enrollment.department,
-        metadata: {
-          studentId: enrollment.studentId,
-          enrolledAt: enrollment.enrolledAt,
-          advisor: enrollment.advisor,
-          initialScore: enrollment.initialScore,
-          currentGrade: enrollment.currentGrade,
+        metadata: metadataValue,
+      })
+      .onConflictDoUpdate({
+        target: schema.agents.agentId,
+        set: {
+          department: enrollment.department,
+          metadata: metadataValue,
+          updatedAt: new Date(),
         },
       });
-    }
   }
 
   async getEnrollment(agentId: string): Promise<Enrollment | null> {
@@ -254,21 +250,26 @@ export class PgStorage implements StorageAdapter {
   // ─────────────────────────────────────────────
 
   async saveBadges(agentId: string, badgeList: Badge[]): Promise<void> {
-    // 通过更新 agents 表的 metadata 来存储徽章
-    const [agent] = await this.db
-      .select()
-      .from(schema.agents)
-      .where(eq(schema.agents.agentId, agentId))
-      .limit(1);
+    // 使用 SELECT FOR UPDATE 防止 Lost Update
+    await this.db.transaction(async (tx) => {
+      // 先加行锁
+      await tx.execute(sql`SELECT agent_id FROM agents WHERE agent_id = ${agentId} FOR UPDATE`);
 
-    if (agent) {
-      const meta = (agent.metadata as Record<string, unknown>) ?? {};
-      meta.badges = badgeList;
-      await this.db
-        .update(schema.agents)
-        .set({ metadata: meta, updatedAt: new Date() })
-        .where(eq(schema.agents.agentId, agentId));
-    }
+      const [agent] = await tx
+        .select()
+        .from(schema.agents)
+        .where(eq(schema.agents.agentId, agentId))
+        .limit(1);
+
+      if (agent) {
+        const meta = (agent.metadata as Record<string, unknown>) ?? {};
+        meta.badges = badgeList;
+        await tx
+          .update(schema.agents)
+          .set({ metadata: meta, updatedAt: new Date() })
+          .where(eq(schema.agents.agentId, agentId));
+      }
+    });
   }
 
   async getBadges(agentId: string): Promise<Badge[]> {
@@ -288,23 +289,28 @@ export class PgStorage implements StorageAdapter {
   // ─────────────────────────────────────────────
 
   async saveCertificate(cert: Certificate): Promise<void> {
-    // 通过更新 agents 表的 metadata 来存储证书
-    const [agent] = await this.db
-      .select()
-      .from(schema.agents)
-      .where(eq(schema.agents.agentId, cert.agentId))
-      .limit(1);
+    // 使用 SELECT FOR UPDATE 防止 Lost Update
+    await this.db.transaction(async (tx) => {
+      // 先加行锁
+      await tx.execute(sql`SELECT agent_id FROM agents WHERE agent_id = ${cert.agentId} FOR UPDATE`);
 
-    if (agent) {
-      const meta = (agent.metadata as Record<string, unknown>) ?? {};
-      const certs = (meta.certificates as Certificate[]) ?? [];
-      certs.push(cert);
-      meta.certificates = certs;
-      await this.db
-        .update(schema.agents)
-        .set({ metadata: meta, updatedAt: new Date() })
-        .where(eq(schema.agents.agentId, cert.agentId));
-    }
+      const [agent] = await tx
+        .select()
+        .from(schema.agents)
+        .where(eq(schema.agents.agentId, cert.agentId))
+        .limit(1);
+
+      if (agent) {
+        const meta = (agent.metadata as Record<string, unknown>) ?? {};
+        const certs = (meta.certificates as Certificate[]) ?? [];
+        certs.push(cert);
+        meta.certificates = certs;
+        await tx
+          .update(schema.agents)
+          .set({ metadata: meta, updatedAt: new Date() })
+          .where(eq(schema.agents.agentId, cert.agentId));
+      }
+    });
   }
 
   async getCertificates(agentId: string): Promise<Certificate[]> {

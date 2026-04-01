@@ -100,6 +100,9 @@ export type { AdversarialLoopConfig, IterationRound, AdversarialLoopResult } fro
 // 分页查询（增强 async-writer — 方法已添加到 AsyncWriter 类）
 export type { QueryFilter, QueryParams, PaginationMeta, PaginatedResult } from './async-writer';
 
+// 评分工具
+export { scoreToGrade } from './grade-helper';
+
 // 入学/毕业流程管理
 export { AcademyFlow } from './academy-flow';
 export type {
@@ -385,13 +388,15 @@ export class LobsterBlackbox {
       
       // Anomaly detection
       const anomalies: any[] = [];
+      const now = new Date().toISOString();
       
       // Error spike: error rate > 10%
       if (total > 0 && errors / total > 0.1) {
         anomalies.push({
           type: 'error_spike',
-          severity: 'warning',
+          severity: 'medium',
           message: `错误率 ${(errors / total * 100).toFixed(1)}% 超过 10% 阈值`,
+          timestamp: now,
           count: errors,
           rate: errors / total,
         });
@@ -403,8 +408,9 @@ export class LobsterBlackbox {
         const maxDuration = Math.max(...slowRecords.map(r => r.duration || 0));
         anomalies.push({
           type: 'high_latency',
-          severity: maxDuration > 30000 ? 'critical' : maxDuration >= 15000 ? 'high' : 'warning',
+          severity: maxDuration > 30000 ? 'critical' : maxDuration >= 15000 ? 'high' : 'medium',
           message: `检测到 ${slowRecords.length} 条高延迟记录，最大 ${maxDuration}ms`,
+          timestamp: now,
           maxDuration,
           count: slowRecords.length,
         });

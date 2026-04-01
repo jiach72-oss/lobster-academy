@@ -217,13 +217,13 @@ export class ElasticsearchStorage implements StorageAdapter {
   }
 
   async clearRecords(agentId?: string): Promise<void> {
-    const query = agentId
-      ? { query: { term: { agentId } } }
-      : { query: { match_all: {} } };
+    if (!agentId) {
+      throw new Error('clearRecords requires an agentId to prevent accidental full-table deletion');
+    }
 
     await this.client.deleteByQuery({
       index: this.getIndexName('records'),
-      body: query,
+      body: { query: { term: { agentId } } },
       conflicts: 'proceed',
     });
   }

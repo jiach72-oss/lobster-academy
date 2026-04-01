@@ -143,34 +143,45 @@ export class S3Storage implements StorageAdapter {
   }
 
   async getRecords(agentId?: string): Promise<DecisionRecord[]> {
-    // Read from buffer
+    // P0 FIX: 合并 buffer + archived 数据
+    const buffered = agentId
+      ? [...(this.buffer.get(agentId) ?? [])]
+      : ([] as DecisionRecord[]).concat(...this.buffer.values());
+
+    // 如果指定了 agentId，也从 S3 归档中读取
     if (agentId) {
-      return [...(this.buffer.get(agentId) ?? [])];
+      try {
+        const archived = await this.getArchivedRecords(agentId);
+        return [...buffered, ...archived].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+      } catch {
+        // S3 读取失败时返回 buffer 数据
+        return buffered;
+      }
     }
 
-    // Read all buffered records
-    const all: DecisionRecord[] = [];
-    for (const records of this.buffer.values()) {
-      all.push(...records);
-    }
-    return all;
+    // 无 agentId 时，只返回 buffer（无法枚举所有 agentId 的归档）
+    return buffered;
   }
 
   /** 从 S3 读取归档的记录 */
-  async getArchivedRecords(agentId: string): Promise<DecisionRecord[]> {
+  async getArchivedRecords(agentId: string, options?: { maxKeys?: number }): Promise<DecisionRecord[]> {
     const { ListObjectsV2Command, GetObjectCommand } = (this as any)._cmds;
     const prefix = `${this.prefix}/records/${agentId}/`;
     const records: DecisionRecord[] = [];
+    const maxKeys = options?.maxKeys;
 
     let continuationToken: string | undefined;
+    let totalKeys = 0;
     do {
       const listResult = await this.client.send(new ListObjectsV2Command({
         Bucket: this.bucket,
         Prefix: prefix,
         ContinuationToken: continuationToken,
+        ...(maxKeys ? { MaxKeys: Math.min(1000, maxKeys - totalKeys) } : {}),
       }));
 
       for (const obj of listResult.Contents ?? []) {
+        totalKeys++;
         try {
           const result = await this.client.send(new GetObjectCommand({
             Bucket: this.bucket,
@@ -195,7 +206,7 @@ export class S3Storage implements StorageAdapter {
       }
 
       continuationToken = listResult.NextContinuationToken;
-    } while (continuationToken);
+    } while (continuationToken && (!maxKeys || totalKeys < maxKeys));
 
     return records.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
@@ -241,19 +252,26 @@ export class S3Storage implements StorageAdapter {
         continuationToken = listResult.NextContinuationToken;
       } while (continuationToken);
     } else {
-      this.buffer.clear();
+      throw new Error('clearRecords requires an agentId to prevent accidental full-table deletion');
     }
   }
 
   async countRecords(agentId?: string): Promise<number> {
+    // P0 FIX: 合并 buffer + archived 数据计数
+    const buffered = agentId
+      ? (this.buffer.get(agentId) ?? []).length
+      : [...this.buffer.values()].reduce((sum, records) => sum + records.length, 0);
+
     if (agentId) {
-      return (this.buffer.get(agentId) ?? []).length;
+      try {
+        const archived = await this.getArchivedRecords(agentId);
+        return buffered + archived.length;
+      } catch {
+        return buffered;
+      }
     }
-    let total = 0;
-    for (const records of this.buffer.values()) {
-      total += records.length;
-    }
-    return total;
+
+    return buffered;
   }
 
   /** 列出所有归档文件 */
@@ -360,7 +378,7 @@ export class S3Storage implements StorageAdapter {
           chunks.push(Buffer.from(chunk));
         }
         evals.push(JSON.parse(Buffer.concat(chunks).toString()));
-      } catch {}
+      } catch (e) { console.warn("[S3Storage] Operation failed:", (e as Error).message); }
     }
 
     return evals.sort((a, b) => a.sequence - b.sequence);
@@ -435,7 +453,7 @@ export class S3Storage implements StorageAdapter {
           chunks.push(Buffer.from(chunk));
         }
         certs.push(JSON.parse(Buffer.concat(chunks).toString()));
-      } catch {}
+      } catch (e) { console.warn("[S3Storage] Operation failed:", (e as Error).message); }
     }
 
     return certs;
@@ -477,7 +495,7 @@ export class S3Storage implements StorageAdapter {
           chunks.push(Buffer.from(chunk));
         }
         reports.push(JSON.parse(Buffer.concat(chunks).toString()));
-      } catch {}
+      } catch (e) { console.warn("[S3Storage] Operation failed:", (e as Error).message); }
     }
 
     return reports;
@@ -519,7 +537,7 @@ export class S3Storage implements StorageAdapter {
           chunks.push(Buffer.from(chunk));
         }
         skills.push(JSON.parse(Buffer.concat(chunks).toString()));
-      } catch {}
+      } catch (e) { console.warn("[S3Storage] Operation failed:", (e as Error).message); }
     }
 
     return skills;
@@ -566,7 +584,7 @@ export class S3Storage implements StorageAdapter {
           chunks.push(Buffer.from(chunk));
         }
         sigs.push(JSON.parse(Buffer.concat(chunks).toString()));
-      } catch {}
+      } catch (e) { console.warn("[S3Storage] Operation failed:", (e as Error).message); }
     }
 
     return sigs;

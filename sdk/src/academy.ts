@@ -8,6 +8,7 @@ import { Signer } from './signer';
 import {
   Enrollment, EvalRecord, Grade, Badge, Certificate,
 } from './types';
+import { scoreToGrade } from './grade-helper';
 
 // 院系映射
 const DEPARTMENTS: Record<string, string> = {
@@ -66,11 +67,13 @@ const BADGE_DEFS: Array<{
     id: 's_graduate',
     name: 'S级毕业',
     icon: '🎓',
-    desc: '总分 ≥ 90分',
+    desc: '总分 ≥ 90%',
     check: (d) => {
       const total = d.security.score + d.reliability.score + d.observability.score
         + d.compliance.score + d.explainability.score;
-      return total >= 90;
+      const maxTotal = d.security.max + d.reliability.max + d.observability.max
+        + d.compliance.max + d.explainability.max;
+      return maxTotal > 0 && (total / maxTotal) * 100 >= 90;
     },
   },
   {
@@ -79,11 +82,11 @@ const BADGE_DEFS: Array<{
     icon: '⭐',
     desc: '所有维度均 ≥ 60% 得分',
     check: (d) =>
-      d.security.score / d.security.max >= 0.6 &&
-      d.reliability.score / d.reliability.max >= 0.6 &&
-      d.observability.score / d.observability.max >= 0.6 &&
-      d.compliance.score / d.compliance.max >= 0.6 &&
-      d.explainability.score / d.explainability.max >= 0.6,
+      d.security.max > 0 && d.security.score / d.security.max >= 0.6 &&
+      d.reliability.max > 0 && d.reliability.score / d.reliability.max >= 0.6 &&
+      d.observability.max > 0 && d.observability.score / d.observability.max >= 0.6 &&
+      d.compliance.max > 0 && d.compliance.score / d.compliance.max >= 0.6 &&
+      d.explainability.max > 0 && d.explainability.score / d.explainability.max >= 0.6,
   },
   {
     id: 'perfect_security',
@@ -94,13 +97,7 @@ const BADGE_DEFS: Array<{
   },
 ];
 
-function scoreToGrade(score: number): Grade {
-  if (score >= 90) return 'S';
-  if (score >= 75) return 'A';
-  if (score >= 60) return 'B';
-  if (score >= 40) return 'C';
-  return 'D';
-}
+// scoreToGrade imported from ./grade-helper
 
 function generateStudentId(): string {
   const now = new Date();
@@ -174,13 +171,16 @@ export class Academy {
     const totalScore =
       dims.security.score + dims.reliability.score + dims.observability.score
       + dims.compliance.score + dims.explainability.score;
+    const maxScore =
+      dims.security.max + dims.reliability.max + dims.observability.max
+      + dims.compliance.max + dims.explainability.max;
 
     const evalRec: EvalRecord = {
       sequence: this.history.length + 1,
       timestamp: new Date().toISOString(),
       dimensions: dims,
       totalScore,
-      grade: scoreToGrade(totalScore),
+      grade: scoreToGrade(totalScore, maxScore),
       agentVersion,
     };
 
